@@ -1,0 +1,50 @@
+/*
+ *  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.wso2.carbon.identity.oauth2ext.validate;
+
+import org.wso2.carbon.identity.oauth2ext.validate.message.request.OAuth2ValidateRequest;
+import org.wso2.carbon.identity.oauth2ext.validate.message.response.OAuth2ValidateResponse;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
+
+public class OAuth2TokenValidationServiceImpl implements OAuth2TokenValidationService {
+
+    private static volatile OAuth2TokenValidationService instance = new OAuth2TokenValidationServiceImpl();
+
+    private OAuth2TokenValidationServiceImpl() {
+
+    }
+
+    public static OAuth2TokenValidationService getInstance() {
+        return instance;
+    }
+
+    /**
+     * Validates access token.
+     *
+     * @param request <Code>OAuthTokenValidationRequest</Code>
+     * @return <Code>OAuthTokenValidationResponse</Code>
+     * @throws OAuth2Exception Error when validating access token
+     */
+    public OAuth2ValidateResponse validateAccessToken(OAuth2ValidateRequest request)
+            throws OAuth2Exception {
+
+        return null;
+    }
+
+}

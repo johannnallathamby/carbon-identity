@@ -39,6 +39,14 @@
         <module>org.wso2.carbon.identity.oauth</module>
         <module>org.wso2.carbon.identity.oauth.endpoint</module>
         <module>org.wso2.carbon.identity.oauth.ui</module>
+        <module>org.wso2.carbon.identity.oauth2new.common</module>
+        <module>org.wso2.carbon.identity.oauth2new</module>
+        <module>org.wso2.carbon.identity.oauth2ext.revoke</module>
+        <module>org.wso2.carbon.identity.oauth2ext.oidc</module>
+        <module>org.wso2.carbon.identity.oauth2ext.ntlm</module>
+        <module>org.wso2.carbon.identity.oauth2ext.saml2grant</module>
+        <module>org.wso2.carbon.identity.oauth2ext.validate</module>
+        <module>org.wso2.carbon.identity.oauth2ext.apim</module>
     </modules>
 
 </project>

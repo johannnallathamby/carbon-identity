@@ -29,8 +29,24 @@ import org.wso2.carbon.registry.core.utils.UUIDGenerator;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.Properties;
 
 public abstract class InboundAuthenticationRequestProcessor {
+
+    protected Properties properties = new Properties();
+
+    /**
+     * Process inbound authentication request
+     *
+     * @param properties Inbound authenticator properties
+     *
+     * @throws FrameworkException
+     */
+    public void init(Properties properties) throws FrameworkException {
+        if(properties != null){
+            this.properties = properties;
+        }
+    }
 
     /**
      * Process inbound authentication request
@@ -92,7 +108,7 @@ public abstract class InboundAuthenticationRequestProcessor {
         String sessionDataKey = UUIDGenerator.generateUUID();
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest();
-        InboundAuthenticationRequest inboundAuthenticationRequest = context.getInboundAuthenticationRequest();
+        InboundAuthenticationRequest inboundAuthenticationRequest = context.getRequest();
 
         Map<String, String[]> parameterMap = inboundAuthenticationRequest.getParameters();
 
@@ -143,7 +159,7 @@ public abstract class InboundAuthenticationRequestProcessor {
         String sessionDataKey = UUIDGenerator.generateUUID();
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest();
-        InboundAuthenticationRequest inboundAuthenticationRequest = context.getInboundAuthenticationRequest();
+        InboundAuthenticationRequest inboundAuthenticationRequest = context.getRequest();
 
         Map<String, String[]> parameterMap = inboundAuthenticationRequest.getParameters();
 

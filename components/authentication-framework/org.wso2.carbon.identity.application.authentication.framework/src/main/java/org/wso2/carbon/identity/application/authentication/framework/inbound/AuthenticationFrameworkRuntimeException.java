@@ -18,17 +18,23 @@
 
 package org.wso2.carbon.identity.application.authentication.framework.inbound;
 
-public class AuthenticationFrameworkRuntimeException extends RuntimeException {
+import org.wso2.carbon.identity.base.IdentityRuntimeException;
 
-    public AuthenticationFrameworkRuntimeException() {
-        super();
+public class AuthenticationFrameworkRuntimeException extends IdentityRuntimeException {
+
+    protected AuthenticationFrameworkRuntimeException(String errorDescription) {
+        super(errorDescription);
     }
 
-    public AuthenticationFrameworkRuntimeException(String message) {
-        super(message);
+    protected AuthenticationFrameworkRuntimeException(String errorDescription, Throwable cause) {
+        super(errorDescription, cause);
     }
 
-    public AuthenticationFrameworkRuntimeException(String message, Throwable cause) {
-        super(message, cause);
+    public static AuthenticationFrameworkRuntimeException error(String message) {
+        return new AuthenticationFrameworkRuntimeException(message);
+    }
+
+    public static AuthenticationFrameworkRuntimeException error(String errorDescription, Throwable cause) {
+        return new AuthenticationFrameworkRuntimeException(errorDescription, cause);
     }
 }

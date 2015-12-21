@@ -1,0 +1,81 @@
+/*
+ *  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.wso2.carbon.identity.oauth2new.bean.context;
+
+import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2AuthzRequest;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2Request;
+import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2AuthzResponse;
+import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2Response;
+
+import java.io.Serializable;
+import java.util.Map;
+import java.util.Set;
+
+/*
+ * Message context that holds information about the authorization request to the authorization endpoint
+ */
+public class OAuth2AuthzMessageContext extends OAuth2MessageContext {
+
+    private static final long serialVersionUID = -5715709028776880712L;
+
+    private User authzUser;
+
+    private Set<String> approvedScopes;
+
+    private long validityPeriod;
+
+    public OAuth2AuthzMessageContext(OAuth2AuthzRequest request, OAuth2AuthzResponse response, String tenantDomain,
+                                     Map<String, String> parameters) {
+        super(request, response, tenantDomain, parameters);
+    }
+
+    public Set<String> getApprovedScopes() {
+        return approvedScopes;
+    }
+
+    public void setApprovedScopes(Set<String> approvedScopes) {
+        this.approvedScopes = approvedScopes;
+    }
+
+    public long getValidityPeriod() {
+        return validityPeriod;
+    }
+
+    public void setValidityPeriod(long validityPeriod) {
+        this.validityPeriod = validityPeriod;
+    }
+
+    public User getAuthzUser() {
+        return authzUser;
+    }
+
+    public void setAuthzUser(User authzUser) {
+        this.authzUser = authzUser;
+    }
+
+    public OAuth2AuthzRequest getRequest(){
+        return (OAuth2AuthzRequest)request;
+    }
+
+    public OAuth2AuthzResponse getResponse(){
+        return (OAuth2AuthzResponse)response;
+    }
+
+}

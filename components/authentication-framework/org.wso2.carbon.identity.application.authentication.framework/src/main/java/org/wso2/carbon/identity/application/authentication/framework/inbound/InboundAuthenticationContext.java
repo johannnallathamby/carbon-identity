@@ -1,33 +1,36 @@
 package org.wso2.carbon.identity.application.authentication.framework.inbound;
 
+import org.wso2.carbon.identity.core.bean.context.MessageContext;
+
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InboundAuthenticationContext implements Serializable {
+public class InboundAuthenticationContext<T1 extends InboundAuthenticationRequest,T2 extends InboundAuthenticationResponse,
+        T3 extends Serializable, T4 extends Serializable> extends MessageContext implements Serializable {
 
-	private static final long serialVersionUID = -3113147804821962230L;
+    private static final long serialVersionUID = -2355601132733908632L;
 
-	private InboundAuthenticationRequest inboundAuthenticationRequest;
-    private InboundAuthenticationResponse inboundAuthenticationResponse;
-	private String tenantDomain;
-	private Map<String, Object> properties = new HashMap<String, Object>();
+	protected T1 request;
+    protected T2 response;
+    protected String tenantDomain;
+    protected Map<T3,T4> parameters = new HashMap<>();
 
-	public InboundAuthenticationRequest getInboundAuthenticationRequest() {
-		return inboundAuthenticationRequest;
+    public InboundAuthenticationContext(T1 request, T2 response, String tenantDomain, Map<T3,T4> parameters){
+        super(parameters);
+        this.request = request;
+        this.response = response;
+        this.tenantDomain = tenantDomain;
+    }
+
+	public T1 getRequest() {
+		return request;
 	}
 
-	public void setInboundAuthenticationRequest(InboundAuthenticationRequest inboundAuthenticationRequest) {
-		this.inboundAuthenticationRequest = inboundAuthenticationRequest;
-	}
-
-	public Object getProperty(String key) {
-		return properties.get(key);
-	}
-
-	public void addProperty(String key, Object value) {
-		properties.put(key, value);
-	}
+    public T2 getResponse() {
+        return response;
+    }
 
 	public String getTenantDomain() {
 		return tenantDomain;
@@ -36,12 +39,4 @@ public class InboundAuthenticationContext implements Serializable {
 	public void setTenantDomain(String tenantDomain) {
 		this.tenantDomain = tenantDomain;
 	}
-
-    public InboundAuthenticationResponse getInboundAuthenticationResponse() {
-        return inboundAuthenticationResponse;
-    }
-
-    public void setInboundAuthenticationResponse(InboundAuthenticationResponse inboundAuthenticationResponse) {
-        this.inboundAuthenticationResponse = inboundAuthenticationResponse;
-    }
 }

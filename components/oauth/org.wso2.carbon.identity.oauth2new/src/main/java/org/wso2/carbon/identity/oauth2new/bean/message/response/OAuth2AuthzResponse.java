@@ -1,0 +1,37 @@
+/*
+ *  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.wso2.carbon.identity.oauth2new.bean.message.response;
+
+import org.apache.oltu.oauth2.as.response.OAuthASResponse;
+
+/*
+ * Wrapper for OLTU OAuthASResponse to authorization endpoint
+ */
+public class OAuth2AuthzResponse<T extends OAuthASResponse> extends OAuth2Response {
+
+    private static final long serialVersionUID = -2427900096122973185L;
+
+    protected OAuth2AuthzResponse(T response){
+        super(response);
+    }
+
+    public T getResponse() {
+        return (T)response;
+    }
+}

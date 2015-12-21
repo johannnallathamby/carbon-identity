@@ -58,6 +58,18 @@ public class InboundAuthenticationRequest implements Serializable {
         return parameters;
     }
 
+    public String[] getParameterValues(String paramName) {
+        return parameters.get(paramName);
+    }
+
+    public String getParameterValue(String paramName) {
+        String[] values = parameters.get(paramName);
+        if(values.length > 0){
+            return values[0];
+        }
+        return null;
+    }
+
     public void setParameters(Map<String, String[]> parameters) {
         this.parameters = parameters;
     }

@@ -1251,6 +1251,11 @@
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.identity</groupId>
+                <artifactId>org.wso2.carbon.identity.oauth2new</artifactId>
+                <version>${carbon.identity.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity</groupId>
                 <artifactId>org.wso2.carbon.identity.oauth.ui</artifactId>
                 <version>${carbon.identity.version}</version>
             </dependency>
@@ -1391,6 +1396,11 @@
             <dependency>
                 <groupId>org.wso2.carbon.identity</groupId>
                 <artifactId>org.wso2.carbon.identity.authenticator.mutualssl</artifactId>
+                <version>${carbon.identity.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity</groupId>
+                <artifactId>org.wso2.carbon.identity.oauth2new.common</artifactId>
                 <version>${carbon.identity.version}</version>
             </dependency>
             <dependency>
