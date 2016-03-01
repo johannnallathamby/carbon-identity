@@ -18,9 +18,12 @@
 
 package org.wso2.carbon.identity.oauth2ext.ntlm.bean.context;
 
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2Request;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2TokenRequest;
 import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2Response;
+import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2TokenResponse;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -28,12 +31,12 @@ import java.util.Map;
 /*
  * Message context that holds information about the token revocation request to the token revocation endpoint
  */
-public class NTLMGrantMessageContext<T1 extends OAuth2Request, T2 extends OAuth2Response,
-        T3 extends Serializable, T4 extends Serializable> extends OAuth2MessageContext {
+public class NTLMGrantMessageContext<T1 extends Serializable, T2 extends Serializable> extends OAuth2MessageContext {
 
     private static final long serialVersionUID = 8957814451266828857L;
 
-    public NTLMGrantMessageContext(T1 request, T2 response, String tenantDomain, Map<T3, T4> parameters) {
+    public NTLMGrantMessageContext(OAuth2TokenRequest request, OAuth2TokenResponse response, String tenantDomain,
+                                   Map<T1,T2> parameters) {
         super(request, response, tenantDomain, parameters);
     }
 

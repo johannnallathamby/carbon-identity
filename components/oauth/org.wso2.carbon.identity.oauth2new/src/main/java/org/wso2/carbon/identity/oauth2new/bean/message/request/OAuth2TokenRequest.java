@@ -22,28 +22,10 @@ import java.util.Set;
 
 public abstract class OAuth2TokenRequest extends OAuth2Request {
 
-    private static final long serialVersionUID = -7079593227614826792L;
+    private static final long serialVersionUID = -4100425188456499228L;
 
-    private String clientId;
-    private String clientSecret;
     private String grantType;
     private Set<String> requestedScopes;
-
-    public String getClientSecret() {
-        return clientSecret;
-    }
-
-    public void setClientSecret(String clientSecret) {
-        this.clientSecret = clientSecret;
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
 
     public String getGrantType() {
         return grantType;

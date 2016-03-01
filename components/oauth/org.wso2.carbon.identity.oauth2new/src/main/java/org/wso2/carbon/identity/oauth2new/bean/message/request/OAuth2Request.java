@@ -22,5 +22,5 @@ import org.wso2.carbon.identity.application.authentication.framework.inbound.Inb
 
 public abstract class OAuth2Request extends InboundAuthenticationRequest {
 
-    private static final long serialVersionUID = -371925192220383152L;
+    private static final long serialVersionUID = 5255384558894431030L;
 }

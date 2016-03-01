@@ -1,3 +1,21 @@
+/*
+ *  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package org.wso2.carbon.identity.oauth2new.bean.context;
 
 import org.wso2.carbon.identity.application.common.model.User;
@@ -15,9 +33,9 @@ import java.util.Set;
 /*
  * Message context that holds information about the token request to the token endpoint
  */
-public class OAuth2TokenMessageContext extends OAuth2MessageContext {
+public class OAuth2TokenMessageContext<T1 extends Serializable, T2 extends Serializable> extends OAuth2MessageContext {
 
-    private static final long serialVersionUID = -4217491299787490535L;
+    private static final long serialVersionUID = -5732604278415475580L;
 
     private User authzUser;
 
@@ -28,7 +46,7 @@ public class OAuth2TokenMessageContext extends OAuth2MessageContext {
     private String clientId;
 
     public OAuth2TokenMessageContext(OAuth2TokenRequest request, OAuth2TokenResponse response, String tenantDomain,
-                                     Map<String, String> parameters) {
+                                     Map<T1,T2> parameters) {
         super(request, response, tenantDomain, parameters);
     }
 
@@ -64,7 +82,9 @@ public class OAuth2TokenMessageContext extends OAuth2MessageContext {
         this.clientId = clientId;
     }
 
-    public OAuth2TokenRequest getRequest(){
+
+    @Override
+    public OAuth2TokenRequest getRequest() {
         return (OAuth2TokenRequest)request;
     }
 

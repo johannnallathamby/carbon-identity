@@ -18,7 +18,7 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request;
 
-public class TokenResponseRequest extends OAuth2Request {
+public class TokenResponseRequest extends OAuth2AuthzRequest {
 
-    private static final long serialVersionUID = -3009563708954787261L;
+    private static final long serialVersionUID = -2571263137456231933L;
 }

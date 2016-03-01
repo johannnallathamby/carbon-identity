@@ -23,15 +23,15 @@ import org.apache.oltu.oauth2.as.response.OAuthASResponse;
 /*
  * Wrapper for OLTU OAuthASResponse to token endpoint
  */
-public class OAuth2TokenResponse<T extends OAuthASResponse> extends OAuth2Response {
+public class OAuth2TokenResponse extends OAuth2Response {
 
-    private static final long serialVersionUID = -3185687744117527723L;
+    private static final long serialVersionUID = 4050285560344241660L;
 
-    protected OAuth2TokenResponse(T response){
+    protected OAuth2TokenResponse(OAuthASResponse response){
         super(response);
     }
 
-    public T getResponse() {
-        return (T)response;
+    public OAuthASResponse getOLTUResponse() {
+        return (OAuthASResponse)response;
     }
 }

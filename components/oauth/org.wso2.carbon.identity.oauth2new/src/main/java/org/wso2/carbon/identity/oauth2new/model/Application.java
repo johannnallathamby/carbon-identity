@@ -29,7 +29,6 @@ public class Application implements Serializable {
     private String clientSecret;
     private String applicationName;
     private String redirectURI;
-    private String oauthVersion;
     private User applicationOwner;
     private Set<String> allowedResponseTypes;
     private Set<String> allowedGrantTypes;
@@ -72,14 +71,6 @@ public class Application implements Serializable {
 
     public void setApplicationOwner(User applicationOwner) {
         this.applicationOwner = applicationOwner;
-    }
-
-    public String getOauthVersion() {
-        return oauthVersion;
-    }
-
-    public void setOauthVersion(String oauthVersion) {
-        this.oauthVersion = oauthVersion;
     }
 
     public Set<String> getAllowedResponseTypes() {

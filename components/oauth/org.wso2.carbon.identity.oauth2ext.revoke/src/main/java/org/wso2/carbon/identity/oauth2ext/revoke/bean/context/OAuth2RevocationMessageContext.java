@@ -18,6 +18,8 @@
 
 package org.wso2.carbon.identity.oauth2ext.revoke.bean.context;
 
+import org.wso2.carbon.identity.oauth2ext.revoke.bean.message.request.OAuth2RevokeRequest;
+import org.wso2.carbon.identity.oauth2ext.revoke.bean.message.response.OAuth2RevokeResponse;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2Request;
 import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2Response;
@@ -28,14 +30,15 @@ import java.util.Map;
 /*
  * Message context that holds information about the token revocation request to the token revocation endpoint
  */
-public class OAuth2RevocationMessageContext<T1 extends OAuth2Request, T2 extends OAuth2Response,
-        T3 extends Serializable, T4 extends Serializable> extends OAuth2MessageContext {
+public class OAuth2RevocationMessageContext<T1 extends Serializable, T2 extends Serializable> extends
+        OAuth2MessageContext {
 
     private static final long serialVersionUID = 8957814451266828857L;
 
     private String clientId;
 
-    public OAuth2RevocationMessageContext(T1 request, T2 response, String tenantDomain, Map<T3,T4> parameters) {
+    public OAuth2RevocationMessageContext(OAuth2RevokeRequest request, OAuth2RevokeResponse response,
+                                          String tenantDomain, Map<T1,T2> parameters) {
         super(request, response, tenantDomain, parameters);
     }
 

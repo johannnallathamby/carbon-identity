@@ -22,8 +22,10 @@ import org.wso2.carbon.identity.application.authentication.framework.inbound.Inb
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2AuthzRequest;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2Request;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2TokenRequest;
 import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2AuthzResponse;
 import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2Response;
+import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2TokenResponse;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -31,22 +33,21 @@ import java.util.Map;
 /*
  * Message context that holds information about the request to an endpoint
  */
-public abstract class OAuth2MessageContext<T1 extends OAuth2Request, T2 extends OAuth2Response, T3 extends Serializable,
-        T4 extends Serializable> extends InboundAuthenticationContext {
+public abstract class OAuth2MessageContext<T1 extends Serializable, T2 extends Serializable> extends InboundAuthenticationContext {
 
-    private static final long serialVersionUID = -8674054148887113497L;
+    private static final long serialVersionUID = -3793959181562481432L;
 
-    public OAuth2MessageContext(T1 request, T2 response, String tenantDomain,
-                                Map<T3,T4> parameters) {
+    public OAuth2MessageContext(OAuth2Request request, OAuth2Response response, String tenantDomain,
+                                Map<T1,T2> parameters) {
         super(request, response, tenantDomain, parameters);
     }
 
     @Override
-    public T1 getRequest(){
-        return (T1)super.getRequest();
+    public OAuth2Request getRequest(){
+        return (OAuth2Request)request;
     }
 
-    public T2 getResponse(){
-        return (T2)response;
+    public OAuth2Response getResponse(){
+        return (OAuth2Response)response;
     }
 }

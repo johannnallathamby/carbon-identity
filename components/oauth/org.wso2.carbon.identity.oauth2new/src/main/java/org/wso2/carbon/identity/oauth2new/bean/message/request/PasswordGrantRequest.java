@@ -20,6 +20,8 @@ package org.wso2.carbon.identity.oauth2new.bean.message.request;
 
 public class PasswordGrantRequest extends OAuth2TokenRequest {
 
+    private static final long serialVersionUID = -4072916934667966426L;
+
     private String resourceOwnerUsername;
     private String resourceOwnerPassword;
 

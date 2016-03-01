@@ -20,7 +20,7 @@ package org.wso2.carbon.identity.oauth2new.bean.message.request;
 
 public class RefreshGrantRequest extends OAuth2TokenRequest {
 
-    private static final long serialVersionUID = -7079593227614826792L;
+    private static final long serialVersionUID = 3105279807274483205L;
 
     private String refreshToken;
 

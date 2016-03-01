@@ -31,9 +31,9 @@ import java.util.Set;
 /*
  * Message context that holds information about the authorization request to the authorization endpoint
  */
-public class OAuth2AuthzMessageContext extends OAuth2MessageContext {
+public class OAuth2AuthzMessageContext<T1 extends Serializable, T2 extends Serializable> extends OAuth2MessageContext {
 
-    private static final long serialVersionUID = -5715709028776880712L;
+    private static final long serialVersionUID = 7631264521948153017L;
 
     private User authzUser;
 
@@ -42,7 +42,7 @@ public class OAuth2AuthzMessageContext extends OAuth2MessageContext {
     private long validityPeriod;
 
     public OAuth2AuthzMessageContext(OAuth2AuthzRequest request, OAuth2AuthzResponse response, String tenantDomain,
-                                     Map<String, String> parameters) {
+                                     Map<T1,T2> parameters) {
         super(request, response, tenantDomain, parameters);
     }
 
