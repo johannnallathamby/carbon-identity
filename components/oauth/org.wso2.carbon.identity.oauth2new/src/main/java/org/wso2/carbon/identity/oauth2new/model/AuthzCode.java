@@ -60,10 +60,6 @@ public class AuthzCode implements Serializable {
         return scopes;
     }
 
-    public void setScopes(Set<String> scopes) {
-        this.scopes = scopes;
-    }
-
     public Timestamp getIssuedTime() {
         return issuedTime;
     }
@@ -72,7 +68,4 @@ public class AuthzCode implements Serializable {
         return validityPeriod;
     }
 
-    public void setValidityPeriod(long validityPeriod) {
-        this.validityPeriod = validityPeriod;
-    }
 }

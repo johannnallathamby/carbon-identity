@@ -24,7 +24,7 @@ import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2TokenRespo
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 import org.wso2.carbon.identity.oauth2new.processor.request.OAuth2InboundRequestProcessor;
 
-public abstract class OAuth2InboundTokenRequestProcessor extends OAuth2InboundRequestProcessor {
+public abstract class TokenRequestProcessor extends OAuth2InboundRequestProcessor {
 
     /**
      * Validate the Authorization Grant
@@ -57,8 +57,6 @@ public abstract class OAuth2InboundTokenRequestProcessor extends OAuth2InboundRe
         return true;
     }
 
-    protected OAuth2TokenResponse issue(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
-        return null;
-    }
+    protected abstract OAuth2TokenResponse issue(OAuth2TokenMessageContext messageContext) throws OAuth2Exception;
 
 }

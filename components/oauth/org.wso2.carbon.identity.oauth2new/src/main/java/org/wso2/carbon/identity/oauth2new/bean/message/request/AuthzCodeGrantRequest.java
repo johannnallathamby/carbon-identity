@@ -18,12 +18,18 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request;
 
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
+
 public abstract class AuthzCodeGrantRequest extends OAuth2TokenRequest {
 
     private static final long serialVersionUID = -7079593227614826792L;
 
     private String authorizationCode;
     private String redirectURI;
+
+    AuthzCodeGrantRequest(InboundAuthenticationRequestBuilder builder) {
+        super(builder);
+    }
 
     public String getAuthorizationCode() {
         return authorizationCode;

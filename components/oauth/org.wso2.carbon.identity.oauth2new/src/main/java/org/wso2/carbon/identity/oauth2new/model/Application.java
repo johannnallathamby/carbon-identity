@@ -26,7 +26,7 @@ import java.util.Set;
 public class Application implements Serializable {
 
     private String clientId;
-    private String clientSecret;
+    private char[] clientSecret;
     private String applicationName;
     private String redirectURI;
     private User applicationOwner;
@@ -37,55 +37,28 @@ public class Application implements Serializable {
         return clientId;
     }
 
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
-
-    public String getClientSecret() {
+    public char[] getClientSecret() {
         return clientSecret;
-    }
-
-    public void setClientSecret(String clientSecret) {
-        this.clientSecret = clientSecret;
     }
 
     public String getApplicationName() {
         return applicationName;
     }
 
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
-    }
-
     public String getRedirectURI() {
         return redirectURI;
-    }
-
-    public void setRedirectURI(String redirectURI) {
-        this.redirectURI = redirectURI;
     }
 
     public User getApplicationOwner() {
         return applicationOwner;
     }
 
-    public void setApplicationOwner(User applicationOwner) {
-        this.applicationOwner = applicationOwner;
-    }
-
     public Set<String> getAllowedResponseTypes() {
         return allowedResponseTypes;
-    }
-
-    public void setAllowedResponseTypes(Set<String> allowedResponseTypes) {
-        this.allowedResponseTypes = allowedResponseTypes;
     }
 
     public Set<String> getAllowedGrantTypes() {
         return allowedGrantTypes;
     }
 
-    public void setAllowedGrantTypes(Set<String> allowedGrantTypes) {
-        this.allowedGrantTypes = allowedGrantTypes;
-    }
 }

@@ -28,6 +28,10 @@ import javax.servlet.http.HttpServletResponse;
 
 public abstract class OAuth2InboundRequestBuilder extends InboundAuthenticationRequestBuilder {
 
+    public OAuth2InboundRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
+        super(request, response);
+    }
+
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
         if(StringUtils.isNotBlank(request.getParameter(OAuth.OAUTH_RESPONSE_TYPE)) ||

@@ -117,8 +117,9 @@ public abstract class InboundAuthenticationRequestProcessor {
 
         authenticationRequest.appendRequestQueryParams(parameterMap);
 
-        for (Map.Entry<String, String> entry : inboundAuthenticationRequest.getHeaders().entrySet()) {
-            authenticationRequest.addHeader(entry.getKey(), entry.getValue());
+        for (Object entry : inboundAuthenticationRequest.getHeaders().keySet()) {
+            authenticationRequest.addHeader(((Map.Entry<String,String>)entry).getKey(),
+                    ((Map.Entry<String, String>)entry).getValue());
         }
 
         authenticationRequest.setRelyingParty(getRelyingPartyId());
@@ -131,17 +132,19 @@ public abstract class InboundAuthenticationRequestProcessor {
         InboundAuthenticationContextCacheEntry contextCacheEntry = new InboundAuthenticationContextCacheEntry(context);
         InboundAuthenticationUtil.addInboundAuthenticationContextToCache(sessionDataKey, contextCacheEntry);
 
-        InboundAuthenticationResponse response = new InboundAuthenticationResponse();
-        response.addParameters(InboundAuthenticationConstants.RequestProcessor.AUTH_NAME, getName());
-        response.addParameters(InboundAuthenticationConstants.RequestProcessor.SESSION_DATA_KEY, sessionDataKey);
-        response.addParameters(InboundAuthenticationConstants.RequestProcessor.CALL_BACK_PATH,
+        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder responseBuilder =
+                new InboundAuthenticationResponse.InboundAuthenticationResponseBuilder();
+        responseBuilder.addParameter(InboundAuthenticationConstants.RequestProcessor.AUTH_NAME, getName());
+        responseBuilder.addParameter(InboundAuthenticationConstants.RequestProcessor.AUTH_NAME, getName());
+        responseBuilder.addParameter(InboundAuthenticationConstants.RequestProcessor.SESSION_DATA_KEY, sessionDataKey);
+        responseBuilder.addParameter(InboundAuthenticationConstants.RequestProcessor.CALL_BACK_PATH,
                 getCallbackPath(context));
-        response.addParameters(InboundAuthenticationConstants.RequestProcessor.RELYING_PARTY, getRelyingPartyId());
+        responseBuilder.addParameter(InboundAuthenticationConstants.RequestProcessor.RELYING_PARTY, getRelyingPartyId());
         //type parameter is using since framework checking it, but future it'll use AUTH_NAME
-        response.addParameters(InboundAuthenticationConstants.RequestProcessor.AUTH_TYPE, getName());
+        responseBuilder.addParameter(InboundAuthenticationConstants.RequestProcessor.AUTH_TYPE, getName());
         String commonAuthURL = IdentityUtil.getServerURL(FrameworkConstants.COMMONAUTH, true, true);
-        response.setRedirectURL(commonAuthURL);
-        return response;
+        responseBuilder.setRedirectURL(commonAuthURL);
+        return responseBuilder.build();
     }
 
     /**
@@ -168,8 +171,9 @@ public abstract class InboundAuthenticationRequestProcessor {
 
         authenticationRequest.appendRequestQueryParams(parameterMap);
 
-        for (Map.Entry<String, String> entry : inboundAuthenticationRequest.getHeaders().entrySet()) {
-            authenticationRequest.addHeader(entry.getKey(), entry.getValue());
+        for (Object entry : inboundAuthenticationRequest.getHeaders().keySet()) {
+            authenticationRequest.addHeader(((Map.Entry<String,String>)entry).getKey(),
+                    ((Map.Entry<String, String>)entry).getValue());
         }
 
         authenticationRequest.setRelyingParty(getRelyingPartyId());
@@ -184,16 +188,17 @@ public abstract class InboundAuthenticationRequestProcessor {
         InboundAuthenticationContextCacheEntry contextCacheEntry = new InboundAuthenticationContextCacheEntry(context);
         InboundAuthenticationUtil.addInboundAuthenticationContextToCache(sessionDataKey, contextCacheEntry);
 
-        InboundAuthenticationResponse response = new InboundAuthenticationResponse();
-        response.addParameters(InboundAuthenticationConstants.RequestProcessor.AUTH_NAME, getName());
-        response.addParameters(InboundAuthenticationConstants.RequestProcessor.SESSION_DATA_KEY, sessionDataKey);
-        response.addParameters(InboundAuthenticationConstants.RequestProcessor.CALL_BACK_PATH,
+        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder responseBuilder =
+                new InboundAuthenticationResponse.InboundAuthenticationResponseBuilder();
+        responseBuilder.addParameter(InboundAuthenticationConstants.RequestProcessor.AUTH_NAME, getName());
+        responseBuilder.addParameter(InboundAuthenticationConstants.RequestProcessor.SESSION_DATA_KEY, sessionDataKey);
+        responseBuilder.addParameter(InboundAuthenticationConstants.RequestProcessor.CALL_BACK_PATH,
                 getCallbackPath(context));
-        response.addParameters(InboundAuthenticationConstants.RequestProcessor.RELYING_PARTY, getRelyingPartyId());
+        responseBuilder.addParameter(InboundAuthenticationConstants.RequestProcessor.RELYING_PARTY, getRelyingPartyId());
         //type parameter is using since framework checking it, but future it'll use AUTH_NAME
-        response.addParameters(InboundAuthenticationConstants.RequestProcessor.AUTH_TYPE, getName());
+        responseBuilder.addParameter(InboundAuthenticationConstants.RequestProcessor.AUTH_TYPE, getName());
         String commonAuthURL = IdentityUtil.getServerURL(FrameworkConstants.COMMONAUTH, true, true);
-        response.setRedirectURL(commonAuthURL);
-        return response;
+        responseBuilder.setRedirectURL(commonAuthURL);
+        return responseBuilder.build();
     }
 }

@@ -25,11 +25,9 @@ import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2Response;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 import org.wso2.carbon.identity.oauth2new.processor.request.OAuth2InboundRequestProcessor;
 
-public abstract class OAuth2InboundAuthzRequestProcessor extends OAuth2InboundRequestProcessor {
+public abstract class AuthzRequestProcessor extends OAuth2InboundRequestProcessor {
 
-    protected abstract OAuth2Response issue(MessageContext messageContext) throws OAuth2Exception;
-
-    protected boolean validateAccessDelegation(OAuth2AuthzMessageContext messageContext) throws
+    protected boolean authorizeAccessDelegation(OAuth2AuthzMessageContext messageContext) throws
             OAuth2Exception {
         return true;
     }
@@ -39,7 +37,6 @@ public abstract class OAuth2InboundAuthzRequestProcessor extends OAuth2InboundRe
         return true;
     }
 
-    protected OAuth2AuthzResponse issue(OAuth2AuthzMessageContext messageContext) throws OAuth2Exception {
-        return null;
-    }
+    protected abstract OAuth2AuthzResponse issue(OAuth2AuthzMessageContext messageContext) throws OAuth2Exception;
+
 }

@@ -18,38 +18,22 @@
 
 package org.wso2.carbon.identity.oauth2new.handler.client;
 
+import org.wso2.carbon.identity.core.bean.context.MessageContext;
+import org.wso2.carbon.identity.core.handler.HandlerComparable;
+import org.wso2.carbon.identity.core.handler.IdentityHandler;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
 import org.wso2.carbon.identity.oauth2new.common.ClientType;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
-import org.wso2.carbon.identity.oauth2new.util.HandlerComparable;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 
 import java.util.Properties;
 
-public abstract class ClientAuthHandler implements HandlerComparable {
-
-    protected Properties properties = new Properties();
-
-    /**
-     * Initialize the OAuth 2.0 client type finder
-     *
-     * @param properties
-     * @throws OAuth2Exception Error when initializing the OAuth 2.0 client type finder.
-     */
-    public void init(Properties properties) throws OAuth2Exception {
-        if(properties != null){
-            this.properties = properties;
-        }
-    }
+public abstract class ClientAuthHandler extends IdentityHandler implements HandlerComparable {
 
     @Override
-    public int getPriority(OAuth2MessageContext messageContext) throws OAuth2Exception {
+    public int getPriority(MessageContext messageContext) throws OAuth2RuntimeException {
         return 0;
     }
-
-    /**
-     * Tells if the required information for the OAuth 2.0 client to be authenticated is available
-     */
-    public abstract boolean canHandle(OAuth2MessageContext messageContext) throws OAuth2Exception;
 
     /**
      * Tells if the clients are confidential or public.
@@ -67,4 +51,5 @@ public abstract class ClientAuthHandler implements HandlerComparable {
      * @throws OAuth2Exception Error when authenticating client
      */
     public abstract String authenticate(OAuth2MessageContext messageContext) throws OAuth2Exception;
+
 }

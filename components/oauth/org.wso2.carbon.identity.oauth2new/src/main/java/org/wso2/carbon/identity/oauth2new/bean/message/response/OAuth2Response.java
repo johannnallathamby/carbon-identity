@@ -26,15 +26,10 @@ import org.wso2.carbon.identity.application.authentication.framework.inbound.Inb
  */
 public abstract class OAuth2Response extends InboundAuthenticationResponse {
 
-    private static final long serialVersionUID = 2762121081244706377L;
+    private static final long serialVersionUID = 8756386429141412913L;
 
-    protected OAuthResponse response;
-
-    protected OAuth2Response(OAuthResponse response) {
-        this.response = response;
+    protected OAuth2Response(InboundAuthenticationResponseBuilder builder) {
+        super(builder);
     }
 
-    public OAuthResponse getOLTUResponse() {
-        return response;
-    }
 }

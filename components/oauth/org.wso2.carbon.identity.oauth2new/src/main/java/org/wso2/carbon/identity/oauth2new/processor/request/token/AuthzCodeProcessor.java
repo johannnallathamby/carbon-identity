@@ -23,7 +23,6 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContext;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2TokenResponse;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
@@ -31,13 +30,18 @@ import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 /**
  * Implements the AuthorizationGrantHandler for the Grant Type : authorization_code.
  */
-public class AuthorizationCodeProcessor extends OAuth2InboundTokenRequestProcessor {
+public class AuthzCodeProcessor extends TokenRequestProcessor {
 
-    private static Log log = LogFactory.getLog(AuthorizationCodeProcessor.class);
+    private static Log log = LogFactory.getLog(AuthzCodeProcessor.class);
 
     @Override
     public boolean validateGrant(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
         return true;
+    }
+
+    @Override
+    protected OAuth2TokenResponse issue(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
+        return null;
     }
 
     @Override

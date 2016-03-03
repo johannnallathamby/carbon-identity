@@ -22,20 +22,40 @@ import org.wso2.carbon.identity.application.authentication.framework.exception.F
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContext;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
+import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2AuthzMessageContext;
+import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2AuthzResponse;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 
-public abstract class TokenResponseTypeRequestProcessor extends OAuth2InboundAuthzRequestProcessor {
+public class CodeProcessor extends AuthzRequestProcessor {
 
-    public abstract InboundAuthenticationResponse process(InboundAuthenticationRequest authenticationRequest)
-            throws FrameworkException;
+    public InboundAuthenticationResponse process(InboundAuthenticationRequest authenticationRequest)
+            throws FrameworkException {
+        return null;
+    }
 
-    public abstract String getName();
+    public String getName() {
+        return "CodeProcessor";
+    }
 
-    public abstract String getCallbackPath(InboundAuthenticationContext context) throws FrameworkException;
+    public String getCallbackPath(InboundAuthenticationContext context) throws FrameworkException {
+        return null;
+    }
 
-    public abstract String getRelyingPartyId();
+    public String getRelyingPartyId() {
+        return null;
+    }
 
-    public abstract int getPriority();
+    public int getPriority() {
+        return 0;
+    }
 
-    public abstract boolean canHandle(InboundAuthenticationRequest authenticationRequest) throws FrameworkException;
+    public boolean canHandle(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
+        return true;
+    }
+
+    protected OAuth2AuthzResponse issue(OAuth2AuthzMessageContext messageContext) throws OAuth2Exception {
+        // Send back authz_code here
+        return null;
+    }
 
 }

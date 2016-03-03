@@ -15,12 +15,52 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.wso2.carbon.identity.application.authentication.framework.inbound;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class InboundAuthenticationRequestBuilder {
+
+    protected HttpServletRequest request;
+    protected HttpServletResponse response;
+    Map<String, String> headers = new HashMap<String, String>();
+    Map<String, Cookie> cookies = new HashMap<String, Cookie>();
+    Map<String, String[]> parameters = new HashMap<String, String[]>();
+
+    public InboundAuthenticationRequestBuilder (HttpServletRequest request, HttpServletResponse response) {
+        this.request = request;
+        this.response = response;
+    }
+
+    public InboundAuthenticationRequestBuilder setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+        return this;
+    }
+
+    public InboundAuthenticationRequestBuilder addResponseHeader(String key, String values) {
+        headers.put(key, values);
+        return this;
+    }
+
+    public InboundAuthenticationRequestBuilder setCookies(Map<String, Cookie> cookies) {
+        this.cookies = cookies;
+        return this;
+    }
+
+    public InboundAuthenticationRequestBuilder addCookie(String key, Cookie values) {
+        cookies.put(key, values);
+        return this;
+    }
+
+    public InboundAuthenticationRequestBuilder setParameters(Map<String, String[]> parameters) {
+        this.parameters = parameters;
+        return this;
+    }
 
 	public abstract String getName();
 
@@ -29,6 +69,7 @@ public abstract class InboundAuthenticationRequestBuilder {
 	public abstract boolean canHandle(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationFrameworkRuntimeException;
 
-	public abstract InboundAuthenticationRequest buildRequest(HttpServletRequest request, HttpServletResponse response)
-			throws AuthenticationFrameworkRuntimeException;
+	public abstract InboundAuthenticationRequest build(InboundAuthenticationRequestBuilder builder)
+            throws AuthenticationFrameworkRuntimeException ;
+
 }

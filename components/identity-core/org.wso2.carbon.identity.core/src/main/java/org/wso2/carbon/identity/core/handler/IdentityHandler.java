@@ -27,7 +27,7 @@ import java.util.Properties;
 /**
  * This interface needs to be implemented by any extension handler.
  */
-public abstract class ExtensionHandler implements HandlerComparable {
+public abstract class IdentityHandler implements HandlerComparable {
 
     protected Properties properties = new Properties();
 
@@ -53,13 +53,5 @@ public abstract class ExtensionHandler implements HandlerComparable {
      * @throws IdentityRuntimeException
      */
     public abstract boolean canHandle(MessageContext messageContext) throws IdentityRuntimeException;
-
-    /**
-     * Handles the request
-     *
-     * @param messageContext <code>MessageContext</code>
-     * @throws IdentityRuntimeException
-     */
-    public abstract HandlerReturnStatus handle(MessageContext messageContext) throws IdentityRuntimeException;
 
 }

@@ -18,36 +18,45 @@
 
 package org.wso2.carbon.identity.oauth2new.handler.persist;
 
+import org.wso2.carbon.identity.core.bean.context.MessageContext;
+import org.wso2.carbon.identity.core.handler.HandlerComparable;
+import org.wso2.carbon.identity.core.handler.IdentityHandler;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
-import org.wso2.carbon.identity.oauth2new.util.HandlerComparable;
 
 import java.util.Properties;
 
 /**
  * <Code>TokenPersistenceProcessor</Code> implementations are used to
- * process keys and secrets just before storing them in the database.
+ * process OAuth2 tokens just before storing them in the database.
  * E.g. to encrypt tokens before storing them in the database.
  * Implementations of this interface can be configured through
  * the identity.xml.
  */
-public abstract class TokenPersistenceProcessor implements HandlerComparable {
+public abstract class TokenPersistenceProcessor extends IdentityHandler implements HandlerComparable {
 
-    protected Properties properties = new Properties();
+    public abstract String getProcessedClientId(Object token) throws OAuth2Exception;
 
-    public void init(Properties properties) {
-        if(properties != null) {
-            this.properties = properties;
-        }
-    }
+    public abstract String getPreprocessedClientId(Object processedToken) throws OAuth2Exception;
 
-    public abstract String getProcessedToken(String tokenTypeIdentifier, String token) throws OAuth2Exception;
+    public abstract String getProcessedClientSecret(Object token) throws OAuth2Exception;
 
-    public abstract String getPreprocessedToken(String tokenTypeIdentifier, String processedToken) throws
-            OAuth2Exception;
+    public abstract String getPreprocessedClientSecret(Object processedToken) throws OAuth2Exception;
+
+    public abstract String getProcessedAuthzCode(Object token) throws OAuth2Exception;
+
+    public abstract String getPreprocessedAuthzCode(Object processedToken) throws OAuth2Exception;
+
+    public abstract String getProcessedAccessToken(Object token) throws OAuth2Exception;
+
+    public abstract String getPreprocessedAccessToken(Object processedToken) throws OAuth2Exception;
+
+    public abstract String getProcessedRefreshToken(Object token) throws OAuth2Exception;
+
+    public abstract String getPreprocessedRefreshToken(Object processedToken) throws OAuth2Exception;
 
     @Override
-    public int getPriority(OAuth2MessageContext messageContext) throws OAuth2Exception {
+    public int getPriority(MessageContext messageContext) {
         return 0;
     }
 

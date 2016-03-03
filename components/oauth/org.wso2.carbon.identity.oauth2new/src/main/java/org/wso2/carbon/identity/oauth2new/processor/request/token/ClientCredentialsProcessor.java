@@ -24,16 +24,23 @@ import org.wso2.carbon.identity.application.authentication.framework.inbound.Inb
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
+import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2TokenResponse;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 
 /**
  * Grant Handler for Grant Type : client_credentials
  */
-public class ClientCredentialsProcessor extends OAuth2InboundTokenRequestProcessor {
+public class ClientCredentialsProcessor extends TokenRequestProcessor {
 
 
     @Override
     public boolean validateGrant(OAuth2TokenMessageContext messageContext) {
         return true;
+    }
+
+    @Override
+    protected OAuth2TokenResponse issue(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
+        return null;
     }
 
     @Override

@@ -52,10 +52,6 @@ public class AccessToken implements Serializable {
         return refreshToken;
     }
 
-    public void setRefreshToken(String refreshToken){
-        this.refreshToken = refreshToken;
-    }
-
     public String getClientId() {
         return clientId;
     }
@@ -72,32 +68,16 @@ public class AccessToken implements Serializable {
         return scopes;
     }
 
-    public void setScopes(Set<String> scopes) {
-        this.scopes = scopes;
-    }
-
     public String getTokenState() {
         return tokenState;
-    }
-
-    public void setTokenState(String tokenState) {
-        this.tokenState = tokenState;
     }
 
     public Timestamp getIssuedTime() {
         return issuedTime;
     }
 
-    public void setIssuedTime(Timestamp issuedTime){
-        this.issuedTime = issuedTime;
-    }
-
     public long getExpiresIn() {
         return expiresIn;
-    }
-
-    public void setExpiresIn(long expiresIn) {
-        this.expiresIn = expiresIn;
     }
 
     public AccessToken(String accessToken, String clientId, User authzUser, Set<String> approvedScopes,

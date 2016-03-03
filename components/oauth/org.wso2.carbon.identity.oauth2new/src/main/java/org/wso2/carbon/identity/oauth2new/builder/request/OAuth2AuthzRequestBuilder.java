@@ -22,12 +22,17 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2AuthzRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class OAuth2AuthzRequestBuilder extends OAuth2InboundRequestBuilder {
+
+    public OAuth2AuthzRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
+        super(request, response);
+    }
 
     @Override
     public String getName() {
@@ -48,8 +53,8 @@ public class OAuth2AuthzRequestBuilder extends OAuth2InboundRequestBuilder {
     }
 
     @Override
-    public OAuth2AuthzRequest buildRequest(HttpServletRequest request, HttpServletResponse response) throws
-            AuthenticationFrameworkRuntimeException {
+    public InboundAuthenticationRequest build(InboundAuthenticationRequestBuilder builder) throws AuthenticationFrameworkRuntimeException {
         return null;
     }
+
 }

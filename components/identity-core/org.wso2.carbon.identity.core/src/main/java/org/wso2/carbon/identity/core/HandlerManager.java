@@ -16,7 +16,17 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.dao.jdbc;
+package org.wso2.carbon.identity.core;
 
-public interface SQLFinder {
+public class HandlerManager {
+
+    private static volatile HandlerManager instance = new HandlerManager();
+
+    private HandlerManager() {
+
+    }
+
+    public static HandlerManager getInstance() {
+        return instance;
+    }
 }

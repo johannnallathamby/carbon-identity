@@ -21,7 +21,6 @@ package org.wso2.carbon.identity.oauth2new.handler.issuer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.common.model.User;
-import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.identity.base.IdentityRuntimeException;
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2AuthzMessageContext;
@@ -35,14 +34,13 @@ import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 
 import java.util.Set;
 
-// Try to implement this in a way it does not have different implementations for Authorization endpoint and token
-// endpoint. If you can't extend this class and handle authz endpoint and token endpoint as two extensions
-public class BearerTokenResponseIssuer extends ResponseIssuer {
+public class BearerTokenResponseIssuer extends AccessTokenResponseIssuer {
 
     private static Log log = LogFactory.getLog(BearerTokenResponseIssuer.class);
 
-    public boolean canIssue(OAuth2MessageContext messageContext) throws OAuth2Exception {
-        return true;
+    @Override
+    public OAuth2Response issue(OAuth2MessageContext messageContext) throws OAuth2Exception {
+        return null;
     }
 
     @Override
@@ -50,20 +48,7 @@ public class BearerTokenResponseIssuer extends ResponseIssuer {
         return false;
     }
 
-    @Override
-    public OAuth2Response issue(OAuth2MessageContext messageContext) throws OAuth2Exception {
-        return null;
-    }
-
-    protected OAuth2AuthzResponse issueAuthzResponse(OAuth2AuthzMessageContext messageContext) throws OAuth2Exception {
-        return null;
-    }
-
-    protected OAuth2TokenResponse issueTokenResponse(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
-        return null;
-    }
-
-    protected AccessToken doesValidTokenExist(String clientId, User authzUser, Set<String> approvedScopes,
+    protected AccessToken validTokenExists(String clientId, User authzUser, Set<String> approvedScopes,
                                                      MessageContext messageContext) throws OAuth2Exception {
         return null;
     }
@@ -76,7 +61,7 @@ public class BearerTokenResponseIssuer extends ResponseIssuer {
     }
 
     @Override
-    public int getPriority(MessageContext messageContext) throws IdentityRuntimeException {
-        return 0;
+    public boolean canHandle(MessageContext messageContext) throws IdentityRuntimeException {
+        return false;
     }
 }

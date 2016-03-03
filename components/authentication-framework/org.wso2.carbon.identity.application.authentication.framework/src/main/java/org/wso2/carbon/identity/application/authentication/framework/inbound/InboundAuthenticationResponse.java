@@ -16,16 +16,22 @@
  * under the License.
  *
  */
+
 package org.wso2.carbon.identity.application.authentication.framework.inbound;
 
+import org.wso2.carbon.identity.base.IdentityRuntimeException;
+
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class InboundAuthenticationResponse implements Serializable {
 
-    private static final long serialVersionUID = 1755628572273143238L;
+    private static final long serialVersionUID = 4371843418083025682L;
 
     private Map<String, String> responseHeaders = new HashMap<String, String>();
     private Map<String, Cookie> cookies = new HashMap<String, Cookie>();
@@ -34,54 +40,107 @@ public class InboundAuthenticationResponse implements Serializable {
     private String redirectURL;
 
     public Map<String, String> getResponseHeaders() {
-        return responseHeaders;
-    }
-
-    public void setResponseHeaders(Map<String, String> responseHeaders) {
-        this.responseHeaders = responseHeaders;
-    }
-
-    public void addResponseHeader(String key, String values) {
-        responseHeaders.put(key, values);
+        return Collections.unmodifiableMap(responseHeaders);
     }
 
     public Map<String, Cookie> getCookies() {
-        return cookies;
-    }
-
-    public void setCookies(Map<String, Cookie> cookies) {
-        this.cookies = cookies;
-    }
-
-    public void addCookie(String key, Cookie values) {
-        cookies.put(key, values);
+        return Collections.unmodifiableMap(cookies);
     }
 
     public String getParameter(String key) {
         return getParameters().get(key);
     }
 
-    public void addParameters(String key, String value) {
-        getParameters().put(key, value);
+    public Map<String, String> getParameters() {
+        return Collections.unmodifiableMap(parameters);
     }
 
     public int getStatusCode() {
         return statusCode;
     }
 
-    public void setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
-    }
-
     public String getRedirectURL() {
         return redirectURL;
     }
 
-    public void setRedirectURL(String redirectURL) {
-        this.redirectURL = redirectURL;
+    protected InboundAuthenticationResponse(InboundAuthenticationResponseBuilder builder) {
+        this.responseHeaders = builder.responseHeaders;
+        this.cookies = builder.cookies;
+        this.parameters = builder.parameters;
+        this.statusCode = builder.statusCode;
+        this.redirectURL = builder.redirectURL;
+
     }
 
-    public Map<String, String> getParameters() {
-        return parameters;
+    public static class InboundAuthenticationResponseBuilder {
+
+        private Map<String, String> responseHeaders = new HashMap<String, String>();
+        private Map<String, Cookie> cookies = new HashMap<String, Cookie>();
+        private Map<String, String> parameters = new HashMap<String, String>();
+        private int statusCode;
+        private String redirectURL;
+
+        public String getName(){
+            return "InboundAuthenticationResponseBuilder";
+        }
+
+        public int getPriority() {
+            return 0;
+        }
+
+        protected InboundAuthenticationResponseBuilder() {
+
+        }
+
+        public InboundAuthenticationResponseBuilder setResponseHeaders(Map<String, String> responseHeaders) {
+            this.responseHeaders = responseHeaders;
+            return this;
+        }
+
+        public InboundAuthenticationResponseBuilder addResponseHeader(String key, String values) {
+            responseHeaders.put(key, values);
+            return this;
+        }
+
+        public InboundAuthenticationResponseBuilder setCookies(Map<String, Cookie> cookies) {
+            this.cookies = cookies;
+            return this;
+        }
+
+        public InboundAuthenticationResponseBuilder addCookie(String key, Cookie values) {
+            cookies.put(key, values);
+            return this;
+        }
+
+        public InboundAuthenticationResponseBuilder addParameter(String key, String value) {
+            parameters.put(key, value);
+            return this;
+        }
+
+        public InboundAuthenticationResponseBuilder addParameters(Map<String,String> parameters) {
+            for(Map.Entry<String,String> parameter:parameters.entrySet()) {
+                if(this.parameters.containsKey(parameter.getKey())) {
+                    throw AuthenticationFrameworkRuntimeException.error("Parameters map trying to override existing key " + parameter
+                            .getKey());
+                }
+                parameters.put(parameter.getKey(), parameter.getValue());
+            }
+            return this;
+        }
+
+        public InboundAuthenticationResponseBuilder setStatusCode(int statusCode) {
+            this.statusCode = statusCode;
+            return this;
+        }
+
+        public InboundAuthenticationResponseBuilder setRedirectURL(String redirectURL) {
+            this.redirectURL = redirectURL;
+            return this;
+        }
+
+        public InboundAuthenticationResponse build() {
+            return new InboundAuthenticationResponse(this);
+        }
+
     }
 }

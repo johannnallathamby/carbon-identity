@@ -22,6 +22,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.core.util.CryptoException;
 import org.wso2.carbon.core.util.CryptoUtil;
+import org.wso2.carbon.identity.base.IdentityRuntimeException;
+import org.wso2.carbon.identity.core.bean.context.MessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 
@@ -35,30 +37,58 @@ public class EncryptionDecryptionPersistenceProcessor extends TokenPersistencePr
 
     protected Log log = LogFactory.getLog(EncryptionDecryptionPersistenceProcessor.class);
 
-    protected Properties properties;
-
     @Override
-    public void init(Properties properties) {
-        this.properties = properties;
+    public boolean canHandle(MessageContext messageContext) throws IdentityRuntimeException {
+        return false;
     }
 
     @Override
-    public String getProcessedToken(String tokenTypeIdentifier, String token) throws OAuth2Exception {
-        try {
-            return CryptoUtil.getDefaultCryptoUtil().encryptAndBase64Encode(token.getBytes());
-        } catch (CryptoException e) {
-            log.debug(e.getMessage(), e);
-            throw new OAuth2Exception("Error occurred while getting processed Client ID");
-        }
+    public String getProcessedClientId(Object token) throws OAuth2Exception {
+        return null;
     }
 
     @Override
-    public String getPreprocessedToken(String tokenTypeIdentifier, String processedToken) throws OAuth2Exception {
-        try {
-            return new String(CryptoUtil.getDefaultCryptoUtil().base64DecodeAndDecrypt(processedToken));
-        } catch (CryptoException e) {
-            log.debug(e.getMessage(), e);
-            throw new OAuth2Exception("Error occurred while getting pre processed Client ID");
-        }
+    public String getPreprocessedClientId(Object processedToken) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getProcessedClientSecret(Object token) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getPreprocessedClientSecret(Object processedToken) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getProcessedAuthzCode(Object token) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getPreprocessedAuthzCode(Object processedToken) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getProcessedAccessToken(Object token) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getPreprocessedAccessToken(Object processedToken) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getProcessedRefreshToken(Object token) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getPreprocessedRefreshToken(Object processedToken) throws OAuth2Exception {
+        return null;
     }
 }

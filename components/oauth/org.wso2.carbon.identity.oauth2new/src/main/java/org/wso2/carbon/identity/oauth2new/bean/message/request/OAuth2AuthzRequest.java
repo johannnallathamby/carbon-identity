@@ -18,6 +18,8 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request;
 
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
+
 import java.util.Set;
 
 public abstract class OAuth2AuthzRequest extends OAuth2Request {
@@ -29,6 +31,10 @@ public abstract class OAuth2AuthzRequest extends OAuth2Request {
     private String responseType;
     private String redirectURI;
     private String state;
+
+    OAuth2AuthzRequest(InboundAuthenticationRequestBuilder builder) {
+        super(builder);
+    }
 
     public String getClientId() {
         return clientId;

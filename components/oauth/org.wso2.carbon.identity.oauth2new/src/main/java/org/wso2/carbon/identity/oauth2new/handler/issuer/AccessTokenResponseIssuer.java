@@ -18,25 +18,32 @@
 
 package org.wso2.carbon.identity.oauth2new.handler.issuer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.identity.base.IdentityRuntimeException;
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
+import org.wso2.carbon.identity.core.handler.HandlerComparable;
+import org.wso2.carbon.identity.core.handler.IdentityHandler;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2TokenResponse;
+import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2Response;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 
-public class IWAGrantBearerResponseIssuer extends BearerTokenResponseIssuer {
+import java.util.Properties;
 
-    private static Log log = LogFactory.getLog(SAML2GrantBearerResponseIssuer.class);
+public abstract class AccessTokenResponseIssuer extends IdentityHandler implements HandlerComparable {
 
-    public boolean canIssue(OAuth2MessageContext messageContext) {
-
-        return true;
+    /**
+     * Tells if refresh tokens must be issued or not.
+     *
+     * @return <Code>true</Code>|<Code>false</Code> if refresh tokens must be issued or not
+     */
+    protected boolean issueRefreshToken(OAuth2MessageContext messageContext) throws OAuth2Exception {
+        return false;
     }
+
+    public abstract OAuth2Response issue(OAuth2MessageContext messageContext) throws OAuth2Exception;
 
     @Override
-    public OAuth2TokenResponse issueTokenResponse(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
-        return null;
+    public int getPriority(MessageContext messageContext) throws IdentityRuntimeException {
+        return 0;
     }
+
 }

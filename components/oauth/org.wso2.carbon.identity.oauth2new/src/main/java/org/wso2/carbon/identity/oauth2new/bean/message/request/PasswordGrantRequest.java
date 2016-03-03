@@ -18,12 +18,18 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request;
 
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
+
 public class PasswordGrantRequest extends OAuth2TokenRequest {
 
     private static final long serialVersionUID = -4072916934667966426L;
 
     private String resourceOwnerUsername;
     private String resourceOwnerPassword;
+
+    PasswordGrantRequest(InboundAuthenticationRequestBuilder builder) {
+        super(builder);
+    }
 
     public String getResourceOwnerUsername() {
         return resourceOwnerUsername;

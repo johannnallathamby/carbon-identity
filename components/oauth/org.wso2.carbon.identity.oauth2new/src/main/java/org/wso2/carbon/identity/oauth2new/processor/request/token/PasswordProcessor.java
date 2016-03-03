@@ -25,13 +25,15 @@ import org.wso2.carbon.identity.application.authentication.framework.inbound.Inb
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
+import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2TokenResponse;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 
 /**
  * Handles the Password Grant Type of the OAuth 2.0 specification. Resource owner sends his
  * credentials in the token request which is validated against the corresponding user store.
  * Grant Type : password
  */
-public class PasswordProcessor extends OAuth2InboundTokenRequestProcessor {
+public class PasswordProcessor extends TokenRequestProcessor {
 
     private static Log log = LogFactory.getLog(PasswordProcessor.class);
 
@@ -39,6 +41,11 @@ public class PasswordProcessor extends OAuth2InboundTokenRequestProcessor {
     public boolean validateGrant(OAuth2TokenMessageContext messageContext) {
 
         return true;
+    }
+
+    @Override
+    protected OAuth2TokenResponse issue(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
+        return null;
     }
 
     @Override

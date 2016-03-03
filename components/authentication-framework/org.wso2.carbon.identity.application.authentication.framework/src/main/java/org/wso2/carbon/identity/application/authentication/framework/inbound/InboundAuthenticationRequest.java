@@ -15,47 +15,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.wso2.carbon.identity.application.authentication.framework.inbound;
 
 import javax.servlet.http.Cookie;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InboundAuthenticationRequest implements Serializable {
+public class InboundAuthenticationRequest <T extends InboundAuthenticationRequestBuilder> implements Serializable {
 
-    private static final long serialVersionUID = 2657271459288945966L;
+    private static final long serialVersionUID = -7281184973045433976L;
 
     private Map<String, String> headers = new HashMap<String, String>();
     private Map<String, Cookie> cookies = new HashMap<String, Cookie>();
     private Map<String, String[]> parameters = new HashMap<String, String[]>();
 
     public Map<String, String> getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
-    }
-
-    public void addResponseHeader(String key, String values) {
-        headers.put(key, values);
+        return Collections.unmodifiableMap(headers);
     }
 
     public Map<String, Cookie> getCookies() {
-        return cookies;
-    }
-
-    public void setCookies(Map<String, Cookie> cookies) {
-        this.cookies = cookies;
-    }
-
-    public void addCookie(String key, Cookie values) {
-        cookies.put(key, values);
+        return Collections.unmodifiableMap(cookies);
     }
 
     public Map<String, String[]> getParameters() {
-        return parameters;
+        return Collections.unmodifiableMap(parameters);
     }
 
     public String[] getParameterValues(String paramName) {
@@ -70,8 +56,9 @@ public class InboundAuthenticationRequest implements Serializable {
         return null;
     }
 
-    public void setParameters(Map<String, String[]> parameters) {
-        this.parameters = parameters;
+    protected InboundAuthenticationRequest(T builder) {
+        this.headers = builder.headers;
+        this.cookies = builder.cookies;
+        this.parameters = builder.parameters;
     }
-
 }

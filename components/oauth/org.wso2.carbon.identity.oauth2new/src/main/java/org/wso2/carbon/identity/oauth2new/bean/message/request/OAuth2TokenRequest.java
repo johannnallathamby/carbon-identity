@@ -18,6 +18,8 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request;
 
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
+
 import java.util.Set;
 
 public abstract class OAuth2TokenRequest extends OAuth2Request {
@@ -26,6 +28,10 @@ public abstract class OAuth2TokenRequest extends OAuth2Request {
 
     private String grantType;
     private Set<String> requestedScopes;
+
+    OAuth2TokenRequest(InboundAuthenticationRequestBuilder builder) {
+        super(builder);
+    }
 
     public String getGrantType() {
         return grantType;

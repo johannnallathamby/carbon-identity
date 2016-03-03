@@ -16,17 +16,15 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new;
+package org.wso2.carbon.identity.oauth2new.bean.message.request;
 
-public class HandlerManager {
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
 
-    private static volatile HandlerManager instance = new HandlerManager();
+public class ClientCredentialsGrantRequest extends OAuth2TokenRequest {
 
-    private HandlerManager() {
+    private static final long serialVersionUID = -1664111039532276033L;
 
-    }
-
-    public static HandlerManager getInstance() {
-        return instance;
+    ClientCredentialsGrantRequest(InboundAuthenticationRequestBuilder builder) {
+        super(builder);
     }
 }

@@ -18,6 +18,8 @@
 
 package org.wso2.carbon.identity.oauth2new.handler.persist;
 
+import org.wso2.carbon.identity.base.IdentityRuntimeException;
+import org.wso2.carbon.identity.core.bean.context.MessageContext;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 
 /**
@@ -28,12 +30,57 @@ import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 public class PlainTextPersistenceProcessor extends TokenPersistenceProcessor {
 
     @Override
-    public String getProcessedToken(String tokenTypeIdentifier, String token) throws OAuth2Exception {
-        return token;
+    public boolean canHandle(MessageContext messageContext) throws IdentityRuntimeException {
+        return false;
     }
 
     @Override
-    public String getPreprocessedToken(String tokenTypeIdentifier, String processedToken) throws OAuth2Exception {
-        return processedToken;
+    public String getProcessedClientId(Object token) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getPreprocessedClientId(Object processedToken) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getProcessedClientSecret(Object token) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getPreprocessedClientSecret(Object processedToken) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getProcessedAuthzCode(Object token) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getPreprocessedAuthzCode(Object processedToken) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getProcessedAccessToken(Object token) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getPreprocessedAccessToken(Object processedToken) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getProcessedRefreshToken(Object token) throws OAuth2Exception {
+        return null;
+    }
+
+    @Override
+    public String getPreprocessedRefreshToken(Object processedToken) throws OAuth2Exception {
+        return null;
     }
 }

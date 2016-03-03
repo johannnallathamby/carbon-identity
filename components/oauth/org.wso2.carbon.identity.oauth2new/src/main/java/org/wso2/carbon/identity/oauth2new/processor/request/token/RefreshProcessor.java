@@ -25,12 +25,13 @@ import org.wso2.carbon.identity.application.authentication.framework.inbound.Inb
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
+import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2TokenResponse;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 
 /**
  * Grant Type handler for Grant Type refresh_token which is used to get a new access token.
  */
-public class RefreshProcessor extends OAuth2InboundTokenRequestProcessor {
+public class RefreshProcessor extends TokenRequestProcessor {
 
     private static Log log = LogFactory.getLog(RefreshProcessor.class);
 
@@ -41,6 +42,11 @@ public class RefreshProcessor extends OAuth2InboundTokenRequestProcessor {
     public boolean validateGrant(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
 
         return true;
+    }
+
+    @Override
+    protected OAuth2TokenResponse issue(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
+        return null;
     }
 
     @Override

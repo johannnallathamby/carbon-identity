@@ -18,11 +18,17 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request;
 
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
+
 public class RefreshGrantRequest extends OAuth2TokenRequest {
 
     private static final long serialVersionUID = 3105279807274483205L;
 
     private String refreshToken;
+
+    RefreshGrantRequest(InboundAuthenticationRequestBuilder builder) {
+        super(builder);
+    }
 
     public String getRefreshToken() {
         return refreshToken;

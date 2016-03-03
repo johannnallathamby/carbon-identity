@@ -19,19 +19,16 @@
 package org.wso2.carbon.identity.oauth2new.bean.message.response;
 
 import org.apache.oltu.oauth2.as.response.OAuthASResponse;
+import org.apache.oltu.oauth2.common.message.OAuthResponse;
 
 /*
  * Wrapper for OLTU OAuthASResponse to token endpoint
  */
 public class OAuth2TokenResponse extends OAuth2Response {
 
-    private static final long serialVersionUID = 4050285560344241660L;
+    private static final long serialVersionUID = -3305470212380427305L;
 
-    protected OAuth2TokenResponse(OAuthASResponse response){
-        super(response);
-    }
-
-    public OAuthASResponse getOLTUResponse() {
-        return (OAuthASResponse)response;
+    protected OAuth2TokenResponse(InboundAuthenticationResponseBuilder builder) {
+        super(builder);
     }
 }
