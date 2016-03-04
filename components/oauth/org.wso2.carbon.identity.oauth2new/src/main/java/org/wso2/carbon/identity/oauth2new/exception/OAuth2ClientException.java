@@ -18,23 +18,21 @@
 
 package org.wso2.carbon.identity.oauth2new.exception;
 
-import org.wso2.carbon.identity.base.IdentityRuntimeException;
+public class OAuth2ClientException extends OAuth2Exception {
 
-public class OAuth2RuntimeException extends IdentityRuntimeException {
-
-    protected OAuth2RuntimeException(String errorDescription) {
+    protected OAuth2ClientException(String errorDescription) {
         super(errorDescription);
     }
 
-    protected OAuth2RuntimeException(String errorDescription, Throwable cause) {
+    protected OAuth2ClientException(String errorDescription, Throwable cause) {
         super(errorDescription, cause);
     }
 
-    public static OAuth2RuntimeException error(String errorDescription){
-        return new OAuth2RuntimeException(errorDescription);
+    public static OAuth2ClientException error(String errorDescription){
+        return new OAuth2ClientException(errorDescription);
     }
 
-    public static OAuth2RuntimeException error(String errorDescription, Throwable cause){
-        return new OAuth2RuntimeException(errorDescription, cause);
+    public static OAuth2ClientException error(String errorDescription, Throwable cause){
+        return new OAuth2ClientException(errorDescription, cause);
     }
 }

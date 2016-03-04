@@ -18,7 +18,29 @@
 
 package org.wso2.carbon.identity.oauth2new.dao;
 
-import org.wso2.carbon.identity.core.handler.IdentityHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-public abstract class OAuth2DAO extends IdentityHandler {
+import java.util.concurrent.BlockingDeque;
+
+public class AuthzCodePersistenceTask implements Runnable {
+
+    private static Log log = LogFactory.getLog(AccessTokenPersistenceTask.class);
+    private BlockingDeque<AuthzCodePersistenceDO> authContextTokenQueue;
+
+    public AuthzCodePersistenceTask(BlockingDeque<AuthzCodePersistenceDO> authContextTokenQueue) {
+        this.authContextTokenQueue = authContextTokenQueue;
+    }
+
+    @Override
+    public void run() {
+
+        log.debug("Auth Token context persist consumer is started");
+
+        while (true) {
+
+
+        }
+    }
+
 }

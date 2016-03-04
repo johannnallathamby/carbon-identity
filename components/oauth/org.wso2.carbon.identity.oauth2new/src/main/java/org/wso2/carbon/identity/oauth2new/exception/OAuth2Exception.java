@@ -20,13 +20,13 @@ package org.wso2.carbon.identity.oauth2new.exception;
 
 import org.wso2.carbon.identity.base.IdentityException;
 
-public class OAuth2Exception extends IdentityException {
+public abstract class OAuth2Exception extends IdentityException {
 
-    public OAuth2Exception(String errorDescription) {
+    protected OAuth2Exception(String errorDescription) {
         super(errorDescription);
     }
 
-    public OAuth2Exception(String errorDescription, Throwable cause) {
+    protected OAuth2Exception(String errorDescription, Throwable cause) {
         super(errorDescription, cause);
     }
 }

@@ -16,9 +16,17 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.dao;
+package org.wso2.carbon.identity.oauth2new.model;
 
-import org.wso2.carbon.identity.core.handler.IdentityHandler;
+public class OAuth2ServerConfig {
 
-public abstract class OAuth2DAO extends IdentityHandler {
+    private static OAuth2ServerConfig instance = new OAuth2ServerConfig();
+
+    private OAuth2ServerConfig() {
+
+    }
+
+    public static OAuth2ServerConfig getInstance() {
+        return instance;
+    }
 }

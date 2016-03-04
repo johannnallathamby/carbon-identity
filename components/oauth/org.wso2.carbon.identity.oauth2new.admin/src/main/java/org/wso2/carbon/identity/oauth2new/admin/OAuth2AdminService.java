@@ -16,9 +16,9 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.dao;
+package org.wso2.carbon.identity.oauth2new.admin;
 
-import org.wso2.carbon.identity.core.handler.IdentityHandler;
+import org.wso2.carbon.core.AbstractAdmin;
 
-public abstract class OAuth2DAO extends IdentityHandler {
+public class OAuth2AdminService extends AbstractAdmin {
 }

@@ -22,7 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.oauth2new.builder.request.OAuth2InboundRequestBuilder;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.builder.OAuth2InboundRequestBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -16,39 +16,28 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2ext.ntlm.builder.request;
+package org.wso2.carbon.identity.oauth2new.bean.message.request.builder;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.builder.OAuth2InboundRequestBuilder;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class NTLMRequestBuilder extends OAuth2InboundRequestBuilder {
+public abstract class OAuth2InboundRequestBuilder extends InboundAuthenticationRequestBuilder {
 
-    @Override
-    public String getName() {
-        return "NTLMRequestBuilder";
-    }
-
-    @Override
-    public int getPriority() {
-        return 0;
+    public OAuth2InboundRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
+        super(request, response);
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.isNotBlank(request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
+        if(StringUtils.isNotBlank(request.getParameter(OAuth.OAUTH_RESPONSE_TYPE)) ||
+                StringUtils.isNotBlank(request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public InboundAuthenticationRequest buildRequest(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        return null;
     }
 }

@@ -16,9 +16,10 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.dao;
+package org.wso2.carbon.identity.oauth2new.bean.message.request.processor;
 
-import org.wso2.carbon.identity.core.handler.IdentityHandler;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestProcessor;
 
-public abstract class OAuth2DAO extends IdentityHandler {
+public abstract class OAuth2InboundRequestProcessor extends InboundAuthenticationRequestProcessor {
+
 }

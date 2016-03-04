@@ -16,25 +16,28 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.exception;
+package org.wso2.carbon.identity.oauth2new.admin.internal;
 
-import org.wso2.carbon.identity.base.IdentityRuntimeException;
+import org.wso2.carbon.user.core.service.RealmService;
 
-public class OAuth2RuntimeException extends IdentityRuntimeException {
+public class OAuth2AdminServiceComponentHolder {
 
-    protected OAuth2RuntimeException(String errorDescription) {
-        super(errorDescription);
+    private static OAuth2AdminServiceComponentHolder instance = new OAuth2AdminServiceComponentHolder();
+    private RealmService realmService = null;
+
+    private OAuth2AdminServiceComponentHolder() {
+
     }
 
-    protected OAuth2RuntimeException(String errorDescription, Throwable cause) {
-        super(errorDescription, cause);
+    public static OAuth2AdminServiceComponentHolder getInstance() {
+        return instance;
     }
 
-    public static OAuth2RuntimeException error(String errorDescription){
-        return new OAuth2RuntimeException(errorDescription);
+    public void setRealmService(RealmService realmService) {
+        this.realmService = realmService;
     }
 
-    public static OAuth2RuntimeException error(String errorDescription, Throwable cause){
-        return new OAuth2RuntimeException(errorDescription, cause);
+    public RealmService getRealmService() {
+        return realmService;
     }
 }

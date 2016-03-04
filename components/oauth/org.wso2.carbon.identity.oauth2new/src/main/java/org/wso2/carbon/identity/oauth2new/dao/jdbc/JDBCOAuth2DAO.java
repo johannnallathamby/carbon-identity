@@ -18,9 +18,11 @@
 
 package org.wso2.carbon.identity.oauth2new.dao.jdbc;
 
+import org.wso2.carbon.identity.base.IdentityRuntimeException;
+import org.wso2.carbon.identity.core.bean.context.MessageContext;
 import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAO;
 
-public class JDBCOAuth2DAO implements OAuth2DAO {
+public class JDBCOAuth2DAO extends OAuth2DAO {
 
     private static volatile OAuth2DAO instance = new JDBCOAuth2DAO();
 
@@ -30,5 +32,15 @@ public class JDBCOAuth2DAO implements OAuth2DAO {
 
     public static OAuth2DAO getInstance() {
         return instance;
+    }
+
+    @Override
+    public boolean canHandle(MessageContext messageContext) throws IdentityRuntimeException {
+        return false;
+    }
+
+    @Override
+    public int getPriority(MessageContext messageContext) throws IdentityRuntimeException {
+        return 0;
     }
 }
