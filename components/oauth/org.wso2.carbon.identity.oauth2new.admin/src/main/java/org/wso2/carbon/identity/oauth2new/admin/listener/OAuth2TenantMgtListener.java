@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.listener;
+package org.wso2.carbon.identity.oauth2new.admin.listener;
 
 import org.wso2.carbon.identity.core.AbstractIdentityTenantMgtListener;
 import org.wso2.carbon.stratos.common.exception.StratosException;

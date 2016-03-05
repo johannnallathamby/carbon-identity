@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.listener;
+package org.wso2.carbon.identity.oauth2new.admin.listener;
 
 import org.wso2.carbon.identity.core.AbstractUserStoreConfigListener;
 import org.wso2.carbon.user.api.UserStoreException;

@@ -43,53 +43,59 @@ public class OAuth2ServiceComponent {
 
     private static Log log = LogFactory.getLog(OAuth2ServiceComponent.class);
     private BundleContext bundleContext = null;
-    private ServiceRegistration serviceRegistration = null;
+    ServiceRegistration oauth2ServiceReg = null;
 
     protected void activate(ComponentContext context) {
 
-        // Initialize the OAuth2 Server configuration
-        OAuth2ServerConfig oauthServerConfig = OAuth2ServerConfig.getInstance();
-
-        // Registering OAuth2Service as a OSGIService
-        bundleContext = context.getBundleContext();
-        bundleContext.registerService(OAuth2Service.class.getName(), OAuth2ServiceImpl.getInstance(), null);
-
-        if (log.isDebugEnabled()) {
-            log.debug("OAuth2 bundle is activated");
+        try {
+            OAuth2ServerConfig.getInstance();
+            bundleContext = context.getBundleContext();
+            oauth2ServiceReg = bundleContext.registerService(OAuth2Service.class.getName(),
+                    OAuth2ServiceImpl.getInstance(), null);
+            if (log.isDebugEnabled()) {
+                log.debug("OAuth2Service is registered");
+                log.debug("OAuth2 bundle is activated");
+            }
+        } catch (Throwable e) {
+            log.fatal("Error occurred while activating OAuth2 bundle");
         }
     }
 
     protected void deactivate(ComponentContext context) {
 
+        if(oauth2ServiceReg != null) {
+            oauth2ServiceReg.unregister();
+        }
         if (log.isDebugEnabled()) {
-            log.info("OAuth2 bundle is deactivated");
+            log.debug("OAuth2 service is unregistered");
+            log.debug("OAuth2 bundle is deactivated");
         }
     }
 
     protected void setRealmService(RealmService realmService) {
         if (log.isDebugEnabled()) {
-            log.info("Setting the RealmService");
+            log.debug("Setting the RealmService");
         }
         OAuth2ServiceComponentHolder.getInstance().setRealmService(realmService);
     }
 
     protected void unsetRealmService(RealmService realmService) {
         if (log.isDebugEnabled()) {
-            log.info("Unsetting the RealmService");
+            log.debug("Unsetting the RealmService");
         }
         OAuth2ServiceComponentHolder.getInstance().setRealmService(null);
     }
 
     protected void setRegistryService(RegistryService registryService) {
         if (log.isDebugEnabled()) {
-            log.info("Setting the RegistryService");
+            log.debug("Setting the RegistryService");
         }
         OAuth2ServiceComponentHolder.getInstance().setRegistryService(registryService);
     }
 
     protected void unsetRegistryService(RegistryService registryService) {
         if (log.isDebugEnabled()) {
-            log.info("RegistryService unset in Identity OAuth bundle");
+            log.debug("Unsetting the RegistryService");
         }
         OAuth2ServiceComponentHolder.getInstance().setRegistryService(null);
     }
