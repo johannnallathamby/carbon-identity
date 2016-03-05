@@ -18,32 +18,42 @@
 
 package org.wso2.carbon.identity.oauth2new.handler.issuer;
 
-import org.wso2.carbon.identity.base.IdentityRuntimeException;
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
-import org.wso2.carbon.identity.core.handler.HandlerComparable;
 import org.wso2.carbon.identity.core.handler.IdentityHandler;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2Response;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 
-import java.util.Properties;
+/*
+ * To generate OAuth2 access tokens
+ */
+public abstract class AccessTokenResponseIssuer extends IdentityHandler {
 
-public abstract class AccessTokenResponseIssuer extends IdentityHandler implements HandlerComparable {
+    @Override
+    public int getPriority(MessageContext messageContext) {
+        return 0;
+    }
 
     /**
-     * Tells if refresh tokens must be issued or not.
+     * Tells if refresh token must be issued or not for this access token request.
      *
-     * @return <Code>true</Code>|<Code>false</Code> if refresh tokens must be issued or not
+     * @param messageContext The runtime message context
+     * @return {@code true} if refresh tokens must be issued
      */
-    protected boolean issueRefreshToken(OAuth2MessageContext messageContext) throws OAuth2Exception {
+    protected boolean issueRefreshToken(OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
         return false;
     }
 
+    /**
+     * Issues the access token response.
+     *
+     * @param messageContext The runtime message context
+     * @return Returns the OAuth2 response
+     * @throws OAuth2Exception
+     */
     public abstract OAuth2Response issue(OAuth2MessageContext messageContext) throws OAuth2Exception;
 
-    @Override
-    public int getPriority(MessageContext messageContext) throws IdentityRuntimeException {
-        return 0;
-    }
+
 
 }

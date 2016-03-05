@@ -16,31 +16,23 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.handler.client;
+package org.wso2.carbon.identity.oauth2new.exception;
 
-import org.wso2.carbon.identity.core.bean.context.MessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
-import org.wso2.carbon.identity.oauth2new.common.ClientType;
+public class OAuth2InternalException extends OAuth2Exception {
 
-public class BasicAuthHandler extends ClientAuthHandler {
-
-    @Override
-    public String getName() {
-        return "BasicAuthHandler";
+    protected OAuth2InternalException(String errorDescription) {
+        super(errorDescription);
     }
 
-    @Override
-    public boolean canHandle(MessageContext messageContext) {
-        return true;
+    protected OAuth2InternalException(String errorDescription, Throwable cause) {
+        super(errorDescription, cause);
     }
 
-    @Override
-    public ClientType clientType(OAuth2MessageContext messageContext) {
-        return null;
+    public static OAuth2InternalException error(String errorDescription){
+        return new OAuth2InternalException(errorDescription);
     }
 
-    @Override
-    public String authenticate(OAuth2MessageContext messageContext) {
-        return null;
+    public static OAuth2InternalException error(String errorDescription, Throwable cause){
+        return new OAuth2InternalException(errorDescription, cause);
     }
 }

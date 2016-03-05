@@ -21,6 +21,9 @@ package org.wso2.carbon.identity.oauth2new.dao;
 import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 import org.wso2.carbon.identity.oauth2new.model.AuthzCode;
 
+/*
+ * Data object to wrap the access token persistence task data
+ */
 public class AccessTokenPersistenceDO {
 
     private AuthzCode authzCode;

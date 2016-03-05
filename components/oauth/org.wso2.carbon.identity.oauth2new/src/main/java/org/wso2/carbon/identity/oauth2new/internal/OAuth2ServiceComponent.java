@@ -20,8 +20,11 @@ package org.wso2.carbon.identity.oauth2new.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
+import org.wso2.carbon.identity.oauth2new.OAuth2Service;
+import org.wso2.carbon.identity.oauth2new.OAuth2ServiceImpl;
 import org.wso2.carbon.identity.oauth2new.model.OAuth2ServerConfig;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
@@ -39,12 +42,17 @@ import org.wso2.carbon.user.core.service.RealmService;
 public class OAuth2ServiceComponent {
 
     private static Log log = LogFactory.getLog(OAuth2ServiceComponent.class);
+    private BundleContext bundleContext = null;
     private ServiceRegistration serviceRegistration = null;
 
     protected void activate(ComponentContext context) {
 
-        // initialize the OAuth Server configuration
+        // Initialize the OAuth2 Server configuration
         OAuth2ServerConfig oauthServerConfig = OAuth2ServerConfig.getInstance();
+
+        // Registering OAuth2Service as a OSGIService
+        bundleContext = context.getBundleContext();
+        bundleContext.registerService(OAuth2Service.class.getName(), OAuth2ServiceImpl.getInstance(), null);
 
         if (log.isDebugEnabled()) {
             log.debug("OAuth2 bundle is activated");

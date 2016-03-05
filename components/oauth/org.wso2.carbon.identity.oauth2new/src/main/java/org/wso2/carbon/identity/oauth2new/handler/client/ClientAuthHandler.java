@@ -19,16 +19,16 @@
 package org.wso2.carbon.identity.oauth2new.handler.client;
 
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
-import org.wso2.carbon.identity.core.handler.HandlerComparable;
 import org.wso2.carbon.identity.core.handler.IdentityHandler;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
 import org.wso2.carbon.identity.oauth2new.common.ClientType;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 
-import java.util.Properties;
-
-public abstract class ClientAuthHandler extends IdentityHandler implements HandlerComparable {
+/*
+ * To authenticate OAuth2 clients
+ */
+public abstract class ClientAuthHandler extends IdentityHandler {
 
     @Override
     public int getPriority(MessageContext messageContext) throws OAuth2RuntimeException {
@@ -36,19 +36,19 @@ public abstract class ClientAuthHandler extends IdentityHandler implements Handl
     }
 
     /**
-     * Tells if the clients are confidential or public.
+     * Tells if the client is confidential or public.
      *
-     * @return <Code>true</Code>|<Code>false</Code> if the client type is confidential or not.
-     * @throws OAuth2Exception Error when finding client type
+     * @return Returns the client type - confidential or public.
+     * @throws OAuth2RuntimeException
      */
-    public abstract ClientType clientType(OAuth2MessageContext messageContext) throws OAuth2Exception;
+    public abstract ClientType clientType(OAuth2MessageContext messageContext) throws OAuth2RuntimeException;
 
     /**
      * Authenticates the OAuth 2.0 client
      *
-     * @param messageContext <code>MessageContext</code>
-     * @return Client Id if authentication was successful, <Code>null</Code> otherwise
-     * @throws OAuth2Exception Error when authenticating client
+     * @param messageContext The runtime message context
+     * @return Client ID if authentication was successful, {@code null} otherwise
+     * @throws OAuth2Exception Error when authenticating the client
      */
     public abstract String authenticate(OAuth2MessageContext messageContext) throws OAuth2Exception;
 

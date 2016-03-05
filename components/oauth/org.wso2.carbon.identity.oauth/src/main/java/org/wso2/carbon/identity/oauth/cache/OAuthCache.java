@@ -20,7 +20,6 @@ package org.wso2.carbon.identity.oauth.cache;
 
 import org.wso2.carbon.identity.application.common.cache.BaseCache;
 import org.wso2.carbon.identity.oauth.listener.OAuthCacheRemoveListener;
-import org.wso2.carbon.identity.oauth2.model.AccessTokenDO;
 import org.wso2.carbon.utils.CarbonUtils;
 
 public class OAuthCache extends BaseCache<OAuthCacheKey, CacheEntry> {

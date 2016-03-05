@@ -25,15 +25,16 @@ import org.wso2.carbon.identity.core.bean.context.MessageContext;
 import java.util.Properties;
 
 /**
- * This interface needs to be implemented by any extension handler.
+ * This interface needs to be implemented by any identity handler.
  */
 public abstract class IdentityHandler implements HandlerComparable {
 
     protected Properties properties = new Properties();
 
     /**
-     * Initialize the Extension Handler
-     * @throws IdentityRuntimeException Error when initializing the authorization grant handler
+     * Initializes the Extension Handler
+     *
+     * @throws IdentityRuntimeException
      */
     public void init(Properties properties) throws IdentityRuntimeException {
         if(properties != null){
@@ -41,6 +42,20 @@ public abstract class IdentityHandler implements HandlerComparable {
         }
     }
 
+    /**
+     * Name of the handler.
+     *
+     * @return Name of the handler
+     */
+    public abstract String getName();
+
+    /**
+     * Tells if the handler is enabled or not. Based on the result {@Code canHandle()} and {@code handle()} may be
+     * called.
+     *
+     * @param messageContext The runtime message context
+     * @throws IdentityRuntimeException
+     */
     public boolean isEnabled(MessageContext messageContext) throws IdentityException {
         return true;
     }
@@ -48,8 +63,8 @@ public abstract class IdentityHandler implements HandlerComparable {
     /**
      * Tells if this request can be handled by this handler
      *
-     * @param messageContext <code>MessageContext</code>
-     * @return <code>ExtHandlerReturnStatus</code>
+     * @param messageContext The runtime message context
+     * @return {@code true} if the message can be handled by this handler
      * @throws IdentityRuntimeException
      */
     public abstract boolean canHandle(MessageContext messageContext) throws IdentityRuntimeException;

@@ -18,9 +18,6 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.response;
 
-import org.apache.oltu.oauth2.as.response.OAuthASResponse;
-import org.apache.oltu.oauth2.common.message.OAuthResponse;
-
 /*
  * Wrapper for OLTU OAuthASResponse to authorization endpoint
  */

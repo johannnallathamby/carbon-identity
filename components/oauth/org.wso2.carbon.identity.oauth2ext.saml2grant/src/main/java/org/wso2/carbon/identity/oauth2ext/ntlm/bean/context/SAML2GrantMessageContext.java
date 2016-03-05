@@ -21,8 +21,6 @@ package org.wso2.carbon.identity.oauth2ext.ntlm.bean.context;
 import org.wso2.carbon.identity.oauth2ext.ntlm.bean.message.request.SAML2GrantRequest;
 import org.wso2.carbon.identity.oauth2ext.ntlm.bean.message.response.SAML2GrantResponse;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2Request;
-import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2Response;
 
 import java.io.Serializable;
 import java.util.Map;

@@ -22,44 +22,18 @@ import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.identity.base.IdentityRuntimeException;
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
 
-import java.util.Properties;
-
 /**
- * This interface needs to be implemented by any extension handler.
+ * This interface needs to be implemented by any identity extension handler.
  */
-public abstract class ExtensionHandler implements HandlerComparable {
-
-    protected Properties properties = new Properties();
-
-    /**
-     * Initialize the Extension Handler
-     * @throws IdentityRuntimeException Error when initializing the authorization grant handler
-     */
-    public void init(Properties properties) throws IdentityRuntimeException {
-        if(properties != null){
-            this.properties = properties;
-        }
-    }
-
-    public boolean isEnabled(MessageContext messageContext) throws IdentityException {
-        return true;
-    }
-
-    /**
-     * Tells if this request can be handled by this handler
-     *
-     * @param messageContext <code>MessageContext</code>
-     * @return <code>ExtHandlerReturnStatus</code>
-     * @throws IdentityRuntimeException
-     */
-    public abstract boolean canHandle(MessageContext messageContext) throws IdentityRuntimeException;
+public abstract class ExtensionHandler extends IdentityHandler implements HandlerComparable {
 
     /**
      * Handles the request
      *
-     * @param messageContext <code>MessageContext</code>
+     * @param messageContext The runtime message context
+     * @return {@code HandlerReturnStatus}
      * @throws IdentityRuntimeException
      */
-    public abstract HandlerReturnStatus handle(MessageContext messageContext) throws IdentityRuntimeException;
+    public abstract ExtHandlerReturnStatus handle(MessageContext messageContext) throws IdentityException;
 
 }

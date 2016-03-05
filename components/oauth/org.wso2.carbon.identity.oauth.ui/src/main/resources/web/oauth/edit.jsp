@@ -21,12 +21,11 @@
 <%@ page import="org.wso2.carbon.identity.oauth.common.OAuthConstants" %>
 <%@ page import="org.wso2.carbon.identity.oauth.stub.dto.OAuthConsumerAppDTO" %>
 <%@ page import="org.wso2.carbon.identity.oauth.ui.client.OAuthAdminClient" %>
-<%@ page import="org.wso2.carbon.identity.oauth.ui.util.OAuthUIUtil" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIMessage" %>
-<%@ page import="org.wso2.carbon.ui.CarbonUIUtil"%>
-<%@ page import="org.wso2.carbon.utils.ServerConstants" %>
-
+<%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
+<%@ page import="org.wso2.carbon.utils.ServerConstants"%>
 <%@ page import="java.util.ArrayList" %>
+
 <%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ResourceBundle" %>

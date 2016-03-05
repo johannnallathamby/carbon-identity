@@ -18,13 +18,12 @@
 
 package org.wso2.carbon.identity.core.handler;
 
-import org.wso2.carbon.identity.base.IdentityRuntimeException;
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
 
 import java.util.Comparator;
 
 /*
- * All handlers in the OAuth modules should implement this interface
+ * Comparator for sorting handler collection
  */
 public class HandlerComparator implements Comparator<HandlerComparable>  {
 
@@ -37,16 +36,12 @@ public class HandlerComparator implements Comparator<HandlerComparable>  {
     @Override
     public int compare(HandlerComparable o1, HandlerComparable o2) {
 
-        try {
-            if (o1.getPriority(messageContext) > o2.getPriority(messageContext)) {
-                return 1;
-            } else if (o1.getPriority(messageContext) == o2.getPriority(messageContext)) {
-                return 0;
-            } else {
-                return -1;
-            }
-        } catch (IdentityRuntimeException e) {
-            throw IdentityRuntimeException.error("");
+        if (o1.getPriority(messageContext) > o2.getPriority(messageContext)) {
+            return 1;
+        } else if (o1.getPriority(messageContext) == o2.getPriority(messageContext)) {
+            return 0;
+        } else {
+            return -1;
         }
     }
 }

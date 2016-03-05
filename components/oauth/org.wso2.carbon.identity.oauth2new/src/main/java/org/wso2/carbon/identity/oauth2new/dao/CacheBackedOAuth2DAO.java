@@ -18,30 +18,14 @@
 
 package org.wso2.carbon.identity.oauth2new.dao;
 
-import org.wso2.carbon.identity.base.IdentityRuntimeException;
-import org.wso2.carbon.identity.core.bean.context.MessageContext;
-import org.wso2.carbon.identity.oauth2new.dao.jdbc.JDBCOAuth2DAO;
-
+/*
+ * Wraps a given OAuth2DAO object and provides caching feature for it
+ */
 public class CacheBackedOAuth2DAO extends OAuth2DAO {
 
-    private static volatile OAuth2DAO instance = new CacheBackedOAuth2DAO(JDBCOAuth2DAO.getInstance());
     private OAuth2DAO wrappedDAO;
 
-    private CacheBackedOAuth2DAO(OAuth2DAO dao) {
+    public CacheBackedOAuth2DAO(OAuth2DAO dao) {
         this.wrappedDAO = dao;
-    }
-
-    public static OAuth2DAO getInstance() {
-        return instance;
-    }
-
-    @Override
-    public boolean canHandle(MessageContext messageContext) throws IdentityRuntimeException {
-        return false;
-    }
-
-    @Override
-    public int getPriority(MessageContext messageContext) throws IdentityRuntimeException {
-        return 0;
     }
 }

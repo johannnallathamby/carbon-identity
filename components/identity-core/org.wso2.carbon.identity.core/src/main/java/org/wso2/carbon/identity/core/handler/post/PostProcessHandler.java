@@ -18,8 +18,6 @@
 
 package org.wso2.carbon.identity.core.handler.post;
 
-import org.wso2.carbon.identity.core.handler.ExtensionHandler;
-
 /**
  * Marker interface for Post Process Handlers.
  */

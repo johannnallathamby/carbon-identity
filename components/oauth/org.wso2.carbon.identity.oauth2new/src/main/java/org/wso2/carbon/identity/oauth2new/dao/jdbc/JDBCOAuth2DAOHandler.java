@@ -16,23 +16,32 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.exception;
+package org.wso2.carbon.identity.oauth2new.dao.jdbc;
 
-public class OAuth2ServerException extends OAuth2Exception {
+import org.wso2.carbon.identity.core.bean.context.MessageContext;
+import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAOHandler;
 
-    protected OAuth2ServerException(String errorDescription) {
-        super(errorDescription);
+public class JDBCOAuth2DAOHandler extends OAuth2DAOHandler {
+
+    private static volatile OAuth2DAOHandler instance = new JDBCOAuth2DAOHandler();
+
+    private JDBCOAuth2DAOHandler() {
+
     }
 
-    protected OAuth2ServerException(String errorDescription, Throwable cause) {
-        super(errorDescription, cause);
+    public static OAuth2DAOHandler getInstance() {
+        return instance;
     }
 
-    public static OAuth2ServerException error(String errorDescription){
-        return new OAuth2ServerException(errorDescription);
+    @Override
+    public String getName() {
+        return "JDBCOAuth2DAOHandler";
     }
 
-    public static OAuth2ServerException error(String errorDescription, Throwable cause){
-        return new OAuth2ServerException(errorDescription, cause);
+    @Override
+    public boolean canHandle(MessageContext messageContext) {
+        return true;
     }
+
+
 }

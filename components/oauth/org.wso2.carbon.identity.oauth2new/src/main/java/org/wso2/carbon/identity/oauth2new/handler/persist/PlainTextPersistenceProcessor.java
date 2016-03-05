@@ -20,14 +20,17 @@ package org.wso2.carbon.identity.oauth2new.handler.persist;
 
 import org.wso2.carbon.identity.base.IdentityRuntimeException;
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
-import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 
 /**
- * <Code>PlainTextPersistenceProcessor</Code> stores keys and secrets
- * in plain text in the database.
+ * Stores the tokens in plain text in the database.
  */
 
 public class PlainTextPersistenceProcessor extends TokenPersistenceProcessor {
+
+    @Override
+    public String getName() {
+        return "PlainTextPersistenceProcessor";
+    }
 
     @Override
     public boolean canHandle(MessageContext messageContext) throws IdentityRuntimeException {
@@ -35,52 +38,52 @@ public class PlainTextPersistenceProcessor extends TokenPersistenceProcessor {
     }
 
     @Override
-    public String getProcessedClientId(Object token) throws OAuth2Exception {
-        return null;
+    public String getProcessedClientId(String clientId) {
+        return clientId;
     }
 
     @Override
-    public String getPreprocessedClientId(Object processedToken) throws OAuth2Exception {
-        return null;
+    public String getPreprocessedClientId(String processedClientId) {
+        return processedClientId;
     }
 
     @Override
-    public String getProcessedClientSecret(Object token) throws OAuth2Exception {
-        return null;
+    public String getProcessedClientSecret(String clientSecret) {
+        return clientSecret;
     }
 
     @Override
-    public String getPreprocessedClientSecret(Object processedToken) throws OAuth2Exception {
-        return null;
+    public String getPreprocessedClientSecret(String processedClientSecret) {
+        return processedClientSecret;
     }
 
     @Override
-    public String getProcessedAuthzCode(Object token) throws OAuth2Exception {
-        return null;
+    public String getProcessedAuthzCode(String authzCode) {
+        return authzCode;
     }
 
     @Override
-    public String getPreprocessedAuthzCode(Object processedToken) throws OAuth2Exception {
-        return null;
+    public String getPreprocessedAuthzCode(String processedAuthzCode) {
+        return processedAuthzCode;
     }
 
     @Override
-    public String getProcessedAccessToken(Object token) throws OAuth2Exception {
-        return null;
+    public String getProcessedAccessToken(String accessToken) {
+        return accessToken;
     }
 
     @Override
-    public String getPreprocessedAccessToken(Object processedToken) throws OAuth2Exception {
-        return null;
+    public String getPreprocessedAccessToken(String processedAccessToken) {
+        return processedAccessToken;
     }
 
     @Override
-    public String getProcessedRefreshToken(Object token) throws OAuth2Exception {
-        return null;
+    public String getProcessedRefreshToken(String refreshToken) {
+        return refreshToken;
     }
 
     @Override
-    public String getPreprocessedRefreshToken(Object processedToken) throws OAuth2Exception {
-        return null;
+    public String getPreprocessedRefreshToken(String processedRefreshToken) {
+        return processedRefreshToken;
     }
 }

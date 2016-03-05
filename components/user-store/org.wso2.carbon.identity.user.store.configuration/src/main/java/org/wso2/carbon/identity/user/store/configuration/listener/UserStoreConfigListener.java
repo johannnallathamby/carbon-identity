@@ -15,6 +15,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.wso2.carbon.identity.user.store.configuration.listener;
 
 import org.wso2.carbon.user.api.UserStoreException;

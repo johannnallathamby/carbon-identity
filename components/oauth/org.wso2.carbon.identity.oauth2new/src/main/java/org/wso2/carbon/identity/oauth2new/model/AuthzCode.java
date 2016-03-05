@@ -40,6 +40,15 @@ public class AuthzCode implements Serializable {
 
     private long validityPeriod;
 
+    public AuthzCode(String authzCode, String clientId, String redirectURI, User authzUser, Timestamp issuedTime, long validityPeriod) {
+        this.authzCode = authzCode;
+        this.clientId = clientId;
+        this.redirectURI = redirectURI;
+        this.authzUser = authzUser;
+        this.issuedTime = issuedTime;
+        this.validityPeriod = validityPeriod;
+    }
+
     public String getAuthzCode() {
         return authzCode;
     }
@@ -66,6 +75,22 @@ public class AuthzCode implements Serializable {
 
     public long getValidityPeriod() {
         return validityPeriod;
+    }
+
+    public void setScopes(Set<String> scopes) {
+        this.scopes = scopes;
+    }
+
+    @Override
+    public String toString() {
+        return "AuthzCode{" +
+                "clientId='" + clientId + '\'' +
+                ", redirectURI='" + redirectURI + '\'' +
+                ", authzUser=" + authzUser +
+                ", scopes=" + scopes +
+                ", issuedTime=" + issuedTime +
+                ", validityPeriod=" + validityPeriod +
+                '}';
     }
 
 }

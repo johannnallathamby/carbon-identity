@@ -18,11 +18,8 @@
 
 package org.wso2.carbon.identity.oauth2ext.ntlm.bean.context;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2Request;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2TokenRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2Response;
 import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2TokenResponse;
 
 import java.io.Serializable;

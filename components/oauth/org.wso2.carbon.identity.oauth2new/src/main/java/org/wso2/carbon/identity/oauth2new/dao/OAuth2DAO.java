@@ -18,7 +18,9 @@
 
 package org.wso2.carbon.identity.oauth2new.dao;
 
-import org.wso2.carbon.identity.core.handler.IdentityHandler;
+/*
+ * To interact with the persistence layer
+ */
+public abstract class OAuth2DAO {
 
-public abstract class OAuth2DAO extends IdentityHandler {
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -16,22 +16,19 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.dao;
+package org.wso2.carbon.identity.oauth2new.listener;
 
-import org.wso2.carbon.identity.oauth2new.model.AuthzCode;
+import org.wso2.carbon.identity.core.AbstractIdentityTenantMgtListener;
+import org.wso2.carbon.stratos.common.exception.StratosException;
 
 /*
- * Data object to wrap the authorization code persistence task data
+ * If tenants are deleted, the corresponding access tokens in IDN_OAUTH2_ACCESS_TOKEN table should be updated to
+ * REVOKED state.
  */
-public class AuthzCodePersistenceDO {
+public class OAuth2TenantMgtListener extends AbstractIdentityTenantMgtListener {
 
-    private AuthzCode authzCode;
+    @Override
+    public void onPreDelete(int tenantId) throws StratosException {
 
-    public AuthzCodePersistenceDO(AuthzCode authzCode) {
-        this.authzCode = authzCode;
-    }
-
-    public AuthzCode getAuthzCode() {
-        return authzCode;
     }
 }

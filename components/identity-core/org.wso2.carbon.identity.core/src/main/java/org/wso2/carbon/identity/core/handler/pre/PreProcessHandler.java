@@ -18,8 +18,6 @@
 
 package org.wso2.carbon.identity.core.handler.pre;
 
-import org.wso2.carbon.identity.core.handler.ExtensionHandler;
-
 /**
  * Marker interface for Pre Process Handlers.
  */

@@ -21,8 +21,6 @@ package org.wso2.carbon.identity.oauth2ext.oidc.bean.context;
 import org.wso2.carbon.identity.oauth2ext.oidc.bean.message.request.OIDCUserInfoRequest;
 import org.wso2.carbon.identity.oauth2ext.oidc.bean.message.response.OIDCUserInfoResponse;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2Request;
-import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2Response;
 
 import java.io.Serializable;
 import java.util.Map;

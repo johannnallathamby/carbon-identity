@@ -20,11 +20,12 @@ package org.wso2.carbon.identity.oauth2new.dao;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.identity.base.IdentityException;
-import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 
 import java.util.concurrent.BlockingDeque;
 
+/*
+ * Asynchronous access token persistence task to improve performance
+ */
 public class AccessTokenPersistenceTask implements Runnable {
 
     private static Log log = LogFactory.getLog(AccessTokenPersistenceTask.class);

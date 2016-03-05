@@ -19,9 +19,6 @@
 package org.wso2.carbon.identity.oauth2ext.oidc.bean.message.request;
 
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2AuthzRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2Request;
-
-import java.util.Set;
 
 public class OIDCUserInfoRequest extends OAuth2AuthzRequest {
 

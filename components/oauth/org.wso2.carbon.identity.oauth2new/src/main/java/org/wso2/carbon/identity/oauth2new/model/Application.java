@@ -61,4 +61,16 @@ public class Application implements Serializable {
         return allowedGrantTypes;
     }
 
+    @Override
+    public String toString() {
+        return "Application{" +
+                "clientId='" + clientId + '\'' +
+                ", applicationName='" + applicationName + '\'' +
+                ", redirectURI='" + redirectURI + '\'' +
+                ", applicationOwner=" + applicationOwner +
+                ", allowedResponseTypes=" + allowedResponseTypes +
+                ", allowedGrantTypes=" + allowedGrantTypes +
+                '}';
+    }
+
 }

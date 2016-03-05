@@ -27,6 +27,14 @@ import javax.cache.event.CacheEntryEvent;
 import javax.cache.event.CacheEntryListenerException;
 import javax.cache.event.CacheEntryRemovedListener;
 
+/*
+ * Since OAuth2 access tokens are persisted asynchronously, there is a possibility that even if the DB persistence of
+ * the new access token fails, still the new access token may be served from cache. However the access token validation
+ * may fail since it uses a different cache and that cache may not contain the same access token,
+ * or it looks into the DB and finds no valid access token. To avoid this what we do here whenever one of the cache
+ * entries in either cache gets removed we forcefully remove the access token from the other cache too.
+ *
+ */
 public class OAuth2CacheListener extends AbstractCacheListener<String, AccessToken>
         implements CacheEntryRemovedListener<String, AccessToken> {
 

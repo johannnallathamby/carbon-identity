@@ -18,7 +18,6 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.response;
 
-import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
 
 /*

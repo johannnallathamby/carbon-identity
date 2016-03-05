@@ -20,6 +20,7 @@ package org.wso2.carbon.identity.workflow.impl.listener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.identity.core.AbstractIdentityTenantMgtListener;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.workflow.impl.WFImplConstant;
 import org.wso2.carbon.identity.workflow.impl.WorkflowImplException;
@@ -30,7 +31,7 @@ import org.wso2.carbon.stratos.common.exception.StratosException;
 import org.wso2.carbon.stratos.common.listeners.TenantMgtListener;
 import org.wso2.carbon.user.core.UserCoreConstants;
 
-public class WorkflowImplTenantMgtListener implements TenantMgtListener {
+public class WorkflowImplTenantMgtListener extends AbstractIdentityTenantMgtListener {
 
     private static Log log = LogFactory.getLog(WorkflowImplTenantMgtListener.class);
 
@@ -51,57 +52,12 @@ public class WorkflowImplTenantMgtListener implements TenantMgtListener {
                     .addBPSProfile(bpsProfileDTO, tenantInfoBean
                             .getTenantId());
 
-        }catch (WorkflowImplException e) {
+        } catch (WorkflowImplException e) {
             //This is not thrown exception because this is not blocked to the other functionality. User can create
             // default profile by manually.
-            String errorMsg = "Error occured while adding default bps profile, " + e.getMessage();
+            String errorMsg = "Error occurred while adding default bps profile, " + e.getMessage();
             log.error(errorMsg);
         }
-
-    }
-
-    @Override
-    public void onTenantUpdate(TenantInfoBean tenantInfoBean) throws StratosException {
-
-    }
-
-    @Override
-    public void onTenantDelete(int i) {
-
-    }
-
-    @Override
-    public void onTenantRename(int i, String s, String s1) throws StratosException {
-
-    }
-
-    @Override
-    public void onTenantInitialActivation(int i) throws StratosException {
-
-    }
-
-    @Override
-    public void onTenantActivation(int i) throws StratosException {
-
-    }
-
-    @Override
-    public void onTenantDeactivation(int i) throws StratosException {
-
-    }
-
-    @Override
-    public void onSubscriptionPlanChange(int i, String s, String s1) throws StratosException {
-
-    }
-
-    @Override
-    public int getListenerOrder() {
-        return 0;
-    }
-
-    @Override
-    public void onPreDelete(int i) throws StratosException {
 
     }
 }

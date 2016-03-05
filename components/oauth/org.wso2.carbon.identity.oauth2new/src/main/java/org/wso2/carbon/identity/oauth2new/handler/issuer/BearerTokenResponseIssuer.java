@@ -21,14 +21,9 @@ package org.wso2.carbon.identity.oauth2new.handler.issuer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.common.model.User;
-import org.wso2.carbon.identity.base.IdentityRuntimeException;
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2AuthzMessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2AuthzResponse;
 import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2Response;
-import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2TokenResponse;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 
@@ -39,12 +34,22 @@ public class BearerTokenResponseIssuer extends AccessTokenResponseIssuer {
     private static Log log = LogFactory.getLog(BearerTokenResponseIssuer.class);
 
     @Override
-    public OAuth2Response issue(OAuth2MessageContext messageContext) throws OAuth2Exception {
+    public String getName() {
+        return "BearerTokenResponseIssuer";
+    }
+
+    @Override
+    public boolean canHandle(MessageContext messageContext) {
+        return true;
+    }
+
+    @Override
+    public OAuth2Response issue(OAuth2MessageContext messageContext) {
         return null;
     }
 
     @Override
-    protected boolean issueRefreshToken(OAuth2MessageContext messageContext) throws OAuth2Exception {
+    protected boolean issueRefreshToken(OAuth2MessageContext messageContext) {
         return false;
     }
 
@@ -53,15 +58,12 @@ public class BearerTokenResponseIssuer extends AccessTokenResponseIssuer {
         return null;
     }
 
-    protected AccessToken issueNewToken(String clientId, String redirectURI, User authzUser, long callbackValidityPeriod,
-                                        Set<String> approvedScopes, String tokenUserType, MessageContext messageContext)
-            throws OAuth2Exception {
+    protected AccessToken issueNewToken(String clientId, String redirectURI, User authzUser,
+                                        long callbackValidityPeriod, Set<String> approvedScopes,
+                                        String tokenUserType, MessageContext messageContext) {
 
         return null;
     }
 
-    @Override
-    public boolean canHandle(MessageContext messageContext) throws IdentityRuntimeException {
-        return false;
-    }
+
 }

@@ -56,7 +56,6 @@ import org.wso2.carbon.utils.CarbonUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

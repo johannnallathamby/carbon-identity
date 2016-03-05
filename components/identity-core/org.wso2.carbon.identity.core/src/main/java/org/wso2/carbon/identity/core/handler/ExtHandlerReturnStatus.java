@@ -16,31 +16,32 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.handler.client;
+package org.wso2.carbon.identity.core.handler;
 
-import org.wso2.carbon.identity.core.bean.context.MessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
-import org.wso2.carbon.identity.oauth2new.common.ClientType;
+/*
+ * Return value from extension handlers.
+ * Used to control the invocation of handler chain.
+ */
+public enum ExtHandlerReturnStatus {
 
-public class BasicAuthHandler extends ClientAuthHandler {
+    CONTINUE("continue"),
+    BREAK("break"),
+    PROCESS_ONLY("process_only"),
+    PRE_HANLDERS_ONLY("pre_handlers_only"),
+    POST_HANDLERS_ONLY("post_handlers_only"),
+    SKIP_PROCESS("skip_process"),
+    SKIP_PRE_HANLDERS("skip_pre_handlers"),
+    SKIP_POST_HANLDERS("skip_post_handlers");
 
-    @Override
-    public String getName() {
-        return "BasicAuthHandler";
+    private String returnStatus;
+
+    ExtHandlerReturnStatus(String returnStatus) {
+        this.returnStatus = returnStatus;
     }
 
     @Override
-    public boolean canHandle(MessageContext messageContext) {
-        return true;
+    public String toString() {
+        return returnStatus;
     }
 
-    @Override
-    public ClientType clientType(OAuth2MessageContext messageContext) {
-        return null;
-    }
-
-    @Override
-    public String authenticate(OAuth2MessageContext messageContext) {
-        return null;
-    }
 }

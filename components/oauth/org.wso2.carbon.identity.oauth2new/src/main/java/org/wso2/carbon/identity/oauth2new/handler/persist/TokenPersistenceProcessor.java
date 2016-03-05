@@ -19,45 +19,38 @@
 package org.wso2.carbon.identity.oauth2new.handler.persist;
 
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
-import org.wso2.carbon.identity.core.handler.HandlerComparable;
 import org.wso2.carbon.identity.core.handler.IdentityHandler;
-import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
-import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
-
-import java.util.Properties;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 
 /**
- * <Code>TokenPersistenceProcessor</Code> implementations are used to
- * process OAuth2 tokens just before storing them in the database.
+ * To process OAuth2 tokens just before storing them in the database.
  * E.g. to encrypt tokens before storing them in the database.
- * Implementations of this interface can be configured through
- * the identity.xml.
  */
-public abstract class TokenPersistenceProcessor extends IdentityHandler implements HandlerComparable {
-
-    public abstract String getProcessedClientId(Object token) throws OAuth2Exception;
-
-    public abstract String getPreprocessedClientId(Object processedToken) throws OAuth2Exception;
-
-    public abstract String getProcessedClientSecret(Object token) throws OAuth2Exception;
-
-    public abstract String getPreprocessedClientSecret(Object processedToken) throws OAuth2Exception;
-
-    public abstract String getProcessedAuthzCode(Object token) throws OAuth2Exception;
-
-    public abstract String getPreprocessedAuthzCode(Object processedToken) throws OAuth2Exception;
-
-    public abstract String getProcessedAccessToken(Object token) throws OAuth2Exception;
-
-    public abstract String getPreprocessedAccessToken(Object processedToken) throws OAuth2Exception;
-
-    public abstract String getProcessedRefreshToken(Object token) throws OAuth2Exception;
-
-    public abstract String getPreprocessedRefreshToken(Object processedToken) throws OAuth2Exception;
+public abstract class TokenPersistenceProcessor extends IdentityHandler {
 
     @Override
     public int getPriority(MessageContext messageContext) {
         return 0;
     }
+
+    public abstract String getProcessedClientId(String clientId) throws OAuth2RuntimeException;
+
+    public abstract String getPreprocessedClientId(String processedClientId) throws OAuth2RuntimeException;
+
+    public abstract String getProcessedClientSecret(String clientSecret) throws OAuth2RuntimeException;
+
+    public abstract String getPreprocessedClientSecret(String processedClientSecret) throws OAuth2RuntimeException;
+
+    public abstract String getProcessedAuthzCode(String authzCode) throws OAuth2RuntimeException;
+
+    public abstract String getPreprocessedAuthzCode(String processedAuthzCode) throws OAuth2RuntimeException;
+
+    public abstract String getProcessedAccessToken(String accessToken) throws OAuth2RuntimeException;
+
+    public abstract String getPreprocessedAccessToken(String processedAccessToken) throws OAuth2RuntimeException;
+
+    public abstract String getProcessedRefreshToken(String refreshToken) throws OAuth2RuntimeException;
+
+    public abstract String getPreprocessedRefreshToken(String processedRefreshToken) throws OAuth2RuntimeException;
 
 }

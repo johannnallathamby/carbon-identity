@@ -23,22 +23,24 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.concurrent.BlockingDeque;
 
+/*
+ * Asynchronous authorization code persistence task to improve performance
+ */
 public class AuthzCodePersistenceTask implements Runnable {
 
     private static Log log = LogFactory.getLog(AccessTokenPersistenceTask.class);
-    private BlockingDeque<AuthzCodePersistenceDO> authContextTokenQueue;
+    private BlockingDeque<AuthzCodePersistenceDO> authzCodePersistenceQueue;
 
-    public AuthzCodePersistenceTask(BlockingDeque<AuthzCodePersistenceDO> authContextTokenQueue) {
-        this.authContextTokenQueue = authContextTokenQueue;
+    public AuthzCodePersistenceTask(BlockingDeque<AuthzCodePersistenceDO> authzCodePersistenceQueue) {
+        this.authzCodePersistenceQueue = authzCodePersistenceQueue;
     }
 
     @Override
     public void run() {
 
-        log.debug("Auth Token context persist consumer is started");
+        log.debug("AuthzCodePersistenceQueue consumer is started");
 
         while (true) {
-
 
         }
     }

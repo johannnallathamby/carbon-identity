@@ -22,10 +22,11 @@ import org.apache.commons.lang.StringUtils;
 import org.wso2.carbon.identity.core.model.IdentityEventListenerConfig;
 import org.wso2.carbon.identity.core.util.IdentityCoreConstants;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
-import org.wso2.carbon.user.core.common.AbstractUserOperationEventListener;
+import org.wso2.carbon.identity.user.store.configuration.listener.UserStoreConfigListener;
+import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.listener.UserOperationEventListener;
 
-public class AbstractIdentityUserOperationEventListener extends AbstractUserOperationEventListener {
+public abstract class AbstractUserStoreConfigListener implements UserStoreConfigListener {
 
     public boolean isEnable() {
         IdentityEventListenerConfig identityEventListenerConfig = IdentityUtil.readEventListenerProperty
@@ -49,5 +50,25 @@ public class AbstractIdentityUserOperationEventListener extends AbstractUserOper
             return IdentityCoreConstants.EVENT_LISTENER_ORDER_ID;
         }
         return identityEventListenerConfig.getOrder();
+    }
+
+    @Override
+    public void onUserStoreNamePreUpdate(int tenantId, String currentUserStoreName, String newUserStoreName) throws UserStoreException {
+        /* Method not implemented */
+    }
+
+    @Override
+    public void onUserStoreNamePostUpdate(int tenantId, String currentUserStoreName, String newUserStoreName) throws UserStoreException {
+        /* Method not implemented */
+    }
+
+    @Override
+    public void onUserStorePreDelete(int tenantId, String userStoreName) throws UserStoreException {
+        /* Method not implemented */
+    }
+
+    @Override
+    public void onUserStorePostDelete(int tenantId, String userStoreName) throws UserStoreException {
+        /* Method not implemented */
     }
 }

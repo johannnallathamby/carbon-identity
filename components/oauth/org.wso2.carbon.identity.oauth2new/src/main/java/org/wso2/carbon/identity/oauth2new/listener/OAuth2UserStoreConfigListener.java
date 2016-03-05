@@ -18,29 +18,22 @@
 
 package org.wso2.carbon.identity.oauth2new.listener;
 
-
-import org.wso2.carbon.identity.user.store.configuration.listener.UserStoreConfigListener;
+import org.wso2.carbon.identity.core.AbstractUserStoreConfigListener;
 import org.wso2.carbon.user.api.UserStoreException;
 
+/*
+ * If user store names are updated, or user stores are deleted, the corresponding access tokens in
+ * IDN_OAUTH2_ACCESS_TOKEN table should be updated to reflect the name change or to REVOKED state.
+ */
+public class OAuth2UserStoreConfigListener extends AbstractUserStoreConfigListener {
 
-public class OAuthUserStoreConfigListenerImpl implements UserStoreConfigListener {
     @Override
     public void onUserStoreNamePreUpdate(int tenantId, String currentUserStoreName, String newUserStoreName) throws UserStoreException {
 
     }
 
     @Override
-    public void onUserStoreNamePostUpdate(int tenantId, String currentUserStoreName, String newUserStoreName) throws UserStoreException {
-
-    }
-
-    @Override
     public void onUserStorePreDelete(int tenantId, String userStoreName) throws UserStoreException {
-
-    }
-
-    @Override
-    public void onUserStorePostDelete(int tenantId, String userStoreName) throws UserStoreException {
 
     }
 }

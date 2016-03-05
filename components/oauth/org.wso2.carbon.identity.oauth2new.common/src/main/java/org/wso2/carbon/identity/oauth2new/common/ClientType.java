@@ -18,9 +18,23 @@
 
 package org.wso2.carbon.identity.oauth2new.common;
 
+/*
+ * Used to indicate if a client is confidential or public
+ */
 public enum ClientType {
 
-    PUBLIC_CLIENT,
-    CONFIDENTIAL_CLIENT;
+    PUBLIC("PUBLIC"),
+    CONFIDENTIAL("CONFIDENTIAL");
+
+    private String value;
+
+    ClientType(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 
 }

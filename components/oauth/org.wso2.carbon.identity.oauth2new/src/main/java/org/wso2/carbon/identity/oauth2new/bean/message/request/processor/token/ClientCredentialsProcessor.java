@@ -24,7 +24,6 @@ import org.wso2.carbon.identity.application.authentication.framework.inbound.Inb
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.processor.token.TokenRequestProcessor;
 import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2TokenResponse;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 

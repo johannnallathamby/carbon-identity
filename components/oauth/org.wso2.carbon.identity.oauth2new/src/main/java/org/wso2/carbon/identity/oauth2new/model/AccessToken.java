@@ -32,17 +32,35 @@ public class AccessToken implements Serializable {
 
     private String clientId;
 
-    private User authzUser;
+    private String subjectIdentifier;
 
-    private String userType;
+    private User authzUser;
 
     private Set<String> scopes;
 
-    private String tokenState;
+    private String grantType;
 
-    private Timestamp issuedTime;
+    private String accessTokenState;
 
-    private long expiresIn;
+    private Timestamp accessTokenIssuedTime;
+
+    private Timestamp refreshTokenIssuedTime;
+
+    private long accessTokenValidity;
+
+    private long refreshTokenValidity;
+
+    public AccessToken(String accessToken, String clientId, String subjectIdentifier, String grantType,
+                       String accessTokenState, Timestamp accessTokenIssuedTime, long accessTokenValidity) {
+
+        this.accessToken = accessToken;
+        this.clientId = clientId;
+        this.subjectIdentifier = subjectIdentifier;
+        this.grantType = grantType;
+        this.accessTokenState = accessTokenState;
+        this.accessTokenIssuedTime = accessTokenIssuedTime;
+        this.accessTokenValidity = accessTokenValidity;
+    }
 
     public String getAccessToken() {
         return accessToken;
@@ -56,55 +74,75 @@ public class AccessToken implements Serializable {
         return clientId;
     }
 
-    public User getAuthzUser() {
-        return authzUser;
+    public String getSubjectIdentifier() {
+        return subjectIdentifier;
     }
 
-    public String getUserType() {
-        return userType;
+    public User getAuthzUser() {
+        return authzUser;
     }
 
     public Set<String> getScopes() {
         return scopes;
     }
 
-    public String getTokenState() {
-        return tokenState;
+    public String getGrantType() {
+        return grantType;
     }
 
-    public Timestamp getIssuedTime() {
-        return issuedTime;
+    public String getAccessTokenState() {
+        return accessTokenState;
     }
 
-    public long getExpiresIn() {
-        return expiresIn;
+    public Timestamp getAccessTokenIssuedTime() {
+        return accessTokenIssuedTime;
     }
 
-    public AccessToken(String accessToken, String clientId, User authzUser, Set<String> approvedScopes,
-                       String tokenState, Timestamp issuedTime, long expiresIn, String userType) {
+    public Timestamp getRefreshTokenIssuedTime() {
+        return refreshTokenIssuedTime;
+    }
 
-        this.accessToken = accessToken;
-        this.clientId = clientId;
+    public long getAccessTokenValidity() {
+        return accessTokenValidity;
+    }
+
+    public long getRefreshTokenValidity() {
+        return refreshTokenValidity;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void setAuthzUser(User authzUser) {
         this.authzUser = authzUser;
-        this.scopes = approvedScopes;
-        this.tokenState = tokenState;
-        this.issuedTime = issuedTime;
-        this.expiresIn = expiresIn;
-        this.userType = userType;
+    }
+
+    public void setScopes(Set<String> scopes) {
+        this.scopes = scopes;
+    }
+
+    public void setRefreshTokenIssuedTime(Timestamp refreshTokenIssuedTime) {
+        this.refreshTokenIssuedTime = refreshTokenIssuedTime;
+    }
+
+    public void setRefreshTokenValidity(long refreshTokenValidity) {
+        this.refreshTokenValidity = refreshTokenValidity;
     }
 
     @Override
     public String toString() {
-        return "AccessTokenDO{" +
-                "accessToken='" + accessToken + '\'' +
-                ", refreshToken='" + refreshToken + '\'' +
+        return "AccessToken{" +
                 ", clientId='" + clientId + '\'' +
+                ", subjectIdentifier='" + subjectIdentifier + '\'' +
                 ", authzUser=" + authzUser +
-                ", userType='" + userType + '\'' +
                 ", scopes=" + scopes +
-                ", tokenState='" + tokenState + '\'' +
-                ", issuedTime=" + issuedTime +
-                ", expiresIn=" + expiresIn +
+                ", grantType='" + grantType + '\'' +
+                ", accessTokenState='" + accessTokenState + '\'' +
+                ", accessTokenIssuedTime=" + accessTokenIssuedTime +
+                ", refreshTokenIssuedTime=" + refreshTokenIssuedTime +
+                ", accessTokenValidity=" + accessTokenValidity +
+                ", refreshTokenValidity=" + refreshTokenValidity +
                 '}';
     }
 }

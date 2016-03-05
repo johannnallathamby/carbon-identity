@@ -21,8 +21,19 @@ package org.wso2.carbon.identity.core.handler;
 import org.wso2.carbon.identity.base.IdentityRuntimeException;
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
 
+/**
+ * This interface needs to be implemented by any identity/extension handler.
+ * This is used to sort the handlers according to priority
+ */
 public interface HandlerComparable {
 
+    /**
+     * Used to sort the set of handlers
+     *
+     * @param messageContext The runtime message context
+     * @return The priority value of the handler
+     * @throws IdentityRuntimeException
+     */
     public int getPriority(MessageContext messageContext) throws IdentityRuntimeException;
 
 }
