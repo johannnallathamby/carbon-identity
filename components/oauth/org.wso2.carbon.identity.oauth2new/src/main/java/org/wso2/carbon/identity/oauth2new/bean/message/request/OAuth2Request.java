@@ -25,7 +25,7 @@ public abstract class OAuth2Request extends InboundAuthenticationRequest {
 
     private static final long serialVersionUID = 5255384558894431030L;
 
-    OAuth2Request(InboundAuthenticationRequestBuilder builder) {
+    protected OAuth2Request(InboundAuthenticationRequestBuilder builder) {
         super(builder);
     }
 }

@@ -27,7 +27,7 @@ public abstract class AuthzCodeGrantRequest extends OAuth2TokenRequest {
     private String authorizationCode;
     private String redirectURI;
 
-    AuthzCodeGrantRequest(InboundAuthenticationRequestBuilder builder) {
+    protected AuthzCodeGrantRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
     }
 

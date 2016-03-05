@@ -20,9 +20,6 @@ package org.wso2.carbon.identity.oauth2new.bean.message.response;
 
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
 
-/*
- * Wrapper for OLTU OAuthResponse
- */
 public abstract class OAuth2Response extends InboundAuthenticationResponse {
 
     private static final long serialVersionUID = 8756386429141412913L;

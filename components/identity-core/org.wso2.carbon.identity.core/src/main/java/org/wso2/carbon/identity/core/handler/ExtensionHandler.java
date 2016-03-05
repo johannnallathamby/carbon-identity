@@ -25,7 +25,7 @@ import org.wso2.carbon.identity.core.bean.context.MessageContext;
 /**
  * This interface needs to be implemented by any identity extension handler.
  */
-public abstract class ExtensionHandler extends IdentityHandler implements HandlerComparable {
+public abstract class ExtensionHandler extends IdentityHandler {
 
     /**
      * Handles the request

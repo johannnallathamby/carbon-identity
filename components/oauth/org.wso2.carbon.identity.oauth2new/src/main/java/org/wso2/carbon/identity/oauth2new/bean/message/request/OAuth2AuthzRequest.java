@@ -32,7 +32,7 @@ public abstract class OAuth2AuthzRequest extends OAuth2Request {
     private String redirectURI;
     private String state;
 
-    OAuth2AuthzRequest(InboundAuthenticationRequestBuilder builder) {
+    protected OAuth2AuthzRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
     }
 

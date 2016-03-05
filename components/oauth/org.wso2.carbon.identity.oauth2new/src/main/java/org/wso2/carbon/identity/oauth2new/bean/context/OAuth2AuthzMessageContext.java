@@ -20,7 +20,6 @@ package org.wso2.carbon.identity.oauth2new.bean.context;
 
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2AuthzRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2AuthzResponse;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -39,9 +38,9 @@ public class OAuth2AuthzMessageContext<T1 extends Serializable, T2 extends Seria
 
     private long validityPeriod;
 
-    public OAuth2AuthzMessageContext(OAuth2AuthzRequest request, OAuth2AuthzResponse response, String tenantDomain,
+    public OAuth2AuthzMessageContext(OAuth2AuthzRequest request, String tenantDomain,
                                      Map<T1,T2> parameters) {
-        super(request, response, tenantDomain, parameters);
+        super(request, tenantDomain, parameters);
     }
 
     public Set<String> getApprovedScopes() {
@@ -70,10 +69,6 @@ public class OAuth2AuthzMessageContext<T1 extends Serializable, T2 extends Seria
 
     public OAuth2AuthzRequest getRequest(){
         return (OAuth2AuthzRequest)request;
-    }
-
-    public OAuth2AuthzResponse getResponse(){
-        return (OAuth2AuthzResponse)response;
     }
 
 }

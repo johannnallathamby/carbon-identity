@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.oauth2ext.oidc.bean.message.request;
 
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2AuthzRequest;
 
 public class OIDCAuthzRequest extends OAuth2AuthzRequest {
@@ -29,6 +30,10 @@ public class OIDCAuthzRequest extends OAuth2AuthzRequest {
     private String idTokenHint;
     private String loginHint;
     private String prompt;
+
+    protected OIDCAuthzRequest(InboundAuthenticationRequestBuilder builder) {
+        super(builder);
+    }
 
     public String getNonce() {
         return nonce;

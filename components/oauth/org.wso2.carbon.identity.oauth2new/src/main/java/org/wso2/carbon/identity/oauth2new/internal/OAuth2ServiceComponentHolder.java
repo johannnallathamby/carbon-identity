@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.oauth2new.internal;
 
+import org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent;
 import org.wso2.carbon.registry.api.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
 
@@ -26,6 +27,7 @@ public class OAuth2ServiceComponentHolder {
     private static OAuth2ServiceComponentHolder instance = new OAuth2ServiceComponentHolder();
     private RealmService realmService;
     private RegistryService registryService;
+    private IdentityCoreInitializedEvent identityCoreInitializedEvent;
 
     private OAuth2ServiceComponentHolder() {
 
@@ -49,5 +51,13 @@ public class OAuth2ServiceComponentHolder {
 
     public RegistryService getRegistryService() {
         return registryService;
+    }
+
+    public void setIdentityCoreInitializedEvent(IdentityCoreInitializedEvent identityCoreInitializedEvent) {
+        this.identityCoreInitializedEvent = identityCoreInitializedEvent;
+    }
+
+    public IdentityCoreInitializedEvent getIdentityCoreInitializedEvent() {
+        return identityCoreInitializedEvent;
     }
 }

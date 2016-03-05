@@ -15,17 +15,21 @@
  */
 package org.wso2.carbon.identity.core.model;
 
+import java.util.Properties;
+
 public class IdentityEventListenerConfig {
 
     private int order;
     private String enable;
+    private Properties properties = new Properties();
     private IdentityEventListenerConfigKey identityEventListenerConfigKey;
 
     public IdentityEventListenerConfig(String enable, int order, IdentityEventListenerConfigKey
-            identityEventListenerConfigKey) {
+            identityEventListenerConfigKey, Properties properties) {
         this.order = order;
         this.enable = enable;
         this.identityEventListenerConfigKey = identityEventListenerConfigKey;
+        this.properties = properties;
     }
 
     public int getOrder() {
@@ -42,6 +46,14 @@ public class IdentityEventListenerConfig {
 
     public void setEnable(String enable) {
         this.enable = enable;
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
     }
 
     public IdentityEventListenerConfigKey getIdentityEventListenerConfigKey() {

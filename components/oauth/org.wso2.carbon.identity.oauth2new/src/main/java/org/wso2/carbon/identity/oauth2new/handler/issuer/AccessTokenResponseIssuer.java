@@ -18,7 +18,6 @@
 
 package org.wso2.carbon.identity.oauth2new.handler.issuer;
 
-import org.wso2.carbon.identity.core.bean.context.MessageContext;
 import org.wso2.carbon.identity.core.handler.IdentityHandler;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2Response;
@@ -29,11 +28,6 @@ import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
  * To generate OAuth2 access tokens
  */
 public abstract class AccessTokenResponseIssuer extends IdentityHandler {
-
-    @Override
-    public int getPriority(MessageContext messageContext) {
-        return 0;
-    }
 
     /**
      * Tells if refresh token must be issued or not for this access token request.

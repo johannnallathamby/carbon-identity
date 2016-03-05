@@ -18,7 +18,6 @@
 
 package org.wso2.carbon.identity.oauth2new.handler.client;
 
-import org.wso2.carbon.identity.core.bean.context.MessageContext;
 import org.wso2.carbon.identity.core.handler.IdentityHandler;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
 import org.wso2.carbon.identity.oauth2new.common.ClientType;
@@ -29,11 +28,6 @@ import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
  * To authenticate OAuth2 clients
  */
 public abstract class ClientAuthHandler extends IdentityHandler {
-
-    @Override
-    public int getPriority(MessageContext messageContext) throws OAuth2RuntimeException {
-        return 0;
-    }
 
     /**
      * Tells if the client is confidential or public.

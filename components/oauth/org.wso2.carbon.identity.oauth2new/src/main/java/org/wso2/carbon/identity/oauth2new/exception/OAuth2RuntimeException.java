@@ -18,9 +18,9 @@
 
 package org.wso2.carbon.identity.oauth2new.exception;
 
-import org.wso2.carbon.identity.base.IdentityRuntimeException;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
 
-public class OAuth2RuntimeException extends IdentityRuntimeException {
+public class OAuth2RuntimeException extends AuthenticationFrameworkRuntimeException {
 
     protected OAuth2RuntimeException(String errorDescription) {
         super(errorDescription);

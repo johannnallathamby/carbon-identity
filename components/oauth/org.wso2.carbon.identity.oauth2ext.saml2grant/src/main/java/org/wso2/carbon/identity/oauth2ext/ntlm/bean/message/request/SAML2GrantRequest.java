@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.oauth2ext.ntlm.bean.message.request;
 
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2TokenRequest;
 
 public class SAML2GrantRequest extends OAuth2TokenRequest {
@@ -27,6 +28,10 @@ public class SAML2GrantRequest extends OAuth2TokenRequest {
     private String assertion;
     private String clientAssertionType;
     private String clientAssertion;
+
+    protected SAML2GrantRequest(InboundAuthenticationRequestBuilder builder) {
+        super(builder);
+    }
 
     public String getAssertion() {
         return assertion;

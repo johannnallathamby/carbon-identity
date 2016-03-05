@@ -25,7 +25,7 @@ import java.util.Comparator;
 /*
  * Comparator for sorting handler collection
  */
-public class HandlerComparator implements Comparator<HandlerComparable>  {
+public class HandlerComparator implements Comparator<IdentityHandler>  {
 
     private MessageContext messageContext = null;
 
@@ -34,7 +34,7 @@ public class HandlerComparator implements Comparator<HandlerComparable>  {
     }
 
     @Override
-    public int compare(HandlerComparable o1, HandlerComparable o2) {
+    public int compare(IdentityHandler o1, IdentityHandler o2) {
 
         if (o1.getPriority(messageContext) > o2.getPriority(messageContext)) {
             return 1;

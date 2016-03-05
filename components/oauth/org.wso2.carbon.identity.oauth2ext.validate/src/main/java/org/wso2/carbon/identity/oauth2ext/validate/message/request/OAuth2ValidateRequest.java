@@ -28,7 +28,7 @@ public class OAuth2ValidateRequest extends InboundAuthenticationRequest {
 
     private String tokenType;
 
-    public OAuth2ValidateRequest(String accessToken, String tokenType) {
+    protected OAuth2ValidateRequest(String accessToken, String tokenType) {
         this.accessToken = accessToken;
         this.tokenType = tokenType;
     }

@@ -21,13 +21,16 @@ package org.wso2.carbon.identity.core.handler;
 import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.identity.base.IdentityRuntimeException;
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
+import org.wso2.carbon.identity.core.model.IdentityEventListenerConfig;
+import org.wso2.carbon.identity.core.util.IdentityCoreConstants;
+import org.wso2.carbon.identity.core.util.IdentityUtil;
 
 import java.util.Properties;
 
 /**
  * This interface needs to be implemented by any identity handler.
  */
-public abstract class IdentityHandler implements HandlerComparable {
+public abstract class IdentityHandler {
 
     protected Properties properties = new Properties();
 
@@ -57,7 +60,32 @@ public abstract class IdentityHandler implements HandlerComparable {
      * @throws IdentityRuntimeException
      */
     public boolean isEnabled(MessageContext messageContext) throws IdentityException {
-        return true;
+
+        IdentityEventListenerConfig identityEventListenerConfig = IdentityUtil.readEventListenerProperty
+                (IdentityHandler.class.getName(), this.getClass().getName());
+
+        if (identityEventListenerConfig == null) {
+            return true;
+        }
+
+        return Boolean.parseBoolean(identityEventListenerConfig.getEnable());
+    }
+
+    /**
+     * Used to sort the set of handlers
+     *
+     * @param messageContext The runtime message context
+     * @return The priority value of the handler
+     * @throws IdentityRuntimeException
+     */
+    public int getPriority(MessageContext messageContext) throws IdentityRuntimeException {
+
+        IdentityEventListenerConfig identityEventListenerConfig = IdentityUtil.readEventListenerProperty
+                (IdentityHandler.class.getName(), this.getClass().getName());
+        if (identityEventListenerConfig == null) {
+            return IdentityCoreConstants.EVENT_LISTENER_ORDER_ID;
+        }
+        return identityEventListenerConfig.getOrder();
     }
 
     /**

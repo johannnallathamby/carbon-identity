@@ -26,6 +26,8 @@ import java.util.Set;
 
 public class AccessToken implements Serializable {
 
+    private static final long serialVersionUID = 5894325130475788975L;
+
     private String accessToken;
 
     private String refreshToken;

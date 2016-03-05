@@ -29,7 +29,7 @@ public abstract class OAuth2TokenRequest extends OAuth2Request {
     private String grantType;
     private Set<String> requestedScopes;
 
-    OAuth2TokenRequest(InboundAuthenticationRequestBuilder builder) {
+    protected OAuth2TokenRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
     }
 

@@ -16,25 +16,30 @@
  *under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.bean.message.request.processor.authz;
+package org.wso2.carbon.identity.oauth2new.bean.message.processor.authz;
 
+import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2AuthzMessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2AuthzResponse;
-import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
-import org.wso2.carbon.identity.oauth2new.processor.request.OAuth2InboundRequestProcessor;
 
-public abstract class AuthzRequestProcessor extends OAuth2InboundRequestProcessor {
+/*
+ * InboundRequestProcessor for response_type=code
+ */
+public class CodeRequestProcessor extends AuthzRequestProcessor {
 
-    protected boolean authorizeAccessDelegation(OAuth2AuthzMessageContext messageContext) throws
-            OAuth2Exception {
-        return true;
+    public String getName() {
+        return "CodeProcessor";
     }
 
-    protected boolean validateScope(OAuth2AuthzMessageContext messageContext)
-            throws OAuth2Exception {
-        return true;
+    public boolean canHandle(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
+        return false;
     }
 
-    protected abstract OAuth2AuthzResponse issue(OAuth2AuthzMessageContext messageContext) throws OAuth2Exception;
+    protected OAuth2AuthzResponse issue(OAuth2AuthzMessageContext messageContext) {
+
+        // Send back authz_code here
+        return null;
+    }
 
 }

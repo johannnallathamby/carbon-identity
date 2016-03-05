@@ -24,7 +24,7 @@ public class TokenResponseRequest extends OAuth2AuthzRequest {
 
     private static final long serialVersionUID = -2571263137456231933L;
 
-    TokenResponseRequest(InboundAuthenticationRequestBuilder builder) {
+    protected TokenResponseRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
     }
 }

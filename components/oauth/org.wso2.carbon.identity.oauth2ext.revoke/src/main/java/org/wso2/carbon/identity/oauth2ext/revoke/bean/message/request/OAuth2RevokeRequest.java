@@ -18,9 +18,14 @@
 
 package org.wso2.carbon.identity.oauth2ext.revoke.bean.message.request;
 
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2TokenRequest;
 
 public class OAuth2RevokeRequest extends OAuth2TokenRequest {
 
     private static final long serialVersionUID = -371925192220383152L;
+
+    protected OAuth2RevokeRequest(InboundAuthenticationRequestBuilder builder) {
+        super(builder);
+    }
 }

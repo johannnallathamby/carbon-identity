@@ -16,24 +16,10 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.core.handler;
+package org.wso2.carbon.identity.oauth2new.bean.message.processor;
 
-import org.wso2.carbon.identity.base.IdentityRuntimeException;
-import org.wso2.carbon.identity.core.bean.context.MessageContext;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestProcessor;
 
-/**
- * This interface needs to be implemented by any identity/extension handler.
- * This is used to sort the handlers according to priority
- */
-public interface HandlerComparable {
-
-    /**
-     * Used to sort the set of handlers
-     *
-     * @param messageContext The runtime message context
-     * @return The priority value of the handler
-     * @throws IdentityRuntimeException
-     */
-    public int getPriority(MessageContext messageContext) throws IdentityRuntimeException;
+public abstract class InboundProcessor extends InboundAuthenticationRequestProcessor {
 
 }

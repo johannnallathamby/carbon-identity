@@ -24,7 +24,7 @@ public class CodeResponseRequest extends OAuth2AuthzRequest {
 
     private static final long serialVersionUID = -753843175388068502L;
 
-    CodeResponseRequest(InboundAuthenticationRequestBuilder builder) {
+    protected CodeResponseRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
     }
 }

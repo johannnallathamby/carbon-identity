@@ -18,7 +18,6 @@
 
 package org.wso2.carbon.identity.oauth2new.handler.persist;
 
-import org.wso2.carbon.identity.core.bean.context.MessageContext;
 import org.wso2.carbon.identity.core.handler.IdentityHandler;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 
@@ -27,11 +26,6 @@ import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
  * E.g. to encrypt tokens before storing them in the database.
  */
 public abstract class TokenPersistenceProcessor extends IdentityHandler {
-
-    @Override
-    public int getPriority(MessageContext messageContext) {
-        return 0;
-    }
 
     public abstract String getProcessedClientId(String clientId) throws OAuth2RuntimeException;
 

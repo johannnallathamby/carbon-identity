@@ -25,6 +25,8 @@ import java.util.Set;
 
 public class Application implements Serializable {
 
+    private static final long serialVersionUID = 6805182202066865887L;
+
     private String clientId;
     private char[] clientSecret;
     private String applicationName;

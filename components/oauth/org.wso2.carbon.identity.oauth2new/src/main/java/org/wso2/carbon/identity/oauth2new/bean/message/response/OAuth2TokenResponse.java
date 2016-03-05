@@ -18,9 +18,6 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.response;
 
-/*
- * Wrapper for OLTU OAuthASResponse to token endpoint
- */
 public class OAuth2TokenResponse extends OAuth2Response {
 
     private static final long serialVersionUID = -3305470212380427305L;

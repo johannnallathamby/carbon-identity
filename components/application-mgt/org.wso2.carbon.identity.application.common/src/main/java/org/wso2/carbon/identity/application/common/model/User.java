@@ -40,6 +40,7 @@ public class User implements Serializable {
      * <TenantDomain></TenantDomain>
      * <UserStoreDomain></UserStoreDomain>
      * <UserName></UserName>
+
      * </User>
      *
      * @param userOM OMElement to populate user
@@ -121,6 +122,28 @@ public class User implements Serializable {
      */
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+
+        User user = (User) o;
+
+        if (!tenantDomain.equals(user.tenantDomain)) return false;
+        if (!userName.equals(user.userName)) return false;
+        if (!userStoreDomain.equals(user.userStoreDomain)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = tenantDomain.hashCode();
+        result = 31 * result + userStoreDomain.hashCode();
+        result = 31 * result + userName.hashCode();
+        return result;
     }
 
     @Override

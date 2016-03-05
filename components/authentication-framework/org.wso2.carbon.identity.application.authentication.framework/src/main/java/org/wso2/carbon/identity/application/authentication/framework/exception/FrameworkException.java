@@ -24,11 +24,11 @@ public class FrameworkException extends IdentityException {
 
     private static final long serialVersionUID = -6394814696453289135L;
 
-    public FrameworkException(String message) {
+    protected FrameworkException(String message) {
         super(message);
     }
 
-    public FrameworkException(String message, Throwable cause) {
+    protected FrameworkException(String message, Throwable cause) {
         super(message, cause);
     }
 }

@@ -24,7 +24,7 @@ public class ClientCredentialsGrantRequest extends OAuth2TokenRequest {
 
     private static final long serialVersionUID = -1664111039532276033L;
 
-    ClientCredentialsGrantRequest(InboundAuthenticationRequestBuilder builder) {
+    protected ClientCredentialsGrantRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
     }
 }

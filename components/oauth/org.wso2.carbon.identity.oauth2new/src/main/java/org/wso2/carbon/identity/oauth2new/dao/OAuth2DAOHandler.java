@@ -18,18 +18,11 @@
 
 package org.wso2.carbon.identity.oauth2new.dao;
 
-import org.wso2.carbon.identity.base.IdentityRuntimeException;
-import org.wso2.carbon.identity.core.bean.context.MessageContext;
 import org.wso2.carbon.identity.core.handler.IdentityHandler;
 
 /*
  * For plugging in multiple OAuth2DAOs in runtime
  */
 public abstract class OAuth2DAOHandler extends IdentityHandler {
-
-    @Override
-    public int getPriority(MessageContext messageContext) throws IdentityRuntimeException {
-        return 0;
-    }
 
 }

@@ -26,6 +26,8 @@ import java.util.Set;
 
 public class AuthzCode implements Serializable {
 
+    private static final long serialVersionUID = 6826100815294824101L;
+
     private String authzCode;
 
     private String clientId;

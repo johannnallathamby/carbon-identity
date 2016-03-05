@@ -26,7 +26,7 @@ public class RefreshGrantRequest extends OAuth2TokenRequest {
 
     private String refreshToken;
 
-    RefreshGrantRequest(InboundAuthenticationRequestBuilder builder) {
+    protected RefreshGrantRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
     }
 

@@ -27,7 +27,7 @@ public class PasswordGrantRequest extends OAuth2TokenRequest {
     private String resourceOwnerUsername;
     private String resourceOwnerPassword;
 
-    PasswordGrantRequest(InboundAuthenticationRequestBuilder builder) {
+    protected PasswordGrantRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
     }
 

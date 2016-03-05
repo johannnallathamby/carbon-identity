@@ -20,7 +20,6 @@ package org.wso2.carbon.identity.oauth2new.bean.context;
 
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContext;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2Request;
-import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2Response;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -32,17 +31,13 @@ public abstract class OAuth2MessageContext<T1 extends Serializable, T2 extends S
 
     private static final long serialVersionUID = -3793959181562481432L;
 
-    public OAuth2MessageContext(OAuth2Request request, OAuth2Response response, String tenantDomain,
+    public OAuth2MessageContext(OAuth2Request request, String tenantDomain,
                                 Map<T1,T2> parameters) {
-        super(request, response, tenantDomain, parameters);
+        super(request, tenantDomain, parameters);
     }
 
     @Override
     public OAuth2Request getRequest(){
         return (OAuth2Request)request;
-    }
-
-    public OAuth2Response getResponse(){
-        return (OAuth2Response)response;
     }
 }

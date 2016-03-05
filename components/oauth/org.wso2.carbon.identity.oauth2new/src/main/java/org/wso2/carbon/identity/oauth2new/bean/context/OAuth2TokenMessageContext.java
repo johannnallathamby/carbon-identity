@@ -20,7 +20,6 @@ package org.wso2.carbon.identity.oauth2new.bean.context;
 
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2TokenRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2TokenResponse;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -41,9 +40,9 @@ public class OAuth2TokenMessageContext<T1 extends Serializable, T2 extends Seria
 
     private String clientId;
 
-    public OAuth2TokenMessageContext(OAuth2TokenRequest request, OAuth2TokenResponse response, String tenantDomain,
+    public OAuth2TokenMessageContext(OAuth2TokenRequest request, String tenantDomain,
                                      Map<T1,T2> parameters) {
-        super(request, response, tenantDomain, parameters);
+        super(request, tenantDomain, parameters);
     }
 
     public Set<String> getApprovedScopes() {
@@ -82,10 +81,6 @@ public class OAuth2TokenMessageContext<T1 extends Serializable, T2 extends Seria
     @Override
     public OAuth2TokenRequest getRequest() {
         return (OAuth2TokenRequest)request;
-    }
-
-    public OAuth2TokenResponse getResponse(){
-        return (OAuth2TokenResponse)response;
     }
 
 }

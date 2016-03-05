@@ -18,9 +18,14 @@
 
 package org.wso2.carbon.identity.oauth2ext.oidc.bean.message.request;
 
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2TokenRequest;
 
 public class OIDCTokenRequest extends OAuth2TokenRequest {
 
     private static final long serialVersionUID = -3009563708954787261L;
+
+    protected OIDCTokenRequest(InboundAuthenticationRequestBuilder builder) {
+        super(builder);
+    }
 }

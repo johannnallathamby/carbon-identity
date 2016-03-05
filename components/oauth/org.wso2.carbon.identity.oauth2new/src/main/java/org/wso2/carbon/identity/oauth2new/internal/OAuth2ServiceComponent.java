@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
+import org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent;
 import org.wso2.carbon.identity.oauth2new.OAuth2Service;
 import org.wso2.carbon.identity.oauth2new.OAuth2ServiceImpl;
 import org.wso2.carbon.identity.oauth2new.model.OAuth2ServerConfig;
@@ -38,6 +39,9 @@ import org.wso2.carbon.user.core.service.RealmService;
  * @scr.reference name="user.realmservice.default"
  * interface="org.wso2.carbon.user.core.service.RealmService" cardinality="1..1"
  * policy="dynamic" bind="setRealmService" unbind="unsetRealmService"
+ * @scr.reference name="identityCoreInitializedEventService"
+ * interface="org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent" cardinality="1..1"
+ * policy="dynamic" bind="setIdentityCoreInitializedEventService" unbind="unsetIdentityCoreInitializedEventService"
  */
 public class OAuth2ServiceComponent {
 
@@ -98,5 +102,19 @@ public class OAuth2ServiceComponent {
             log.debug("Unsetting the RegistryService");
         }
         OAuth2ServiceComponentHolder.getInstance().setRegistryService(null);
+    }
+
+    protected void setIdentityCoreInitializedEventService(IdentityCoreInitializedEvent identityCoreInitializedEvent) {
+        if (log.isDebugEnabled()) {
+            log.debug("Setting the IdentityCoreInitializedEventService");
+        }
+        OAuth2ServiceComponentHolder.getInstance().setIdentityCoreInitializedEvent(identityCoreInitializedEvent);
+    }
+
+    protected void unsetIdentityCoreInitializedEventService(IdentityCoreInitializedEvent identityCoreInitializedEvent) {
+        if (log.isDebugEnabled()) {
+            log.debug("Unsetting the IdentityCoreInitializedEventService");
+        }
+        OAuth2ServiceComponentHolder.getInstance().setIdentityCoreInitializedEvent(null);
     }
 }
