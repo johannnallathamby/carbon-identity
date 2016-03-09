@@ -21,29 +21,20 @@ package org.wso2.carbon.identity.core.handler;
 import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.identity.base.IdentityRuntimeException;
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
-import org.wso2.carbon.identity.core.model.IdentityEventListenerConfig;
-import org.wso2.carbon.identity.core.util.IdentityCoreConstants;
-import org.wso2.carbon.identity.core.util.IdentityUtil;
 
 import java.util.Properties;
 
 /**
  * This interface needs to be implemented by any identity handler.
  */
-public abstract class IdentityHandler {
-
-    protected Properties properties = new Properties();
+public interface IdentityHandler {
 
     /**
      * Initializes the Extension Handler
      *
      * @throws IdentityRuntimeException
      */
-    public void init(Properties properties) throws IdentityRuntimeException {
-        if(properties != null){
-            this.properties = properties;
-        }
-    }
+    public void init(Properties properties) throws IdentityRuntimeException;
 
     /**
      * Name of the handler.
@@ -59,17 +50,7 @@ public abstract class IdentityHandler {
      * @param messageContext The runtime message context
      * @throws IdentityRuntimeException
      */
-    public boolean isEnabled(MessageContext messageContext) throws IdentityException {
-
-        IdentityEventListenerConfig identityEventListenerConfig = IdentityUtil.readEventListenerProperty
-                (IdentityHandler.class.getName(), this.getClass().getName());
-
-        if (identityEventListenerConfig == null) {
-            return true;
-        }
-
-        return Boolean.parseBoolean(identityEventListenerConfig.getEnable());
-    }
+    public boolean isEnabled(MessageContext messageContext) throws IdentityException;
 
     /**
      * Used to sort the set of handlers
@@ -78,15 +59,7 @@ public abstract class IdentityHandler {
      * @return The priority value of the handler
      * @throws IdentityRuntimeException
      */
-    public int getPriority(MessageContext messageContext) throws IdentityRuntimeException {
-
-        IdentityEventListenerConfig identityEventListenerConfig = IdentityUtil.readEventListenerProperty
-                (IdentityHandler.class.getName(), this.getClass().getName());
-        if (identityEventListenerConfig == null) {
-            return IdentityCoreConstants.EVENT_LISTENER_ORDER_ID;
-        }
-        return identityEventListenerConfig.getOrder();
-    }
+    public int getPriority(MessageContext messageContext) throws IdentityRuntimeException;
 
     /**
      * Tells if this request can be handled by this handler
@@ -96,5 +69,4 @@ public abstract class IdentityHandler {
      * @throws IdentityRuntimeException
      */
     public abstract boolean canHandle(MessageContext messageContext) throws IdentityRuntimeException;
-
 }

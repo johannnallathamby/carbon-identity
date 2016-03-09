@@ -19,11 +19,7 @@
 
 package org.wso2.carbon.identity.application.authentication.framework.inbound;
 
-import org.wso2.carbon.identity.base.IdentityRuntimeException;
-
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,26 +29,35 @@ public class InboundAuthenticationResponse implements Serializable {
 
     private static final long serialVersionUID = 4371843418083025682L;
 
-    private Map<String, String> responseHeaders = new HashMap<String, String>();
+    private Map<String, String> headers = new HashMap<String, String>();
     private Map<String, Cookie> cookies = new HashMap<String, Cookie>();
-    private Map<String, String> parameters = new HashMap<String, String>();
+    private Map<String, String[]> parameters = new HashMap<>();
+    private String body;
     private int statusCode;
     private String redirectURL;
 
-    public Map<String, String> getResponseHeaders() {
-        return Collections.unmodifiableMap(responseHeaders);
+    public Map<String, String> getHeaders() {
+        return Collections.unmodifiableMap(headers);
     }
 
     public Map<String, Cookie> getCookies() {
         return Collections.unmodifiableMap(cookies);
     }
 
-    public String getParameter(String key) {
-        return getParameters().get(key);
+    public Map<String, String[]> getParameters() {
+        return Collections.unmodifiableMap(parameters);
     }
 
-    public Map<String, String> getParameters() {
-        return Collections.unmodifiableMap(parameters);
+    public String[] getParameterValues(String paramName) {
+        return parameters.get(paramName);
+    }
+
+    public String getParameterValue(String paramName) {
+        String[] values = parameters.get(paramName);
+        if(values.length > 0){
+            return values[0];
+        }
+        return null;
     }
 
     public int getStatusCode() {
@@ -63,22 +68,28 @@ public class InboundAuthenticationResponse implements Serializable {
         return redirectURL;
     }
 
+    public String getBody() {
+        return body;
+    }
+
     protected InboundAuthenticationResponse(InboundAuthenticationResponseBuilder builder) {
-        this.responseHeaders = builder.responseHeaders;
+        this.headers = builder.headers;
         this.cookies = builder.cookies;
         this.parameters = builder.parameters;
         this.statusCode = builder.statusCode;
         this.redirectURL = builder.redirectURL;
+        this.body = builder.body;
 
     }
 
     public static class InboundAuthenticationResponseBuilder {
 
-        private Map<String, String> responseHeaders = new HashMap<String, String>();
+        private Map<String, String> headers = new HashMap<String, String>();
         private Map<String, Cookie> cookies = new HashMap<String, Cookie>();
-        private Map<String, String> parameters = new HashMap<String, String>();
+        private Map<String, String[]> parameters = new HashMap<>();
         private int statusCode;
         private String redirectURL;
+        private String body;
 
         public String getName(){
             return "InboundAuthenticationResponseBuilder";
@@ -88,17 +99,23 @@ public class InboundAuthenticationResponse implements Serializable {
             return 0;
         }
 
-        protected InboundAuthenticationResponseBuilder() {
+        public InboundAuthenticationResponseBuilder() {
 
         }
 
-        public InboundAuthenticationResponseBuilder setResponseHeaders(Map<String, String> responseHeaders) {
-            this.responseHeaders = responseHeaders;
+        public InboundAuthenticationResponseBuilder setHeaders(Map<String, String> headers) {
+            this.headers = headers;
             return this;
         }
 
-        public InboundAuthenticationResponseBuilder addResponseHeader(String key, String values) {
-            responseHeaders.put(key, values);
+        public InboundAuthenticationResponseBuilder addResponseHeaders(Map<String,String> headers) {
+            for(Map.Entry<String,String> header:headers.entrySet()) {
+                if(this.headers.containsKey(header.getKey())) {
+                    throw AuthenticationFrameworkRuntimeException.error("Headers map trying to override existing " +
+                            "header " + header.getKey());
+                }
+                this.headers.put(header.getKey(), header.getValue());
+            }
             return this;
         }
 
@@ -107,23 +124,29 @@ public class InboundAuthenticationResponse implements Serializable {
             return this;
         }
 
-        public InboundAuthenticationResponseBuilder addCookie(String key, Cookie values) {
-            cookies.put(key, values);
-            return this;
-        }
-
-        public InboundAuthenticationResponseBuilder addParameter(String key, String value) {
-            parameters.put(key, value);
-            return this;
-        }
-
-        public InboundAuthenticationResponseBuilder addParameters(Map<String,String> parameters) {
-            for(Map.Entry<String,String> parameter:parameters.entrySet()) {
-                if(this.parameters.containsKey(parameter.getKey())) {
-                    throw AuthenticationFrameworkRuntimeException.error("Parameters map trying to override existing key " + parameter
-                            .getKey());
+        public InboundAuthenticationResponseBuilder addCookies(Map<String,Cookie> cookies) {
+            for(Map.Entry<String,Cookie> cookie:cookies.entrySet()) {
+                if(this.cookies.containsKey(cookie.getKey())) {
+                    throw AuthenticationFrameworkRuntimeException.error("Cookies map trying to override existing " +
+                            "cookie " + cookie.getKey());
                 }
-                parameters.put(parameter.getKey(), parameter.getValue());
+                this.cookies.put(cookie.getKey(), cookie.getValue());
+            }
+            return this;
+        }
+
+        public InboundAuthenticationResponseBuilder setParameters(Map<String,String[]> parameters) {
+            this.parameters = parameters;
+            return this;
+        }
+
+        public InboundAuthenticationResponseBuilder addParameters(Map<String,String[]> parameters) {
+            for(Map.Entry<String,String[]> parameter:parameters.entrySet()) {
+                if(this.parameters.containsKey(parameter.getKey())) {
+                    throw AuthenticationFrameworkRuntimeException.error("Parameters map trying to override existing " +
+                            "key " + parameter.getKey());
+                }
+                this.parameters.put(parameter.getKey(), parameter.getValue());
             }
             return this;
         }
@@ -135,6 +158,11 @@ public class InboundAuthenticationResponse implements Serializable {
 
         public InboundAuthenticationResponseBuilder setRedirectURL(String redirectURL) {
             this.redirectURL = redirectURL;
+            return this;
+        }
+
+        public InboundAuthenticationResponseBuilder setBody(String body) {
+            this.body = body;
             return this;
         }
 

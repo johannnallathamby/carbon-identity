@@ -19,8 +19,17 @@
 package org.wso2.carbon.identity.oauth2new.internal;
 
 import org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestBuilder;
+import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAOHandler;
+import org.wso2.carbon.identity.oauth2new.handler.client.ClientAuthHandler;
+import org.wso2.carbon.identity.oauth2new.handler.issuer.AccessTokenResponseIssuer;
+import org.wso2.carbon.identity.oauth2new.handler.persist.TokenPersistenceProcessor;
+import org.wso2.carbon.identity.oauth2new.processor.OAuth2InboundRequestProcessor;
 import org.wso2.carbon.registry.api.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OAuth2ServiceComponentHolder {
 
@@ -28,6 +37,12 @@ public class OAuth2ServiceComponentHolder {
     private RealmService realmService;
     private RegistryService registryService;
     private IdentityCoreInitializedEvent identityCoreInitializedEvent;
+    private List<OAuth2InboundRequestProcessor> processors = new ArrayList<>();
+    private List<OAuth2InboundRequestBuilder> builders = new ArrayList<>();
+    private List<ClientAuthHandler> clientAuthHandlers = new ArrayList<>();
+    private List<AccessTokenResponseIssuer> accessTokenIssuers = new ArrayList<>();
+    private List<TokenPersistenceProcessor> tokenPersistenceProcessors = new ArrayList<>();
+    private List<OAuth2DAOHandler> oAuth2DAOHandlers = new ArrayList<>();
 
     private OAuth2ServiceComponentHolder() {
 
@@ -59,5 +74,29 @@ public class OAuth2ServiceComponentHolder {
 
     public IdentityCoreInitializedEvent getIdentityCoreInitializedEvent() {
         return identityCoreInitializedEvent;
+    }
+
+    public List<OAuth2InboundRequestProcessor> getProcessors() {
+        return processors;
+    }
+
+    public List<OAuth2InboundRequestBuilder> getBuilders() {
+        return builders;
+    }
+
+    public List<ClientAuthHandler> getClientAuthHandlers() {
+        return clientAuthHandlers;
+    }
+
+    public List<AccessTokenResponseIssuer> getAccessTokenIssuers() {
+        return accessTokenIssuers;
+    }
+
+    public List<TokenPersistenceProcessor> getTokenPersistenceProcessors() {
+        return tokenPersistenceProcessors;
+    }
+
+    public List<OAuth2DAOHandler> getOAuth2DAOHandlers() {
+        return oAuth2DAOHandlers;
     }
 }

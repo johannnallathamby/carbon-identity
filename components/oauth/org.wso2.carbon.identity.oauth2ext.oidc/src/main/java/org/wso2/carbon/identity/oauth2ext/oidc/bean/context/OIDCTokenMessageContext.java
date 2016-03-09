@@ -19,7 +19,7 @@
 package org.wso2.carbon.identity.oauth2ext.oidc.bean.context;
 
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2Request;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequest;
 import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2Response;
 
 import java.io.Serializable;
@@ -28,7 +28,7 @@ import java.util.Map;
 /*
  * Message context that holds information about the token revocation request to the token revocation endpoint
  */
-public class OIDCTokenMessageContext<T1 extends OAuth2Request, T2 extends OAuth2Response,
+public class OIDCTokenMessageContext<T1 extends OAuth2InboundRequest, T2 extends OAuth2Response,
         T3 extends Serializable, T4 extends Serializable> extends OAuth2MessageContext {
 
     private static final long serialVersionUID = 8957814451266828857L;

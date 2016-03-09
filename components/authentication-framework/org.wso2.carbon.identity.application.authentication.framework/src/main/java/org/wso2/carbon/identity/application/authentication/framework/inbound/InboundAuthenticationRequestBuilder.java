@@ -30,20 +30,26 @@ public abstract class InboundAuthenticationRequestBuilder {
     protected HttpServletResponse response;
     Map<String, String> headers = new HashMap<String, String>();
     Map<String, Cookie> cookies = new HashMap<String, Cookie>();
-    Map<String, String[]> parameters = new HashMap<String, String[]>();
+    Map<String, String[]> parameters = new HashMap<>();
 
     public InboundAuthenticationRequestBuilder (HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
     }
 
-    public InboundAuthenticationRequestBuilder setHeaders(Map<String, String> headers) {
-        this.headers = headers;
+    public InboundAuthenticationRequestBuilder setResponseHeaders(Map<String, String> responseHeaders) {
+        this.headers = responseHeaders;
         return this;
     }
 
-    public InboundAuthenticationRequestBuilder addResponseHeader(String key, String values) {
-        headers.put(key, values);
+    public InboundAuthenticationRequestBuilder addResponseHeaders(Map<String,String> headers) {
+        for(Map.Entry<String,String> header:headers.entrySet()) {
+            if(this.headers.containsKey(header.getKey())) {
+                throw AuthenticationFrameworkRuntimeException.error("Headers map trying to override existing " +
+                        "header " + header.getKey());
+            }
+            this.headers.put(header.getKey(), header.getValue());
+        }
         return this;
     }
 
@@ -52,24 +58,46 @@ public abstract class InboundAuthenticationRequestBuilder {
         return this;
     }
 
-    public InboundAuthenticationRequestBuilder addCookie(String key, Cookie values) {
-        cookies.put(key, values);
+    public InboundAuthenticationRequestBuilder addCookies(Map<String,Cookie> cookies) {
+        for(Map.Entry<String,Cookie> cookie:cookies.entrySet()) {
+            if(this.cookies.containsKey(cookie.getKey())) {
+                throw AuthenticationFrameworkRuntimeException.error("Cookies map trying to override existing " +
+                        "cookie " + cookie.getKey());
+            }
+            this.cookies.put(cookie.getKey(), cookie.getValue());
+        }
         return this;
     }
 
-    public InboundAuthenticationRequestBuilder setParameters(Map<String, String[]> parameters) {
+    public InboundAuthenticationRequestBuilder setParameters(Map<String,String[]> parameters) {
         this.parameters = parameters;
+        return this;
+    }
+
+    public InboundAuthenticationRequestBuilder addParameters(Map<String,String[]> parameters) {
+        for(Map.Entry<String,String[]> parameter:parameters.entrySet()) {
+            if(this.parameters.containsKey(parameter.getKey())) {
+                throw AuthenticationFrameworkRuntimeException.error("Parameters map trying to override existing key " +
+                        parameter.getKey());
+            }
+            this.parameters.put(parameter.getKey(), parameter.getValue());
+        }
         return this;
     }
 
 	public abstract String getName();
 
-	public abstract int getPriority();
+	public int getPriority() {
+        return 0;
+    }
 
 	public abstract boolean canHandle(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationFrameworkRuntimeException;
 
-	public abstract InboundAuthenticationRequest build(InboundAuthenticationRequestBuilder builder)
-            throws AuthenticationFrameworkRuntimeException ;
+	public InboundAuthenticationRequest build()
+            throws AuthenticationFrameworkRuntimeException {
+
+        return new InboundAuthenticationRequest(this);
+    }
 
 }

@@ -28,6 +28,8 @@ public class AccessToken implements Serializable {
 
     private static final long serialVersionUID = 5894325130475788975L;
 
+    private String accessTokenId;
+
     private String accessToken;
 
     private String refreshToken;
@@ -52,9 +54,11 @@ public class AccessToken implements Serializable {
 
     private long refreshTokenValidity;
 
-    public AccessToken(String accessToken, String clientId, String subjectIdentifier, String grantType,
-                       String accessTokenState, Timestamp accessTokenIssuedTime, long accessTokenValidity) {
+    public AccessToken(String accessTokenId, String accessToken, String clientId, String subjectIdentifier,
+                       String grantType, String accessTokenState, Timestamp accessTokenIssuedTime,
+                       long accessTokenValidity) {
 
+        this.accessTokenId = accessTokenId;
         this.accessToken = accessToken;
         this.clientId = clientId;
         this.subjectIdentifier = subjectIdentifier;
@@ -62,6 +66,10 @@ public class AccessToken implements Serializable {
         this.accessTokenState = accessTokenState;
         this.accessTokenIssuedTime = accessTokenIssuedTime;
         this.accessTokenValidity = accessTokenValidity;
+    }
+
+    public String getAccessTokenId() {
+        return accessTokenId;
     }
 
     public String getAccessToken() {
@@ -135,7 +143,7 @@ public class AccessToken implements Serializable {
     @Override
     public String toString() {
         return "AccessToken{" +
-                ", clientId='" + clientId + '\'' +
+                "clientId='" + clientId + '\'' +
                 ", subjectIdentifier='" + subjectIdentifier + '\'' +
                 ", authzUser=" + authzUser +
                 ", scopes=" + scopes +
@@ -145,6 +153,7 @@ public class AccessToken implements Serializable {
                 ", refreshTokenIssuedTime=" + refreshTokenIssuedTime +
                 ", accessTokenValidity=" + accessTokenValidity +
                 ", refreshTokenValidity=" + refreshTokenValidity +
+                ", accessTokenId='" + accessTokenId + '\'' +
                 '}';
     }
 }

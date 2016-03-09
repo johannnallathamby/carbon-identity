@@ -19,7 +19,7 @@
 package org.wso2.carbon.identity.oauth2new.bean.context;
 
 import org.wso2.carbon.identity.application.common.model.User;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2TokenRequest;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.token.OAuth2TokenRequest;
 
 import java.io.Serializable;
 import java.util.Map;

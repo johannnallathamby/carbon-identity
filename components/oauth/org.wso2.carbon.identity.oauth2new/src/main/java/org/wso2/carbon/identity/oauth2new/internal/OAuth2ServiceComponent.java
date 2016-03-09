@@ -26,7 +26,13 @@ import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent;
 import org.wso2.carbon.identity.oauth2new.OAuth2Service;
 import org.wso2.carbon.identity.oauth2new.OAuth2ServiceImpl;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestBuilder;
+import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAOHandler;
+import org.wso2.carbon.identity.oauth2new.handler.client.ClientAuthHandler;
+import org.wso2.carbon.identity.oauth2new.handler.issuer.AccessTokenResponseIssuer;
+import org.wso2.carbon.identity.oauth2new.handler.persist.TokenPersistenceProcessor;
 import org.wso2.carbon.identity.oauth2new.model.OAuth2ServerConfig;
+import org.wso2.carbon.identity.oauth2new.processor.OAuth2InboundRequestProcessor;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
 
@@ -42,12 +48,32 @@ import org.wso2.carbon.user.core.service.RealmService;
  * @scr.reference name="identityCoreInitializedEventService"
  * interface="org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent" cardinality="1..1"
  * policy="dynamic" bind="setIdentityCoreInitializedEventService" unbind="unsetIdentityCoreInitializedEventService"
+ * @scr.reference name="oauth2.inbound.request.builder"
+ * interface="org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestBuilder"
+ * cardinality="0..n"
+ * policy="dynamic" bind="addOAuth2InboundRequestBuilder" unbind="removeOAuth2InboundRequestBuilder"
+ * @scr.reference name="oauth2.inbound.request.processor"
+ * interface="org.wso2.carbon.identity.oauth2new.processor.OAuth2InboundRequestProcessor" cardinality="0..n"
+ * policy="dynamic" bind="addOAuth2InboundRequestProcessor" unbind="removeOAuth2InboundRequestProcessor"
+ * @scr.reference name="oauth2.handler.client.auth"
+ * interface="org.wso2.carbon.identity.oauth2new.handler.client.ClientAuthHandler" cardinality="0..n"
+ * policy="dynamic" bind="addClientAuthHandler" unbind="removeClientAuthHandler"
+ * @scr.reference name="oauth2.handler.issuer.token"
+ * interface="org.wso2.carbon.identity.oauth2new.handler.issuer.AccessTokenResponseIssuer" cardinality="0..n"
+ * policy="dynamic" bind="addAccessTokenResponseIssuer" unbind="removeAccessTokenResponseIssuer"
+ * @scr.reference name="oauth2.handler.persist.token"
+ * interface="org.wso2.carbon.identity.oauth2new.handler.persist.TokenPersistenceProcessor" cardinality="0..n"
+ * policy="dynamic" bind="addTokenPersistenceProcessor" unbind="removeTokenPersistenceProcessor"
+ * @scr.reference name="oauth2.handler.dao"
+ * interface="org.wso2.carbon.identity.oauth2new.dao.OAuth2DAO" cardinality="0..n"
+ * policy="dynamic" bind="addOAuth2DAOHandler" unbind="removeOAuth2DAOHandler"
+ *
  */
 public class OAuth2ServiceComponent {
 
     private static Log log = LogFactory.getLog(OAuth2ServiceComponent.class);
     private BundleContext bundleContext = null;
-    ServiceRegistration oauth2ServiceReg = null;
+    private ServiceRegistration oauth2ServiceReg = null;
 
     protected void activate(ComponentContext context) {
 
@@ -58,6 +84,8 @@ public class OAuth2ServiceComponent {
                     OAuth2ServiceImpl.getInstance(), null);
             if (log.isDebugEnabled()) {
                 log.debug("OAuth2Service is registered");
+            }
+            if (log.isDebugEnabled()) {
                 log.debug("OAuth2 bundle is activated");
             }
         } catch (Throwable e) {
@@ -72,6 +100,8 @@ public class OAuth2ServiceComponent {
         }
         if (log.isDebugEnabled()) {
             log.debug("OAuth2 service is unregistered");
+        }
+        if (log.isDebugEnabled()) {
             log.debug("OAuth2 bundle is deactivated");
         }
     }
@@ -116,5 +146,89 @@ public class OAuth2ServiceComponent {
             log.debug("Unsetting the IdentityCoreInitializedEventService");
         }
         OAuth2ServiceComponentHolder.getInstance().setIdentityCoreInitializedEvent(null);
+    }
+
+    protected void addOAuth2InboundRequestBuilder(OAuth2InboundRequestBuilder builder) {
+        if (log.isDebugEnabled()) {
+            log.debug("Adding OAuth2InboundRequestBuilder " + builder.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getBuilders().add(builder);
+    }
+
+    protected void removeOAuth2InboundRequestBuilder(OAuth2InboundRequestBuilder builder) {
+        if (log.isDebugEnabled()) {
+            log.debug("Removing OAuth2InboundRequestBuilder " + builder.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getBuilders().remove(builder);
+    }
+
+    protected void addOAuth2InboundRequestProcessor(OAuth2InboundRequestProcessor processor) {
+        if (log.isDebugEnabled()) {
+            log.debug("Adding OAuth2InboundRequestProcessor " + processor.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getProcessors().add(processor);
+    }
+
+    protected void removeOAuth2InboundRequestProcessor(OAuth2InboundRequestProcessor processor) {
+        if (log.isDebugEnabled()) {
+            log.debug("Removing OAuth2InboundRequestProcessor " + processor.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getProcessors().remove(processor);
+    }
+
+    protected void addClientAuthHandler(ClientAuthHandler handler) {
+        if (log.isDebugEnabled()) {
+            log.debug("Adding ClientAuthHandler " + handler.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getClientAuthHandlers().add(handler);
+    }
+
+    protected void removeClientAuthHandler(ClientAuthHandler handler) {
+        if (log.isDebugEnabled()) {
+            log.debug("Removing ClientAuthHandler " + handler.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getClientAuthHandlers().remove(handler);
+    }
+
+    protected void addAccessTokenResponseIssuer(AccessTokenResponseIssuer handler) {
+        if (log.isDebugEnabled()) {
+            log.debug("Adding AccessTokenResponseIssuer " + handler.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getAccessTokenIssuers().add(handler);
+    }
+
+    protected void removeAccessTokenResponseIssuer(AccessTokenResponseIssuer handler) {
+        if (log.isDebugEnabled()) {
+            log.debug("Removing AccessTokenResponseIssuer " + handler.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getAccessTokenIssuers().remove(handler);
+    }
+
+    protected void addTokenPersistenceProcessor(TokenPersistenceProcessor persistenceProcessor) {
+        if (log.isDebugEnabled()) {
+            log.debug("Adding AccessTokenResponseIssuer " + persistenceProcessor.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getTokenPersistenceProcessors().add(persistenceProcessor);
+    }
+
+    protected void removeTokenPersistenceProcessor(TokenPersistenceProcessor persistenceProcessor) {
+        if (log.isDebugEnabled()) {
+            log.debug("Removing AccessTokenResponseIssuer " + persistenceProcessor.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getTokenPersistenceProcessors().remove(persistenceProcessor);
+    }
+
+    protected void addOAuth2DAOHandler(OAuth2DAOHandler handler) {
+        if (log.isDebugEnabled()) {
+            log.debug("Adding AccessTokenResponseIssuer " + handler.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getOAuth2DAOHandlers().add(handler);
+    }
+
+    protected void removeOAuth2DAOHandler(OAuth2DAOHandler handler) {
+        if (log.isDebugEnabled()) {
+            log.debug("Removing AccessTokenResponseIssuer " + handler.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getOAuth2DAOHandlers().remove(handler);
     }
 }

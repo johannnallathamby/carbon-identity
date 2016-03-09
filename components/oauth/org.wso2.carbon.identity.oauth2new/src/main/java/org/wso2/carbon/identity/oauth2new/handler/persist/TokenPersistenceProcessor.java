@@ -18,14 +18,14 @@
 
 package org.wso2.carbon.identity.oauth2new.handler.persist;
 
-import org.wso2.carbon.identity.core.handler.IdentityHandler;
+import org.wso2.carbon.identity.core.handler.AbstractIdentityHandler;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 
 /**
  * To process OAuth2 tokens just before storing them in the database.
  * E.g. to encrypt tokens before storing them in the database.
  */
-public abstract class TokenPersistenceProcessor extends IdentityHandler {
+public abstract class TokenPersistenceProcessor extends AbstractIdentityHandler {
 
     public abstract String getProcessedClientId(String clientId) throws OAuth2RuntimeException;
 

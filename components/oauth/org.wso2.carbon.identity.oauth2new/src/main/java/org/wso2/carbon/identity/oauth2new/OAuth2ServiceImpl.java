@@ -20,26 +20,18 @@ package org.wso2.carbon.identity.oauth2new;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2AuthzRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2Request;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2TokenRequest;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequest;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.authz.OAuth2AuthzRequest;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.token.OAuth2TokenRequest;
 import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2AuthzResponse;
 import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2TokenResponse;
-import org.wso2.carbon.identity.oauth2new.dao.CacheBackedOAuth2DAO;
-import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAO;
-import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAOHandler;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class OAuth2ServiceImpl implements OAuth2Service {
 
     private static Log log = LogFactory.getLog(OAuth2Service.class);
 
     private static volatile OAuth2Service instance = new OAuth2ServiceImpl();
-    private Map<String,OAuth2DAO> cachedDAOMap = new HashMap<>();
 
     private OAuth2ServiceImpl() {
 
@@ -74,36 +66,8 @@ public class OAuth2ServiceImpl implements OAuth2Service {
         return null;
     }
 
-    /**
-     * Check Whether the provided client_id and the redirect_uri are valid.
-     *
-     * @param request <Code>OAuth2ClientValidationRequestDTO</Code>
-     *                contains client_id and redirect_uri found in the request
-     * @return <code>OAuth2ClientValidationResponseDTO</code> bean with validity information,
-     *          application name and redirect URI
-     * @throws OAuth2Exception Error when validating client info
-     */
-    private boolean validateClient(OAuth2Request request) throws OAuth2Exception {
+    private boolean validateClient(OAuth2InboundRequest request) throws OAuth2Exception {
 
         return false;
-    }
-
-    protected OAuth2DAO getOAuth2DAO(OAuth2MessageContext messageContext) {
-
-        // Call Handler Manager and get the corresponding OAuth2DAOHandler first
-        OAuth2DAOHandler daoHandler = null;
-
-        //Wrap the OAuth2DAOHandler
-        OAuth2DAO dao = cachedDAOMap.get(daoHandler.getName());
-        if(dao == null){
-            synchronized (OAuth2ServiceImpl.class) {
-                if(dao == null) {
-                    CacheBackedOAuth2DAO cachedDAO = new CacheBackedOAuth2DAO(dao);
-                    cachedDAOMap.put(daoHandler.getName(), cachedDAO);
-                    return cachedDAO;
-                }
-            }
-        }
-        return dao;
     }
 }

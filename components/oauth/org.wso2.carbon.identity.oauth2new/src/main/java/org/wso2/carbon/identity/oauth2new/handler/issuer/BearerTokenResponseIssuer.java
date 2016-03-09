@@ -20,18 +20,29 @@ package org.wso2.carbon.identity.oauth2new.handler.issuer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.oltu.oauth2.as.issuer.MD5Generator;
+import org.apache.oltu.oauth2.as.issuer.OAuthIssuerImpl;
+import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
+import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
+import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2Response;
-import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 import org.wso2.carbon.identity.oauth2new.model.AccessToken;
+import org.wso2.carbon.identity.oauth2new.model.AuthzCode;
+import org.wso2.carbon.identity.oauth2new.model.OAuth2ServerConfig;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Set;
+import java.util.UUID;
 
 public class BearerTokenResponseIssuer extends AccessTokenResponseIssuer {
 
     private static Log log = LogFactory.getLog(BearerTokenResponseIssuer.class);
+
+    private OAuthIssuerImpl oltuIssuer = new OAuthIssuerImpl(new MD5Generator());
 
     @Override
     public String getName() {
@@ -43,26 +54,87 @@ public class BearerTokenResponseIssuer extends AccessTokenResponseIssuer {
         return true;
     }
 
-    @Override
-    public OAuth2Response issue(OAuth2MessageContext messageContext) {
-        return null;
+
+
+    protected AccessToken issueNewAccessToken(String clientId, User authzUser, Set<String> scopes,
+                                              boolean isRefreshTokenValid, boolean markAccessTokenExpired,
+                                              AccessToken prevAccessToken, long accessTokenCallbackValidity,
+                                              long refreshTokenCallbackValidity, String grantOrResponseType,
+                                              OAuth2MessageContext messageContext) {
+
+
+
+        Timestamp timestamp = new Timestamp(new Date().getTime());
+
+        Timestamp accessTokenIssuedTime = timestamp;
+
+        Timestamp refreshTokenIssuedTime = timestamp;
+        if(isRefreshTokenValid) {
+            refreshTokenIssuedTime = prevAccessToken.getRefreshTokenIssuedTime();
+        }
+
+        long accessTokenValidity = OAuth2ServerConfig.getInstance().getApplicationAccessTokenValidity();
+
+        if(GrantType.CLIENT_CREDENTIALS.toString().equals(grantOrResponseType)){
+            accessTokenValidity = OAuth2ServerConfig.getInstance().getUserAccessTokenValidity();
+        }
+
+        // if a VALID validity period is set through the callback, then use it
+        if (accessTokenCallbackValidity != OAuth2.UNASSIGNED_VALIDITY_PERIOD) {
+            accessTokenValidity = accessTokenCallbackValidity;
+        }
+
+        accessTokenValidity = accessTokenValidity * 1000;
+
+        // Default Validity Period (in seconds)
+        long refreshTokenValidity = OAuth2ServerConfig.getInstance().getRefreshTokenValidity();
+
+        // if a VALID validity period is set through the callback, then use it
+        if (refreshTokenCallbackValidity != OAuth2.UNASSIGNED_VALIDITY_PERIOD) {
+            refreshTokenValidity = refreshTokenCallbackValidity;
+        }
+
+        refreshTokenValidity = refreshTokenValidity * 1000;
+
+        String bearerToken;
+        String refreshToken = null;
+        try {
+            bearerToken = oltuIssuer.accessToken();
+        } catch (OAuthSystemException e) {
+            throw OAuth2RuntimeException.error(e.getMessage(), e);
+        }
+        if (isRefreshTokenValid) {
+            refreshToken = prevAccessToken.getRefreshToken();
+        } else {
+            try {
+                refreshToken = oltuIssuer.refreshToken();
+            } catch (OAuthSystemException e) {
+                throw OAuth2RuntimeException.error(e.getMessage(), e);
+            }
+        }
+
+        AccessToken newAccessToken = new AccessToken(UUID.randomUUID().toString(), bearerToken, clientId, authzUser.toString(),
+                grantOrResponseType, OAuth2.TokenState.ACTIVE, accessTokenIssuedTime, accessTokenValidity);
+
+        newAccessToken.setAuthzUser(authzUser);
+        newAccessToken.setScopes(scopes);
+        newAccessToken.setRefreshToken(refreshToken);
+        newAccessToken.setRefreshTokenIssuedTime(refreshTokenIssuedTime);
+        newAccessToken.setRefreshTokenValidity(refreshTokenValidity);
+
+        return newAccessToken;
     }
 
-    @Override
-    protected boolean issueRefreshToken(OAuth2MessageContext messageContext) {
-        return false;
-    }
+    protected void storeNewAccessToken(AccessToken accessToken, OAuth2MessageContext messageContext) {
 
-    protected AccessToken validTokenExists(String clientId, User authzUser, Set<String> approvedScopes,
-                                                     MessageContext messageContext) throws OAuth2Exception {
-        return null;
-    }
+        AuthzCode authzCode = (AuthzCode)messageContext.getParameter(OAuth2.AUTHZ_CODE);
+        boolean markAccessTokenExpired = (Boolean)messageContext.getParameter(MARK_ACCESS_TOKEN_EXPIRED);
 
-    protected AccessToken issueNewToken(String clientId, String redirectURI, User authzUser,
-                                        long callbackValidityPeriod, Set<String> approvedScopes,
-                                        String tokenUserType, MessageContext messageContext) {
+        // if authzCode != null, invalidate it
+        // if markAccessTokenExpired == true, mark it expired
+        // if persist new access token
+        // All the above should go as a asynchronous task
 
-        return null;
     }
 
 

@@ -18,9 +18,25 @@
 
 package org.wso2.carbon.identity.oauth2new.dao;
 
+import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
+import org.wso2.carbon.identity.oauth2new.model.AccessToken;
+import org.wso2.carbon.identity.oauth2new.model.AuthzCode;
+
+import java.util.Set;
+
 /*
  * To interact with the persistence layer
  */
 public abstract class OAuth2DAO {
+
+    public abstract AccessToken getLatestActiveOrExpiredAccessToken(String consumerKey, User authzUser,
+                                                                 Set<String> scopes,
+                                                                 OAuth2MessageContext messageContext);
+
+    public abstract void storeAccessToken(AccessToken accessToken) throws OAuth2RuntimeException;
+
+    public abstract void storeAuthzCode(AuthzCode authzCode) throws OAuth2RuntimeException;
 
 }

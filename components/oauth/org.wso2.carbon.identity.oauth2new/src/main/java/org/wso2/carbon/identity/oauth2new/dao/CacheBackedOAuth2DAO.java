@@ -18,6 +18,12 @@
 
 package org.wso2.carbon.identity.oauth2new.dao;
 
+import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
+import org.wso2.carbon.identity.oauth2new.model.AccessToken;
+
+import java.util.Set;
+
 /*
  * Wraps a given OAuth2DAO object and provides caching feature for it
  */
@@ -27,5 +33,10 @@ public class CacheBackedOAuth2DAO extends OAuth2DAO {
 
     public CacheBackedOAuth2DAO(OAuth2DAO dao) {
         this.wrappedDAO = dao;
+    }
+
+    @Override
+    public AccessToken getActiveAccessToken(String clientId, User authzUser, Set<String> approvedScopes, OAuth2MessageContext messageContext) {
+        return null;
     }
 }
