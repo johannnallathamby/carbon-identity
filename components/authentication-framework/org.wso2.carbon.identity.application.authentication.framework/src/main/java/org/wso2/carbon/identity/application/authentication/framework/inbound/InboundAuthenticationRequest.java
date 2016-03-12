@@ -31,6 +31,7 @@ public class InboundAuthenticationRequest <T extends InboundAuthenticationReques
     private Map<String, String> headers = new HashMap<String, String>();
     private Map<String, Cookie> cookies = new HashMap<String, Cookie>();
     private Map<String, String[]> parameters = new HashMap<String, String[]>();
+    protected String tenantDomain;
 
     public Map<String, String> getHeaders() {
         return Collections.unmodifiableMap(headers);
@@ -56,9 +57,14 @@ public class InboundAuthenticationRequest <T extends InboundAuthenticationReques
         return null;
     }
 
+    public String getTenantDomain(){
+        return this.tenantDomain;
+    }
+
     protected InboundAuthenticationRequest(T builder) {
         this.headers = builder.headers;
         this.cookies = builder.cookies;
         this.parameters = builder.parameters;
+        this.tenantDomain = builder.tenantDomain;
     }
 }

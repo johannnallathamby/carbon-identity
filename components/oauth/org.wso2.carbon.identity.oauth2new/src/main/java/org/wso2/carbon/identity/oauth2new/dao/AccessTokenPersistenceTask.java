@@ -37,11 +37,6 @@ public class AccessTokenPersistenceTask implements Runnable {
 
     @Override
     public void run() {
-
-        if(log.isDebugEnabled()) {
-            log.debug("AccessTokenPersistenceQueue consumer is started");
-        }
-
         while (true) {
 
         }

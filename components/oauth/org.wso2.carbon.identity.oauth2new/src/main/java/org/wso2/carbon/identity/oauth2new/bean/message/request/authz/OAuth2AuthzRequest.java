@@ -23,12 +23,10 @@ import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequ
 
 import java.util.Set;
 
-public abstract class OAuth2AuthzRequest extends OAuth2InboundRequest {
+public class OAuth2AuthzRequest extends OAuth2InboundRequest {
 
     private static final long serialVersionUID = 6738091486923517921L;
 
-    private String clientId;
-    private Set<String> requestedScopes;
     private String responseType;
     private String redirectURI;
     private String state;
@@ -37,18 +35,8 @@ public abstract class OAuth2AuthzRequest extends OAuth2InboundRequest {
         super(builder);
         AuthzRequestBuilder authzRequestBuilder = ((AuthzRequestBuilder)builder);
         this.responseType = authzRequestBuilder.responseType;
-        this.clientId = authzRequestBuilder.clientId;
         this.redirectURI = authzRequestBuilder.redirectURI;
         this.state = authzRequestBuilder.state;
-        this.requestedScopes = authzRequestBuilder.requestedScopes;
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public Set<String> getRequestedScopes() {
-        return requestedScopes;
     }
 
     public String getResponseType() {

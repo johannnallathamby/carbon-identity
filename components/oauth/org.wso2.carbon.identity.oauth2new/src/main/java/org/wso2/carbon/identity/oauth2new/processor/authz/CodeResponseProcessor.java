@@ -78,9 +78,9 @@ public class CodeResponseProcessor extends AuthzProcessor {
         String authzCodeId = UUID.randomUUID().toString();
 
         AuthzCode authzCode = new AuthzCode(authzCodeId, authorizationCode, messageContext.getRequest().getClientId(),
-                redirectURI, messageContext.getAuthzUser(), timestamp, authzCodeValidity);
+                redirectURI, messageContext.getAuthzUser(), timestamp, authzCodeValidity, OAuth2.TokenState.ACTIVE);
 
-        HandlerManager.getInstance().getOAuth2DAO(messageContext).storeAuthzCode(authzCode);
+        HandlerManager.getInstance().getOAuth2DAO(messageContext).storeAuthzCode(authzCode, messageContext);
 
         OAuthASResponse.OAuthAuthorizationResponseBuilder oltuRespBuilder = OAuthASResponse
                 .authorizationResponse(null, HttpServletResponse.SC_FOUND)

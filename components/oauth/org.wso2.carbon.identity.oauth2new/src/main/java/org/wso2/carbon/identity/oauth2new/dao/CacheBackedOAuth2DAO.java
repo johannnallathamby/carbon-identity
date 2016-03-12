@@ -18,10 +18,13 @@
 
 package org.wso2.carbon.identity.oauth2new.dao;
 
-import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 import org.wso2.carbon.identity.oauth2new.model.AccessToken;
+import org.wso2.carbon.identity.oauth2new.model.AuthzCode;
 
+import java.sql.Connection;
 import java.util.Set;
 
 /*
@@ -36,7 +39,67 @@ public class CacheBackedOAuth2DAO extends OAuth2DAO {
     }
 
     @Override
-    public AccessToken getActiveAccessToken(String clientId, User authzUser, Set<String> approvedScopes, OAuth2MessageContext messageContext) {
+    public AccessToken getLatestActiveOrExpiredAccessToken(String consumerKey, AuthenticatedUser authzUser, Set<String> scopes, OAuth2MessageContext messageContext) {
+        return null;
+    }
+
+    @Override
+    public void storeAccessToken(AccessToken newAccessToken, String oldAccessTokenId, String tokenState, String authzCodeId, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+
+    }
+
+    @Override
+    protected void storeAccessToken(Connection connection, AccessToken newAccessToken, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+
+    }
+
+    @Override
+    public void updateAccessTokenState(Set<String> accessTokenIds, String tokenState, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+
+    }
+
+    @Override
+    protected void updateAccessTokenState(Connection connection, String tokenId, String tokenState, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+
+    }
+
+    @Override
+    public AccessToken getLatestAccessTokenByRefreshToken(String refreshToken, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+        return null;
+    }
+
+    @Override
+    public String getTokenIdByToken(String token, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+        return null;
+    }
+
+    @Override
+    public void storeAuthzCode(AuthzCode authzCode, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+
+    }
+
+    @Override
+    public AuthzCode getAuthzCode(String authzCode, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+        return null;
+    }
+
+    @Override
+    public void updateAuthzCodeState(Set<String> authzCode, String state, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+
+    }
+
+    @Override
+    protected void updateAuthzCodeState(Connection connection, String authzCode, String state, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+
+    }
+
+    @Override
+    protected void updateTokenIdForAuthzCodeId(Connection connection, String oldAccessTokenId, String newAccessTokenId, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+
+    }
+
+    @Override
+    public String getCodeIdByAuthzCode(String authzCode, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
         return null;
     }
 }

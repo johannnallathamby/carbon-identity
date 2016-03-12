@@ -20,13 +20,22 @@ package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
 
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class RefreshGrantRequest extends OAuth2TokenRequest {
 
     char[] refreshToken;
+
+    private Set<String> scopes = new HashSet<>();
 
     protected RefreshGrantRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
         RefreshGrantBuilder refreshGrantBuilder = (RefreshGrantBuilder)builder;
         this.refreshToken = refreshGrantBuilder.refreshToken;
+    }
+
+    public Set<String> getScopes() {
+        return scopes;
     }
 }

@@ -18,16 +18,19 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.oltu.oauth2.common.OAuth;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Set;
 
-public abstract class TokenRequestBuilder extends OAuth2InboundRequestBuilder {
+public class TokenRequestBuilder extends OAuth2InboundRequestBuilder {
 
     String grantType;
-    Set<String> requestedScopes;
 
     public TokenRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
         super(request, response);
@@ -38,14 +41,23 @@ public abstract class TokenRequestBuilder extends OAuth2InboundRequestBuilder {
         return "TokenRequestBuilder";
     }
 
+    @Override
+    public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
+        if(StringUtils.isNotBlank(request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
+            return true;
+        }
+        return false;
+    }
+
     public TokenRequestBuilder setGrantType(String grantType) {
         this.grantType = grantType;
         return this;
     }
 
-    public TokenRequestBuilder setRequestedScopes(Set<String> requestedScopes) {
-        this.requestedScopes = requestedScopes;
-        return this;
+    public OAuth2TokenRequest build()
+            throws AuthenticationFrameworkRuntimeException {
+
+        return new OAuth2TokenRequest(this);
     }
 
 }

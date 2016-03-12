@@ -27,6 +27,9 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AuthzApprovedRequestBuilder extends OAuth2InboundRequestBuilder {
 
+    String sessionDataKeyConsent;
+    String consent;
+
     public AuthzApprovedRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
         super(request, response);
     }
@@ -43,8 +46,18 @@ public class AuthzApprovedRequestBuilder extends OAuth2InboundRequestBuilder {
         return false;
     }
 
+    public AuthzApprovedRequestBuilder setSessionDataKeyConsent(String sessionDataKeyConsent) {
+       this.sessionDataKeyConsent = sessionDataKeyConsent;
+       return this;
+    }
+
+    public AuthzApprovedRequestBuilder setConsent(String consent) {
+        this.consent = consent;
+        return this;
+    }
+
     @Override
-    public InboundAuthenticationRequest build() throws AuthenticationFrameworkRuntimeException {
-        return null;
+    public AuthzApprovedRequest build() throws AuthenticationFrameworkRuntimeException {
+        return new AuthzApprovedRequest(this);
     }
 }

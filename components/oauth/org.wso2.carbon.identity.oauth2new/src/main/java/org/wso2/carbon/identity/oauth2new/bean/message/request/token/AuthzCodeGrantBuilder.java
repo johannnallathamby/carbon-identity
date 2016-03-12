@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AuthzCodeGrantBuilder extends TokenRequestBuilder {
 
-    String authorizationCode;
+    String code;
     String redirectURI;
 
     public AuthzCodeGrantBuilder(HttpServletRequest request, HttpServletResponse response) {
@@ -48,9 +48,7 @@ public class AuthzCodeGrantBuilder extends TokenRequestBuilder {
     @Override
     public InboundAuthenticationRequest build() throws AuthenticationFrameworkRuntimeException {
 
-        this.grantType = request.getParameter(OAuth.OAUTH_GRANT_TYPE);
-        this.requestedScopes = OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE));
-        this.authorizationCode = request.getParameter(OAuth.OAUTH_CODE);
+        this.code = request.getParameter(OAuth.OAUTH_CODE);
         this.redirectURI = request.getParameter(OAuth.OAUTH_REDIRECT_URI);
         return new AuthzCodeGrantRequest(this);
     }

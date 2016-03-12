@@ -29,6 +29,7 @@ import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 import org.wso2.carbon.identity.oauth2new.handler.client.ClientAuthHandler;
 import org.wso2.carbon.identity.oauth2new.handler.issuer.AccessTokenResponseIssuer;
+import org.wso2.carbon.identity.oauth2new.handler.persist.TokenPersistenceProcessor;
 import org.wso2.carbon.identity.oauth2new.internal.OAuth2ServiceComponentHolder;
 import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 
@@ -109,6 +110,19 @@ public class HandlerManager {
             }
         }
         throw OAuth2RuntimeException.error("Cannot find OAuth2DAOHandler to handle this request");
+    }
+
+    public TokenPersistenceProcessor getTokenPersistenceProcessor(OAuth2MessageContext messageContext) throws
+            OAuth2RuntimeException {
+
+        List<TokenPersistenceProcessor> handlers = OAuth2ServiceComponentHolder.getInstance().getTokenPersistenceProcessors();
+        Collections.sort(handlers, new HandlerComparator(messageContext));
+        for(TokenPersistenceProcessor handler:handlers){
+            if(handler.canHandle(messageContext)){
+                return handler;
+            }
+        }
+        throw OAuth2RuntimeException.error("Cannot find AccessTokenResponseIssuer to handle this request");
     }
 
 }

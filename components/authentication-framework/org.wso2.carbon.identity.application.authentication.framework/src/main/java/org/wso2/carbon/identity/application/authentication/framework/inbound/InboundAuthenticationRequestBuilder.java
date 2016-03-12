@@ -18,6 +18,8 @@
 
 package org.wso2.carbon.identity.application.authentication.framework.inbound;
 
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,21 +30,27 @@ public abstract class InboundAuthenticationRequestBuilder {
 
     protected HttpServletRequest request;
     protected HttpServletResponse response;
-    Map<String, String> headers = new HashMap<String, String>();
-    Map<String, Cookie> cookies = new HashMap<String, Cookie>();
-    Map<String, String[]> parameters = new HashMap<>();
+    protected String tenantDomain = MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
+    protected Map<String, String> headers = new HashMap<String, String>();
+    protected Map<String, Cookie> cookies = new HashMap<String, Cookie>();
+    protected Map<String, String[]> parameters = new HashMap<>();
 
     public InboundAuthenticationRequestBuilder (HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
     }
 
-    public InboundAuthenticationRequestBuilder setResponseHeaders(Map<String, String> responseHeaders) {
+    public InboundAuthenticationRequestBuilder setTenantDomain(String tenantDomain) {
+        this.tenantDomain = tenantDomain;
+        return this;
+    }
+
+    public InboundAuthenticationRequestBuilder setHeaders(Map<String, String> responseHeaders) {
         this.headers = responseHeaders;
         return this;
     }
 
-    public InboundAuthenticationRequestBuilder addResponseHeaders(Map<String,String> headers) {
+    public InboundAuthenticationRequestBuilder addHeaders(Map<String, String> headers) {
         for(Map.Entry<String,String> header:headers.entrySet()) {
             if(this.headers.containsKey(header.getKey())) {
                 throw AuthenticationFrameworkRuntimeException.error("Headers map trying to override existing " +
@@ -53,8 +61,26 @@ public abstract class InboundAuthenticationRequestBuilder {
         return this;
     }
 
+    public InboundAuthenticationRequestBuilder addHeader(String name, String value) {
+        if(this.headers.containsKey(name)) {
+            throw AuthenticationFrameworkRuntimeException.error("Headers map trying to override existing " +
+                    "header " + name);
+        }
+        this.headers.put(name, value);
+        return this;
+    }
+
     public InboundAuthenticationRequestBuilder setCookies(Map<String, Cookie> cookies) {
         this.cookies = cookies;
+        return this;
+    }
+
+    public InboundAuthenticationRequestBuilder addCookie(String name, Cookie value) {
+        if(this.cookies.containsKey(name)) {
+            throw AuthenticationFrameworkRuntimeException.error("Cookies map trying to override existing " +
+                    "cookie " + name);
+        }
+        this.cookies.put(name, value);
         return this;
     }
 
@@ -71,6 +97,15 @@ public abstract class InboundAuthenticationRequestBuilder {
 
     public InboundAuthenticationRequestBuilder setParameters(Map<String,String[]> parameters) {
         this.parameters = parameters;
+        return this;
+    }
+
+    public InboundAuthenticationRequestBuilder addParameter(String name, String[] values) {
+        if(this.parameters.containsKey(name)) {
+            throw AuthenticationFrameworkRuntimeException.error("Parameters map trying to override existing " +
+                    "key " + name);
+        }
+        this.parameters.put(name, values);
         return this;
     }
 

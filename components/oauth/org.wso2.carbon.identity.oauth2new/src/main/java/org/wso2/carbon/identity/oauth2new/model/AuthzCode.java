@@ -18,7 +18,7 @@
 
 package org.wso2.carbon.identity.oauth2new.model;
 
-import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -28,15 +28,13 @@ public class AuthzCode implements Serializable {
 
     private static final long serialVersionUID = 6826100815294824101L;
 
-    private String authzCodeId;
-
     private String authzCode;
 
     private String clientId;
 
     private String redirectURI;
 
-    private User authzUser;
+    private AuthenticatedUser authzUser;
 
     private Set<String> scopes;
 
@@ -44,19 +42,18 @@ public class AuthzCode implements Serializable {
 
     private long validityPeriod;
 
-    public AuthzCode(String authzCodeId, String authzCode, String clientId, String redirectURI, User authzUser,
-                     Timestamp issuedTime, long validityPeriod) {
-        this.authzCodeId = authzCodeId;
+    private String codeState;
+
+    public AuthzCode(String authzCode, String clientId, String redirectURI, AuthenticatedUser authzUser,
+                     Timestamp issuedTime, long validityPeriod, String codeState) {
+
         this.authzCode = authzCode;
         this.clientId = clientId;
         this.redirectURI = redirectURI;
         this.authzUser = authzUser;
         this.issuedTime = issuedTime;
         this.validityPeriod = validityPeriod;
-    }
-
-    public String getAuthzCodeId() {
-        return authzCodeId;
+        this.codeState = codeState;
     }
 
     public String getAuthzCode() {
@@ -71,7 +68,7 @@ public class AuthzCode implements Serializable {
         return redirectURI;
     }
 
-    public User getAuthzUser() {
+    public AuthenticatedUser getAuthzUser() {
         return authzUser;
     }
 
@@ -87,6 +84,10 @@ public class AuthzCode implements Serializable {
         return validityPeriod;
     }
 
+    public String getCodeState() {
+        return codeState;
+    }
+
     public void setScopes(Set<String> scopes) {
         this.scopes = scopes;
     }
@@ -94,13 +95,14 @@ public class AuthzCode implements Serializable {
     @Override
     public String toString() {
         return "AuthzCode{" +
-                "authzCodeId='" + authzCodeId + '\'' +
                 ", clientId='" + clientId + '\'' +
                 ", redirectURI='" + redirectURI + '\'' +
                 ", authzUser=" + authzUser +
                 ", scopes=" + scopes +
                 ", issuedTime=" + issuedTime +
                 ", validityPeriod=" + validityPeriod +
+                ", codeState='" + codeState + '\'' +
                 '}';
     }
+
 }

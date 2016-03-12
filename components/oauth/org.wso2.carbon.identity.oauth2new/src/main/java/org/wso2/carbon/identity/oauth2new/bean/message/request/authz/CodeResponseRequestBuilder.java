@@ -22,16 +22,36 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.message.types.ResponseType;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CodeResponseRequestBuilder extends AuthzRequestBuilder {
 
+    String clientId;
+    String redirectURI;
+    Set<String> scopes = new HashSet<>();
+
     public CodeResponseRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
         super(request, response);
+    }
+
+    public AuthzRequestBuilder setClientId(String clientId) {
+        this.clientId = clientId;
+        return this;
+    }
+
+    public AuthzRequestBuilder setRedirectURI(String redirectURI) {
+        this.redirectURI = redirectURI;
+        return this;
+    }
+
+    public AuthzRequestBuilder setScopes(Set<String> scopes) {
+        this.scopes = scopes;
+        return this;
     }
 
     @Override
@@ -48,14 +68,12 @@ public class CodeResponseRequestBuilder extends AuthzRequestBuilder {
         }
     }
 
-    public InboundAuthenticationRequest build()
+    public CodeResponseRequest build()
             throws AuthenticationFrameworkRuntimeException {
 
-        this.setResponseType(request.getParameter(OAuth.OAUTH_RESPONSE_TYPE));
         this.setClientId(request.getParameter(OAuth.OAUTH_CLIENT_ID));
         this.setRedirectURI(request.getParameter(OAuth.OAUTH_REDIRECT_URI));
-        this.setState(request.getParameter(OAuth.OAUTH_STATE));
-        this.setRequestedScopes(OAuth2Util.buildOAuth2ScopeSet(request.getParameter(OAuth.OAUTH_SCOPE)));
+        this.setScopes(OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE)));
         return new CodeResponseRequest(this);
     }
 }

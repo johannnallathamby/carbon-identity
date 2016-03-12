@@ -27,14 +27,24 @@ import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Set;
 
 public class PasswordGrantBuilder extends TokenRequestBuilder {
 
     String username;
     char[] password;
+    Set<String> scopes;
 
-    public PasswordGrantBuilder(HttpServletRequest request, HttpServletResponse response) {
+    public PasswordGrantBuilder(HttpServletRequest request, HttpServletResponse response, String username,
+                                char[] password) {
         super(request, response);
+        this.username = username;
+        this.password = password;
+    }
+
+    public TokenRequestBuilder setScopes(Set<String> scopes) {
+        this.scopes = scopes;
+        return this;
     }
 
     @Override
@@ -49,7 +59,7 @@ public class PasswordGrantBuilder extends TokenRequestBuilder {
     public InboundAuthenticationRequest build() throws AuthenticationFrameworkRuntimeException {
 
         this.grantType = request.getParameter(OAuth.OAUTH_GRANT_TYPE);
-        this.requestedScopes = OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE));
+        this.scopes = OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE));
         this.username = request.getParameter(OAuth.OAUTH_USERNAME);
         this.password = request.getParameter(OAuth.OAUTH_PASSWORD).toCharArray();
         return new PasswordGrantRequest(this);

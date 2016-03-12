@@ -18,7 +18,7 @@
 
 package org.wso2.carbon.identity.oauth2new.model;
 
-import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -28,8 +28,6 @@ public class AccessToken implements Serializable {
 
     private static final long serialVersionUID = 5894325130475788975L;
 
-    private String accessTokenId;
-
     private String accessToken;
 
     private String refreshToken;
@@ -38,7 +36,7 @@ public class AccessToken implements Serializable {
 
     private String subjectIdentifier;
 
-    private User authzUser;
+    private AuthenticatedUser authzUser;
 
     private Set<String> scopes;
 
@@ -54,11 +52,9 @@ public class AccessToken implements Serializable {
 
     private long refreshTokenValidity;
 
-    public AccessToken(String accessTokenId, String accessToken, String clientId, String subjectIdentifier,
+    public AccessToken(String accessToken, String clientId, String subjectIdentifier,
                        String grantType, String accessTokenState, Timestamp accessTokenIssuedTime,
                        long accessTokenValidity) {
-
-        this.accessTokenId = accessTokenId;
         this.accessToken = accessToken;
         this.clientId = clientId;
         this.subjectIdentifier = subjectIdentifier;
@@ -66,10 +62,6 @@ public class AccessToken implements Serializable {
         this.accessTokenState = accessTokenState;
         this.accessTokenIssuedTime = accessTokenIssuedTime;
         this.accessTokenValidity = accessTokenValidity;
-    }
-
-    public String getAccessTokenId() {
-        return accessTokenId;
     }
 
     public String getAccessToken() {
@@ -88,7 +80,7 @@ public class AccessToken implements Serializable {
         return subjectIdentifier;
     }
 
-    public User getAuthzUser() {
+    public AuthenticatedUser getAuthzUser() {
         return authzUser;
     }
 
@@ -124,7 +116,7 @@ public class AccessToken implements Serializable {
         this.refreshToken = refreshToken;
     }
 
-    public void setAuthzUser(User authzUser) {
+    public void setAuthzUser(AuthenticatedUser authzUser) {
         this.authzUser = authzUser;
     }
 
@@ -153,7 +145,6 @@ public class AccessToken implements Serializable {
                 ", refreshTokenIssuedTime=" + refreshTokenIssuedTime +
                 ", accessTokenValidity=" + accessTokenValidity +
                 ", refreshTokenValidity=" + refreshTokenValidity +
-                ", accessTokenId='" + accessTokenId + '\'' +
                 '}';
     }
 }

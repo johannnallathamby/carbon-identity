@@ -20,18 +20,22 @@ package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
 
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class PasswordGrantRequest extends OAuth2TokenRequest {
 
     private static final long serialVersionUID = -4072916934667966426L;
 
     private String username;
     private char[] password;
+    private Set<String> scopes = new HashSet<>();
 
     protected PasswordGrantRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
         PasswordGrantBuilder passwordGrantBuilder = (PasswordGrantBuilder)builder;
-        this.username = ((PasswordGrantBuilder) builder).username;
-        this.password = ((PasswordGrantBuilder) builder).password;
+        this.username = passwordGrantBuilder.username;
+        this.password = passwordGrantBuilder.password;
     }
 
     public String getUsername() {
@@ -42,4 +46,7 @@ public class PasswordGrantRequest extends OAuth2TokenRequest {
         return password;
     }
 
+    public Set<String> getScopes() {
+        return scopes;
+    }
 }

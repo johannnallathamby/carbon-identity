@@ -23,25 +23,19 @@ import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequ
 
 import java.util.Set;
 
-public abstract class OAuth2TokenRequest extends OAuth2InboundRequest {
+public class OAuth2TokenRequest extends OAuth2InboundRequest {
 
     private static final long serialVersionUID = -4100425188456499228L;
 
     private String grantType;
-    private Set<String> requestedScopes;
 
     protected OAuth2TokenRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
         TokenRequestBuilder tokenRequestBuilder = (TokenRequestBuilder)builder;
         this.grantType = tokenRequestBuilder.grantType;
-        this.requestedScopes = tokenRequestBuilder.requestedScopes;
     }
 
     public String getGrantType() {
         return grantType;
-    }
-
-    public Set<String> getRequestedScopes() {
-        return requestedScopes;
     }
 }

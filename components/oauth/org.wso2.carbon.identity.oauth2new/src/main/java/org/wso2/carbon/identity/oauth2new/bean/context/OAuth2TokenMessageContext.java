@@ -18,7 +18,7 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.context;
 
-import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.token.OAuth2TokenRequest;
 
 import java.io.Serializable;
@@ -32,7 +32,7 @@ public class OAuth2TokenMessageContext<T1 extends Serializable, T2 extends Seria
 
     private static final long serialVersionUID = -5732604278415475580L;
 
-    private User authzUser;
+    private AuthenticatedUser authzUser;
 
     private Set<String> approvedScopes;
 
@@ -61,11 +61,11 @@ public class OAuth2TokenMessageContext<T1 extends Serializable, T2 extends Seria
         this.validityPeriod = validityPeriod;
     }
 
-    public User getAuthzUser() {
+    public AuthenticatedUser getAuthzUser() {
         return authzUser;
     }
 
-    public void setAuthzUser(User authzUser) {
+    public void setAuthzUser(AuthenticatedUser authzUser) {
         this.authzUser = authzUser;
     }
 

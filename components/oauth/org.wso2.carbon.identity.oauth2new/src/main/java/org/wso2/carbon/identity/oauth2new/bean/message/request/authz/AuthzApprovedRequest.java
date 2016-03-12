@@ -23,7 +23,22 @@ import org.wso2.carbon.identity.application.authentication.framework.inbound.Inb
 
 public class AuthzApprovedRequest extends InboundAuthenticationRequest {
 
+    private static final long serialVersionUID = 3359421085612381634L;
+
+    private String sessionDataKeyConsent;
+    private String consent;
+
     protected AuthzApprovedRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
+        this.sessionDataKeyConsent = ((AuthzApprovedRequestBuilder)builder).sessionDataKeyConsent;
+        this.consent = ((AuthzApprovedRequestBuilder)builder).consent;
+    }
+
+    public String getSessionDataKeyConsent() {
+        return this.sessionDataKeyConsent;
+    }
+
+    public String getConsent() {
+        return this.consent;
     }
 }

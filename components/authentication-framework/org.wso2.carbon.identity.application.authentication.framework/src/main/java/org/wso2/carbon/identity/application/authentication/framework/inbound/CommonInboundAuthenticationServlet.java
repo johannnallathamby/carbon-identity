@@ -91,7 +91,7 @@ public class CommonInboundAuthenticationServlet extends HttpServlet {
                     "No authentication request builder found to build the request");
         }
 
-        InboundAuthenticationRequest authenticationRequest = requestBuilder.buildRequest(request, response);
+        InboundAuthenticationRequest authenticationRequest = requestBuilder.build();
 
         if (request.getPathInfo().contains(InboundAuthenticationConstants.HTTP_PATH_PARAM_REQUEST)) {
             InboundAuthenticationResponse inboundAuthenticationResponse = doProcessRequest(request, response,
@@ -122,7 +122,7 @@ public class CommonInboundAuthenticationServlet extends HttpServlet {
 
         StringBuilder queryParams = new StringBuilder("?");
         boolean isFirst = true;
-        for (Map.Entry<String, String> entry : inboundAuthenticationResponse.getParameters().entrySet()) {
+        for (Map.Entry<String, String[]> entry : inboundAuthenticationResponse.getParameters().entrySet()) {
 
             if (isFirst) {
                 queryParams.append(entry.getKey());
@@ -172,7 +172,8 @@ public class CommonInboundAuthenticationServlet extends HttpServlet {
             throws AuthenticationFrameworkRuntimeException {
 
         try {
-            String[] sessionDataKey = authenticationRequest.getParameters().get(FrameworkConstants.SESSION_DATA_KEY);
+            String[] sessionDataKey = (String[])authenticationRequest.getParameters().get(FrameworkConstants
+                    .SESSION_DATA_KEY);
             if (!ArrayUtils.isEmpty(sessionDataKey) && !StringUtils.isEmpty(sessionDataKey[0])) {
                 InboundAuthenticationContextCacheEntry cacheEntry = InboundAuthenticationUtil
                         .getInboundAuthenticationContextToCache(sessionDataKey[0]);

@@ -20,11 +20,21 @@ package org.wso2.carbon.identity.oauth2new.bean.message.request.authz;
 
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
 
+import java.util.Set;
+
 public class TokenResponseRequest extends OAuth2AuthzRequest {
 
     private static final long serialVersionUID = -2571263137456231933L;
 
+    String clientId;
+    String redirectURI;
+    Set<String> scopes;
+
     protected TokenResponseRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
+        TokenResponseRequestBuilder requestBuilder = (TokenResponseRequestBuilder)builder;
+        this.clientId = requestBuilder.clientId;
+        this.redirectURI = requestBuilder.redirectURI;
+        this.scopes = requestBuilder.scopes;
     }
 }

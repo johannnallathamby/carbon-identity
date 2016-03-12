@@ -26,9 +26,12 @@ import org.wso2.carbon.identity.application.authentication.framework.inbound.Inb
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Set;
 
 public class ClientCredentialsGrantBuilder extends TokenRequestBuilder {
 
+    Set<String> scopes;
+    
     public ClientCredentialsGrantBuilder(HttpServletRequest request, HttpServletResponse response) {
         super(request, response);
     }
@@ -45,5 +48,10 @@ public class ClientCredentialsGrantBuilder extends TokenRequestBuilder {
     public InboundAuthenticationRequest build() throws AuthenticationFrameworkRuntimeException {
 
         return new ClientCredentialsGrantRequest(this);
+    }
+
+    public TokenRequestBuilder setScopes(Set<String> scopes) {
+        this.scopes = scopes;
+        return this;
     }
 }

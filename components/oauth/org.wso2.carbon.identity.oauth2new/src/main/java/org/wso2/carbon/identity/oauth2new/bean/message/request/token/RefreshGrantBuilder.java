@@ -27,10 +27,13 @@ import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RefreshGrantBuilder extends TokenRequestBuilder {
 
     char[] refreshToken;
+    Set<String> scopes = new HashSet<>();
 
     public RefreshGrantBuilder(HttpServletRequest request, HttpServletResponse response) {
         super(request, response);
@@ -47,8 +50,7 @@ public class RefreshGrantBuilder extends TokenRequestBuilder {
     @Override
     public InboundAuthenticationRequest build() throws AuthenticationFrameworkRuntimeException {
 
-        this.grantType = request.getParameter(OAuth.OAUTH_GRANT_TYPE);
-        this.requestedScopes = OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE));
+        this.scopes = OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE));
         this.refreshToken = request.getParameter(OAuth.OAUTH_REFRESH_TOKEN).toCharArray();
         return new RefreshGrantRequest(this);
     }

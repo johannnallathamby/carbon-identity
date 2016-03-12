@@ -24,18 +24,18 @@ public class AuthzCodeGrantRequest extends OAuth2TokenRequest {
 
     private static final long serialVersionUID = -7079593227614826792L;
 
-    private String authorizationCode;
+    private String code;
     private String redirectURI;
 
     protected AuthzCodeGrantRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
         AuthzCodeGrantBuilder authzCodeGrantBuilder = (AuthzCodeGrantBuilder)builder;
-        this.authorizationCode = ((AuthzCodeGrantBuilder) builder).authorizationCode;
+        this.code = ((AuthzCodeGrantBuilder) builder).code;
         this.redirectURI = ((AuthzCodeGrantBuilder) builder).redirectURI;
     }
 
-    public String getAuthorizationCode() {
-        return authorizationCode;
+    public String getCode() {
+        return code;
     }
 
     public String getRedirectURI() {

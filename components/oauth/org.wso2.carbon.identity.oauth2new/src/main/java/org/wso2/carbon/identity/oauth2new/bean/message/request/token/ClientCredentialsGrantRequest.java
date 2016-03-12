@@ -20,11 +20,20 @@ package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
 
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class ClientCredentialsGrantRequest extends OAuth2TokenRequest {
 
     private static final long serialVersionUID = -1664111039532276033L;
 
+    private Set<String> scopes = new HashSet<>();
+
     protected ClientCredentialsGrantRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
+    }
+
+    public Set<String> getScopes() {
+        return scopes;
     }
 }

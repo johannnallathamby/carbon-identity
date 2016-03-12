@@ -108,7 +108,16 @@ public class InboundAuthenticationResponse implements Serializable {
             return this;
         }
 
-        public InboundAuthenticationResponseBuilder addResponseHeaders(Map<String,String> headers) {
+        public InboundAuthenticationResponseBuilder addHeader(String name, String value) {
+            if(this.headers.containsKey(name)) {
+                throw AuthenticationFrameworkRuntimeException.error("Headers map trying to override existing " +
+                        "header " + name);
+            }
+            this.headers.put(name, value);
+            return this;
+        }
+
+        public InboundAuthenticationResponseBuilder addHeaders(Map<String, String> headers) {
             for(Map.Entry<String,String> header:headers.entrySet()) {
                 if(this.headers.containsKey(header.getKey())) {
                     throw AuthenticationFrameworkRuntimeException.error("Headers map trying to override existing " +
@@ -121,6 +130,15 @@ public class InboundAuthenticationResponse implements Serializable {
 
         public InboundAuthenticationResponseBuilder setCookies(Map<String, Cookie> cookies) {
             this.cookies = cookies;
+            return this;
+        }
+
+        public InboundAuthenticationResponseBuilder addCookie(String name, Cookie value) {
+            if(this.cookies.containsKey(name)) {
+                throw AuthenticationFrameworkRuntimeException.error("Cookies map trying to override existing " +
+                        "cookie " + name);
+            }
+            this.cookies.put(name, value);
             return this;
         }
 
@@ -137,6 +155,15 @@ public class InboundAuthenticationResponse implements Serializable {
 
         public InboundAuthenticationResponseBuilder setParameters(Map<String,String[]> parameters) {
             this.parameters = parameters;
+            return this;
+        }
+
+        public InboundAuthenticationResponseBuilder addParameter(String name, String[] values) {
+            if(this.parameters.containsKey(name)) {
+                throw AuthenticationFrameworkRuntimeException.error("Parameters map trying to override existing " +
+                        "key " + name);
+            }
+            this.parameters.put(name, values);
             return this;
         }
 

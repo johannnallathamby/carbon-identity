@@ -20,12 +20,8 @@ package org.wso2.carbon.identity.oauth2new.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent;
-import org.wso2.carbon.identity.oauth2new.OAuth2Service;
-import org.wso2.carbon.identity.oauth2new.OAuth2ServiceImpl;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestBuilder;
 import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAOHandler;
 import org.wso2.carbon.identity.oauth2new.handler.client.ClientAuthHandler;
@@ -72,16 +68,11 @@ import org.wso2.carbon.user.core.service.RealmService;
 public class OAuth2ServiceComponent {
 
     private static Log log = LogFactory.getLog(OAuth2ServiceComponent.class);
-    private BundleContext bundleContext = null;
-    private ServiceRegistration oauth2ServiceReg = null;
 
     protected void activate(ComponentContext context) {
 
         try {
             OAuth2ServerConfig.getInstance();
-            bundleContext = context.getBundleContext();
-            oauth2ServiceReg = bundleContext.registerService(OAuth2Service.class.getName(),
-                    OAuth2ServiceImpl.getInstance(), null);
             if (log.isDebugEnabled()) {
                 log.debug("OAuth2Service is registered");
             }
@@ -95,9 +86,6 @@ public class OAuth2ServiceComponent {
 
     protected void deactivate(ComponentContext context) {
 
-        if(oauth2ServiceReg != null) {
-            oauth2ServiceReg.unregister();
-        }
         if (log.isDebugEnabled()) {
             log.debug("OAuth2 service is unregistered");
         }

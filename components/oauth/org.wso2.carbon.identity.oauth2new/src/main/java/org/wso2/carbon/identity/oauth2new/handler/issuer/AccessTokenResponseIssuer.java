@@ -20,7 +20,7 @@ package org.wso2.carbon.identity.oauth2new.handler.issuer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.core.handler.AbstractIdentityHandler;
 import org.wso2.carbon.identity.oauth2new.HandlerManager;
 import org.wso2.carbon.identity.oauth2new.OAuth2;
@@ -80,7 +80,7 @@ public abstract class AccessTokenResponseIssuer extends AbstractIdentityHandler 
     protected AccessToken validTokenExists(OAuth2AuthzMessageContext messageContext) throws OAuth2RuntimeException {
 
         String clientId = messageContext.getRequest().getClientId();
-        User authzUser = messageContext.getAuthzUser();
+        AuthenticatedUser authzUser = messageContext.getAuthzUser();
         Set<String> scopes = messageContext.getApprovedScopes();
         return validTokenExists(clientId, authzUser, scopes, messageContext);
     }
@@ -88,12 +88,12 @@ public abstract class AccessTokenResponseIssuer extends AbstractIdentityHandler 
     protected AccessToken validTokenExists(OAuth2TokenMessageContext messageContext) throws OAuth2RuntimeException {
 
         String clientId = messageContext.getClientId();
-        User authzUser = messageContext.getAuthzUser();
+        AuthenticatedUser authzUser = messageContext.getAuthzUser();
         Set<String> scopes = messageContext.getApprovedScopes();
         return validTokenExists(clientId, authzUser, scopes, messageContext);
     }
 
-    protected AccessToken validTokenExists(String clientId, User authzUser,
+    protected AccessToken validTokenExists(String clientId, AuthenticatedUser authzUser,
                                            Set<String> scopes, OAuth2MessageContext messageContext) throws
             OAuth2RuntimeException {
 
@@ -172,7 +172,7 @@ public abstract class AccessTokenResponseIssuer extends AbstractIdentityHandler 
         boolean markAccessTokenExpired = (Boolean)messageContext.getParameter(MARK_ACCESS_TOKEN_EXPIRED);
         AccessToken prevAccessToken = (AccessToken)messageContext.getParameter(PREV_ACCESS_TOKEN);
         String clientId = messageContext.getRequest().getClientId();
-        User authzUser = messageContext.getAuthzUser();
+        AuthenticatedUser authzUser = messageContext.getAuthzUser();
         Set<String> scopes = messageContext.getApprovedScopes();
         long accessTokenCallbackValidity = messageContext.getValidityPeriod();
         long refreshTokenCallbackValidity = messageContext.getValidityPeriod();
@@ -188,7 +188,7 @@ public abstract class AccessTokenResponseIssuer extends AbstractIdentityHandler 
         boolean markAccessTokenExpired = (Boolean)messageContext.getParameter(MARK_ACCESS_TOKEN_EXPIRED);
         AccessToken prevAccessToken = (AccessToken)messageContext.getParameter(PREV_ACCESS_TOKEN);
         String clientId = messageContext.getClientId();
-        User authzUser = messageContext.getAuthzUser();
+        AuthenticatedUser authzUser = messageContext.getAuthzUser();
         Set<String> scopes = messageContext.getApprovedScopes();
         long accessTokenValidityPeriod = messageContext.getValidityPeriod();
         long refreshTokenValidityPeriod = messageContext.getValidityPeriod();
@@ -198,7 +198,7 @@ public abstract class AccessTokenResponseIssuer extends AbstractIdentityHandler 
                 grantType, messageContext);
     }
 
-    protected abstract AccessToken issueNewAccessToken(String clientId, User authzUser, Set<String> scopes,
+    protected abstract AccessToken issueNewAccessToken(String clientId, AuthenticatedUser authzUser, Set<String> scopes,
                                               boolean isRefreshTokenValid, boolean markAccessTokenExpired,
                                               AccessToken prevAccessToken, long accessTokenCallbackValidity,
                                               long refreshTokenCallbackValidity, String grantOrResponseType,

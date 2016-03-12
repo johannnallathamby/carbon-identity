@@ -18,7 +18,7 @@
 
 package org.wso2.carbon.identity.oauth2new.cache;
 
-import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -28,10 +28,10 @@ public class AuthorizationGrantCacheKey implements Serializable {
     private static final long serialVersionUID = 5616911505786188948L;
     
     private String clientId;
-    private User authzUser;
+    private AuthenticatedUser authzUser;
     private Set<String> scopes;
 
-    public AuthorizationGrantCacheKey(String clientId, User authzUser, Set<String> scopes) {
+    public AuthorizationGrantCacheKey(String clientId, AuthenticatedUser authzUser, Set<String> scopes) {
         this.clientId = clientId;
         this.authzUser = authzUser;
         this.scopes = scopes;
@@ -41,7 +41,7 @@ public class AuthorizationGrantCacheKey implements Serializable {
         return clientId;
     }
 
-    public User getAuthzUser() {
+    public AuthenticatedUser getAuthzUser() {
         return authzUser;
     }
 

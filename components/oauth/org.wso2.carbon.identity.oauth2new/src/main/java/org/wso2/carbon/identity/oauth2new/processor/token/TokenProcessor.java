@@ -28,6 +28,7 @@ import org.wso2.carbon.identity.application.authentication.framework.inbound.Inb
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
 import org.wso2.carbon.identity.oauth2new.HandlerManager;
+import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.token.OAuth2TokenRequest;
 import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2TokenResponse;
@@ -172,6 +173,10 @@ public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
         builder.setStatusCode(oltuASResponse.getResponseStatus());
         builder.setHeaders(oltuASResponse.getHeaders());
         builder.setBody(oltuASResponse.getBody());
+        builder.addHeader(OAuth2.Header.CACHE_CONTROL,
+                OAuth2.HeaderValue.CACHE_CONTROL_NO_STORE);
+        builder.addHeader(OAuth2.Header.PRAGMA,
+                OAuth2.HeaderValue.PRAGMA_NO_CACHE);
         return (OAuth2TokenResponse)builder.build();
 
     }

@@ -37,9 +37,6 @@ public class AuthzCodePersistenceTask implements Runnable {
 
     @Override
     public void run() {
-
-        log.debug("AuthzCodePersistenceQueue consumer is started");
-
         while (true) {
 
         }
