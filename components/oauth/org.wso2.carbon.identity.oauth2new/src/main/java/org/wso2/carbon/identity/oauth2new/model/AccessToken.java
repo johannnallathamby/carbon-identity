@@ -30,7 +30,7 @@ public class AccessToken implements Serializable {
 
     private String accessToken;
 
-    private String refreshToken;
+    private char[] refreshToken;
 
     private String clientId;
 
@@ -68,7 +68,7 @@ public class AccessToken implements Serializable {
         return accessToken;
     }
 
-    public String getRefreshToken() {
+    public char[] getRefreshToken() {
         return refreshToken;
     }
 
@@ -112,7 +112,7 @@ public class AccessToken implements Serializable {
         return refreshTokenValidity;
     }
 
-    public void setRefreshToken(String refreshToken) {
+    public void setRefreshToken(char[] refreshToken) {
         this.refreshToken = refreshToken;
     }
 

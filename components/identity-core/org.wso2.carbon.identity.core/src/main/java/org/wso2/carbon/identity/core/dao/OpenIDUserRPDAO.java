@@ -39,12 +39,12 @@ public class OpenIDUserRPDAO {
      * Creates a Relying Party and associates it with the User.
      * If the entry exist, then update with the new data
      *
-     * @param rpdo
+     * @param openIDUserRPDO
      */
-    public void createOrUpdate(OpenIDUserRPDO rpdo, int tenantId) {
+    public void createOrUpdate(OpenIDUserRPDO openIDUserRPDO, int tenantId) {
 
         // first we try to get DO from the database. Return null if no data
-        OpenIDUserRPDO existingdo = getOpenIDUserRP(rpdo.getUserName(), rpdo.getRpUrl(), tenantId);
+        OpenIDUserRPDO existingdo = getOpenIDUserRP(openIDUserRPDO.getUserName(), openIDUserRPDO.getRpUrl(), tenantId);
 
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement prepStmt = null;
@@ -55,17 +55,17 @@ public class OpenIDUserRPDAO {
                 // we should update the entry
                 prepStmt = connection.prepareStatement(OpenIDSQLQueries.UPDATE_USER_RP);
 
-                prepStmt.setString(5, rpdo.getUserName());
+                prepStmt.setString(5, openIDUserRPDO.getUserName());
                 prepStmt.setInt(6, tenantId);
-                prepStmt.setString(7, rpdo.getRpUrl());
-                prepStmt.setString(1, rpdo.isTrustedAlways() ? "TRUE" : "FALSE");
+                prepStmt.setString(7, openIDUserRPDO.getRpUrl());
+                prepStmt.setString(1, openIDUserRPDO.isTrustedAlways() ? "TRUE" : "FALSE");
 
                 // we set the new current date
                 prepStmt.setDate(2, new java.sql.Date(new Date().getTime()));
                 // we increment the value which is in the database
                 prepStmt.setInt(3, existingdo.getVisitCount() + 1); // increase visit count
 
-                prepStmt.setString(4, rpdo.getDefaultProfileName());
+                prepStmt.setString(4, openIDUserRPDO.getDefaultProfileName());
 
                 prepStmt.execute();
                 connection.commit();
@@ -73,24 +73,24 @@ public class OpenIDUserRPDAO {
                 // data not found, we should create the entry
                 prepStmt = connection.prepareStatement(OpenIDSQLQueries.STORE_USER_RP);
 
-                prepStmt.setString(1, rpdo.getUserName());
+                prepStmt.setString(1, openIDUserRPDO.getUserName());
                 prepStmt.setInt(2, tenantId);
-                prepStmt.setString(3, rpdo.getRpUrl());
-                prepStmt.setString(4, rpdo.isTrustedAlways() ? "TRUE" : "FALSE");
+                prepStmt.setString(3, openIDUserRPDO.getRpUrl());
+                prepStmt.setString(4, openIDUserRPDO.isTrustedAlways() ? "TRUE" : "FALSE");
 
                 // we set the current date
                 prepStmt.setDate(5, new java.sql.Date(new Date().getTime()));
                 // ok, this is the first visit
                 prepStmt.setInt(6, 1);
 
-                prepStmt.setString(7, rpdo.getDefaultProfileName());
+                prepStmt.setString(7, openIDUserRPDO.getDefaultProfileName());
 
                 prepStmt.execute();
                 connection.commit();
             }
         } catch (SQLException e) {
-            log.error("Failed to store RP:  " + rpdo.getRpUrl() + " for user: " +
-                    rpdo.getUserName() + " Error while accessing the database", e);
+            log.error("Failed to store RP:  " + openIDUserRPDO.getRpUrl() + " for user: " +
+                    openIDUserRPDO.getUserName() + " Error while accessing the database", e);
         } finally {
             IdentityDatabaseUtil.closeStatement(prepStmt);
             IdentityDatabaseUtil.closeConnection(connection);

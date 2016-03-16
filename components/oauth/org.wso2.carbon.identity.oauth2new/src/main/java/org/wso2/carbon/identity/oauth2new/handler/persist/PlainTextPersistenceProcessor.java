@@ -78,12 +78,12 @@ public class PlainTextPersistenceProcessor extends TokenPersistenceProcessor {
     }
 
     @Override
-    public String getProcessedRefreshToken(String refreshToken) {
-        return refreshToken;
+    public String getProcessedRefreshToken(char[] refreshToken) {
+        return new String(refreshToken);
     }
 
     @Override
-    public String getPreprocessedRefreshToken(String processedRefreshToken) {
-        return processedRefreshToken;
+    public char[] getPreprocessedRefreshToken(String processedRefreshToken) {
+        return processedRefreshToken.toCharArray();
     }
 }

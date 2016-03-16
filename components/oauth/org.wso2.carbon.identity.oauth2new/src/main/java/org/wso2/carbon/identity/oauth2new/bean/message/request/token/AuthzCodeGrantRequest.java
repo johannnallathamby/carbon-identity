@@ -18,7 +18,10 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class AuthzCodeGrantRequest extends OAuth2TokenRequest {
 
@@ -27,11 +30,10 @@ public class AuthzCodeGrantRequest extends OAuth2TokenRequest {
     private String code;
     private String redirectURI;
 
-    protected AuthzCodeGrantRequest(InboundAuthenticationRequestBuilder builder) {
+    protected AuthzCodeGrantRequest(AuthzCodeGrantBuilder builder) {
         super(builder);
-        AuthzCodeGrantBuilder authzCodeGrantBuilder = (AuthzCodeGrantBuilder)builder;
-        this.code = ((AuthzCodeGrantBuilder) builder).code;
-        this.redirectURI = ((AuthzCodeGrantBuilder) builder).redirectURI;
+        this.code = builder.code;
+        this.redirectURI = builder.redirectURI;
     }
 
     public String getCode() {
@@ -40,5 +42,30 @@ public class AuthzCodeGrantRequest extends OAuth2TokenRequest {
 
     public String getRedirectURI() {
         return redirectURI;
+    }
+
+    public static class AuthzCodeGrantBuilder extends TokenRequestBuilder {
+
+        private String code;
+        private String redirectURI;
+
+        public AuthzCodeGrantBuilder(HttpServletRequest request, HttpServletResponse response) {
+            super(request, response);
+        }
+
+        public AuthzCodeGrantBuilder setCode(String code) {
+            this.code = code;
+            return this;
+        }
+
+        public AuthzCodeGrantBuilder setRedirectURI(String redirectURI) {
+            this.redirectURI = redirectURI;
+            return this;
+        }
+
+        @Override
+        public AuthzCodeGrantRequest build() throws AuthenticationFrameworkRuntimeException {
+            return new AuthzCodeGrantRequest(this);
+        }
     }
 }

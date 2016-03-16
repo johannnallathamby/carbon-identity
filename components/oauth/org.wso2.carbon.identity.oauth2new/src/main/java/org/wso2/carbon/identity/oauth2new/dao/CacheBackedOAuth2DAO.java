@@ -64,12 +64,8 @@ public class CacheBackedOAuth2DAO extends OAuth2DAO {
     }
 
     @Override
-    public AccessToken getLatestAccessTokenByRefreshToken(String refreshToken, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
-        return null;
-    }
-
-    @Override
-    public String getTokenIdByToken(String token, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+    public AccessToken getLatestAccessTokenByRefreshToken(char[] refreshToken, OAuth2MessageContext messageContext)
+            throws OAuth2RuntimeException {
         return null;
     }
 
@@ -84,7 +80,8 @@ public class CacheBackedOAuth2DAO extends OAuth2DAO {
     }
 
     @Override
-    public void updateAuthzCodeState(Set<String> authzCode, String state, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+    public void updateAuthzCodeState(String authzCode, String state, OAuth2MessageContext messageContext) throws
+            OAuth2RuntimeException {
 
     }
 
@@ -96,10 +93,5 @@ public class CacheBackedOAuth2DAO extends OAuth2DAO {
     @Override
     protected void updateTokenIdForAuthzCodeId(Connection connection, String oldAccessTokenId, String newAccessTokenId, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
 
-    }
-
-    @Override
-    public String getCodeIdByAuthzCode(String authzCode, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
-        return null;
     }
 }

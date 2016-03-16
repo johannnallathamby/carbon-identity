@@ -71,28 +71,28 @@ public final class OAuth2DAOHandler extends OAuth2DAO implements IdentityHandler
     }
 
     @Override
-    public final void init(Properties properties) throws IdentityRuntimeException {
-        identityHandler.init(properties);
+    public void init(Properties properties) throws IdentityRuntimeException {
+
     }
 
     @Override
-    public final String getName() {
-        return identityHandler.getName();
+    public String getName() {
+        return null;
     }
 
     @Override
-    public final boolean isEnabled(MessageContext messageContext) throws IdentityException {
-        return identityHandler.isEnabled(messageContext);
+    public boolean isEnabled(MessageContext messageContext) throws IdentityException {
+        return false;
     }
 
     @Override
-    public final int getPriority(MessageContext messageContext) throws IdentityRuntimeException {
-        return identityHandler.getPriority(messageContext);
+    public int getPriority(MessageContext messageContext) throws IdentityRuntimeException {
+        return 0;
     }
 
     @Override
-    public final boolean canHandle(MessageContext messageContext) throws IdentityRuntimeException {
-        return identityHandler.canHandle(messageContext);
+    public boolean canHandle(MessageContext messageContext) throws IdentityRuntimeException {
+        return false;
     }
 
     @Override
@@ -121,12 +121,7 @@ public final class OAuth2DAOHandler extends OAuth2DAO implements IdentityHandler
     }
 
     @Override
-    public AccessToken getLatestAccessTokenByRefreshToken(String refreshToken, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
-        return null;
-    }
-
-    @Override
-    public String getTokenIdByToken(String token, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+    public AccessToken getLatestAccessTokenByRefreshToken(char[] refreshToken, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
         return null;
     }
 
@@ -141,7 +136,7 @@ public final class OAuth2DAOHandler extends OAuth2DAO implements IdentityHandler
     }
 
     @Override
-    public void updateAuthzCodeState(Set<String> authzCode, String state, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+    public void updateAuthzCodeState(String authzCode, String state, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
 
     }
 
@@ -153,10 +148,5 @@ public final class OAuth2DAOHandler extends OAuth2DAO implements IdentityHandler
     @Override
     protected void updateTokenIdForAuthzCodeId(Connection connection, String oldAccessTokenId, String newAccessTokenId, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
 
-    }
-
-    @Override
-    public String getCodeIdByAuthzCode(String authzCode, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
-        return null;
     }
 }

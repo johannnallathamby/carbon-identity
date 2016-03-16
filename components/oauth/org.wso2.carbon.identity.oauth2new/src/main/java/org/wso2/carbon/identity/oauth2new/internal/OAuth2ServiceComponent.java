@@ -22,7 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestBuilder;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
 import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAOHandler;
 import org.wso2.carbon.identity.oauth2new.handler.client.ClientAuthHandler;
 import org.wso2.carbon.identity.oauth2new.handler.issuer.AccessTokenResponseIssuer;
@@ -136,14 +136,14 @@ public class OAuth2ServiceComponent {
         OAuth2ServiceComponentHolder.getInstance().setIdentityCoreInitializedEvent(null);
     }
 
-    protected void addOAuth2InboundRequestBuilder(OAuth2InboundRequestBuilder builder) {
+    protected void addOAuth2InboundRequestBuilder(OAuth2InboundRequestFactory builder) {
         if (log.isDebugEnabled()) {
             log.debug("Adding OAuth2InboundRequestBuilder " + builder.getName());
         }
         OAuth2ServiceComponentHolder.getInstance().getBuilders().add(builder);
     }
 
-    protected void removeOAuth2InboundRequestBuilder(OAuth2InboundRequestBuilder builder) {
+    protected void removeOAuth2InboundRequestBuilder(OAuth2InboundRequestFactory builder) {
         if (log.isDebugEnabled()) {
             log.debug("Removing OAuth2InboundRequestBuilder " + builder.getName());
         }

@@ -54,6 +54,7 @@ public class OAuth2ServerConfig {
     private long refreshTokenValidity = 24L * 3600;
     private long timeStampSkew = 300;
     private boolean isRefreshTokenRenewalEnabled = true;
+    private boolean isSkipConsentPage = false;
 
     private void buildOAuthServerConfig() {
 
@@ -73,6 +74,8 @@ public class OAuth2ServerConfig {
 
         // read refresh token renewal config
         parseRefreshTokenRenewal(oauthElem);
+
+        // read skip consent page config
     }
 
     public String getOAuth2AuthzEPUrl() {
@@ -113,6 +116,10 @@ public class OAuth2ServerConfig {
 
     public boolean isRefreshTokenRenewalEnabled() {
         return isRefreshTokenRenewalEnabled;
+    }
+
+    public boolean isSkipConsentPage() {
+        return isSkipConsentPage;
     }
 
     private void parseOAuth2URLs(OMElement oauth2Elem) {
@@ -242,6 +249,18 @@ public class OAuth2ServerConfig {
         }
     }
 
+    private void parseSkipConsentPage(OMElement oauth2Elem) {
+
+        OMElement skipConsentPageElem = oauth2Elem.getFirstChildWithName(getQNameWithIdentityNS(
+                ConfigElements.SKIP_CONSENT_PAGE));
+        if (skipConsentPageElem != null) {
+            isSkipConsentPage = Boolean.parseBoolean(skipConsentPageElem.getText());
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("SkipConsentPage was set to : " + isSkipConsentPage);
+        }
+    }
+
     /**
      * Localpart names for the OAuth2 configurations in identity.xml.
      */
@@ -264,6 +283,9 @@ public class OAuth2ServerConfig {
 
         // Enable/Disable refresh token renewal on each refresh_token grant request
         private static final String RENEW_REFRESH_TOKEN_FOR_REFRESH_GRANT = "RenewRefreshTokenForRefreshGrant";
+
+        // Skip consent page
+        private static final String SKIP_CONSENT_PAGE = "SkipConsentPage";
     }
 
     private QName getQNameWithIdentityNS(String localPart) {

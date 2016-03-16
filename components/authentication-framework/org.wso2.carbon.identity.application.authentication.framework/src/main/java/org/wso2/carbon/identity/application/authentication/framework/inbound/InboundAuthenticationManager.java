@@ -86,7 +86,7 @@ public class InboundAuthenticationManager {
             }
             return requestProcessor.process(authenticationRequest);
         } else {
-            throw new FrameworkException("No inbound request processor found to process the request");
+            throw FrameworkException.error("No inbound request processor found to process the request");
         }
     }
 
@@ -109,7 +109,7 @@ public class InboundAuthenticationManager {
             }
             return responseBuilder.processResponse(context);
         } else {
-            throw new FrameworkException("No response builder found to process the response");
+            throw FrameworkException.error("No response builder found to process the response");
         }
     }
 

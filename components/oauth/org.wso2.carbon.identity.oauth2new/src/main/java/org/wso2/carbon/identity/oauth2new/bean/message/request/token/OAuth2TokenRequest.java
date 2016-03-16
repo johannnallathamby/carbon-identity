@@ -18,10 +18,11 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequest;
 
-import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class OAuth2TokenRequest extends OAuth2InboundRequest {
 
@@ -29,13 +30,32 @@ public class OAuth2TokenRequest extends OAuth2InboundRequest {
 
     private String grantType;
 
-    protected OAuth2TokenRequest(InboundAuthenticationRequestBuilder builder) {
+    protected OAuth2TokenRequest(TokenRequestBuilder builder) {
         super(builder);
-        TokenRequestBuilder tokenRequestBuilder = (TokenRequestBuilder)builder;
-        this.grantType = tokenRequestBuilder.grantType;
+        this.grantType = builder.grantType;
     }
 
     public String getGrantType() {
         return grantType;
+    }
+
+    public static class TokenRequestBuilder extends OAuth2InboundRequestBuilder {
+
+        private String grantType;
+
+        public TokenRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
+            super(request, response);
+        }
+
+        public TokenRequestBuilder setGrantType(String grantType) {
+            this.grantType = grantType;
+            return this;
+        }
+
+        public OAuth2TokenRequest build() throws AuthenticationFrameworkRuntimeException {
+
+            return new OAuth2TokenRequest(this);
+        }
+
     }
 }

@@ -16,42 +16,44 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
+package org.wso2.carbon.identity.oauth2new.bean.message.request.authz;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
-import org.apache.oltu.oauth2.common.message.types.GrantType;
+import org.apache.oltu.oauth2.common.message.types.ResponseType;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashSet;
-import java.util.Set;
 
-public class RefreshGrantBuilder extends TokenRequestBuilder {
+public class TokenResponseRequestFactory extends AuthzRequestFactory {
 
-    char[] refreshToken;
-    Set<String> scopes = new HashSet<>();
-
-    public RefreshGrantBuilder(HttpServletRequest request, HttpServletResponse response) {
-        super(request, response);
+    @Override
+    public String getName() {
+        return "TokenResponseRequestFactory";
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.equals(GrantType.REFRESH_TOKEN.toString(), request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
+        if(StringUtils.equals(ResponseType.TOKEN.toString(), request.getParameter(OAuth.OAUTH_RESPONSE_TYPE))) {
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
-    @Override
-    public InboundAuthenticationRequest build() throws AuthenticationFrameworkRuntimeException {
+    public TokenResponseRequest create(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationFrameworkRuntimeException {
 
-        this.scopes = OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE));
-        this.refreshToken = request.getParameter(OAuth.OAUTH_REFRESH_TOKEN).toCharArray();
-        return new RefreshGrantRequest(this);
+        super.create(request, response);
+        TokenResponseRequest.TokenResponseRequestBuilder builder = new TokenResponseRequest.TokenResponseRequestBuilder
+                (request, response);
+        builder.setResponseType(request.getParameter(OAuth.OAUTH_RESPONSE_TYPE));
+        builder.setClientId(request.getParameter(OAuth.OAUTH_CLIENT_ID));
+        builder.setRedirectURI(request.getParameter(OAuth.OAUTH_REDIRECT_URI));
+        builder.setState(request.getParameter(OAuth.OAUTH_STATE));
+        builder.setScopes(OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE)));
+        return builder.build();
     }
 }

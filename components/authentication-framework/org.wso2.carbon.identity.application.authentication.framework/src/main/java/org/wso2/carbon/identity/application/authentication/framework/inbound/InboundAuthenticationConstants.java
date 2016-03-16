@@ -39,6 +39,7 @@ public final class InboundAuthenticationConstants {
         public static final String AUTH_NAME = "Name";
         public static final String AUTH_TYPE = "type";
         public static final String SESSION_DATA_KEY = "sessionDataKey";
+        public static final String AUTHENTICATED_USER = "AuthenticatedUser";
 
         private RequestProcessor() {
         }

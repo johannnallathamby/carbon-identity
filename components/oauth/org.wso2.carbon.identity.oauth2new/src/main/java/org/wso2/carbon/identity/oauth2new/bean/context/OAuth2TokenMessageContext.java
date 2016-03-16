@@ -40,9 +40,8 @@ public class OAuth2TokenMessageContext<T1 extends Serializable, T2 extends Seria
 
     private String clientId;
 
-    public OAuth2TokenMessageContext(OAuth2TokenRequest request, String tenantDomain,
-                                     Map<T1,T2> parameters) {
-        super(request, tenantDomain, parameters);
+    public OAuth2TokenMessageContext(OAuth2TokenRequest request, Map<T1,T2> parameters) {
+        super(request, parameters);
     }
 
     public Set<String> getApprovedScopes() {

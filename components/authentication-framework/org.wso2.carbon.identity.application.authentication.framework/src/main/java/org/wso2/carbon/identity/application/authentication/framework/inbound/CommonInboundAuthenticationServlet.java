@@ -43,12 +43,12 @@ public class CommonInboundAuthenticationServlet extends HttpServlet {
      * @return Inbound authentication request builder
      * @throws AuthenticationFrameworkRuntimeException
      */
-    private InboundAuthenticationRequestBuilder getInboundRequestBuilder(HttpServletRequest req,
-            HttpServletResponse resp) throws AuthenticationFrameworkRuntimeException {
-        List<InboundAuthenticationRequestBuilder> requestBuilders = FrameworkServiceDataHolder.getInstance()
-                .getInboundAuthenticationRequestBuilders();
+    private InboundAuthenticationRequestFactory getInboundRequestFactory(HttpServletRequest req,
+                                                                         HttpServletResponse resp) throws AuthenticationFrameworkRuntimeException {
+        List<InboundAuthenticationRequestFactory> requestFactories = FrameworkServiceDataHolder.getInstance()
+                .getInboundAuthenticationRequestFactories();
 
-        for (InboundAuthenticationRequestBuilder requestBuilder : requestBuilders) {
+        for (InboundAuthenticationRequestFactory requestBuilder : requestFactories) {
             if (requestBuilder.canHandle(req, resp)) {
                 return requestBuilder;
             }
@@ -85,13 +85,13 @@ public class CommonInboundAuthenticationServlet extends HttpServlet {
     private void doProcess(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationFrameworkRuntimeException {
 
-        InboundAuthenticationRequestBuilder requestBuilder = getInboundRequestBuilder(request, response);
-        if (requestBuilder == null) {
+        InboundAuthenticationRequestFactory requestFactory = getInboundRequestFactory(request, response);
+        if (requestFactory == null) {
             throw new AuthenticationFrameworkRuntimeException(
-                    "No authentication request builder found to build the request");
+                    "No authentication request builder found to create the request");
         }
 
-        InboundAuthenticationRequest authenticationRequest = requestBuilder.build();
+        InboundAuthenticationRequest authenticationRequest = requestFactory.create(request, response);
 
         if (request.getPathInfo().contains(InboundAuthenticationConstants.HTTP_PATH_PARAM_REQUEST)) {
             InboundAuthenticationResponse inboundAuthenticationResponse = doProcessRequest(request, response,

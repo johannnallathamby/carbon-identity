@@ -18,11 +18,26 @@
 
 package org.wso2.carbon.identity.oauth2new.processor.token;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
+import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
+import org.wso2.carbon.identity.application.common.model.ServiceProvider;
+import org.wso2.carbon.identity.base.IdentityRuntimeException;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.token.PasswordGrantRequest;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2AuthnException;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
+import org.wso2.carbon.identity.oauth2new.internal.OAuth2ServiceComponentHolder;
+import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.api.UserStoreManager;
+import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.user.core.util.UserCoreUtil;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 /*
  * InboundRequestProcessor for grant_type=password
@@ -42,7 +57,48 @@ public class PasswordGrantProcessor extends TokenProcessor {
     }
 
     @Override
-    protected void validateGrant(OAuth2TokenMessageContext messageContext) {
-         /* Method not implemented */
+    protected void validateGrant(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
+
+        String username = ((PasswordGrantRequest)messageContext.getRequest()).getUsername();
+        String tenantAwareUserName = MultitenantUtils.getTenantAwareUsername(username);
+        String userTenantDomain = MultitenantUtils.getTenantDomain(username);
+        char[] password = ((PasswordGrantRequest)messageContext.getRequest()).getPassword();
+        String clientId = messageContext.getClientId();
+        String tenantDomain = messageContext.getRequest().getTenantDomain();
+        ServiceProvider serviceProvider = null;
+
+        // get ServiceProvider form application.mgt service
+
+        if(!serviceProvider.isSaasApp() && !userTenantDomain.equals(tenantDomain)){
+            String message = "Non-SaaS service provider tenant domain is not same as user tenant domain; " +
+                    tenantDomain + " != " + userTenantDomain;
+            throw OAuth2AuthnException.error(message);
+
+        }
+
+        RealmService realmService = OAuth2ServiceComponentHolder.getInstance().getRealmService();
+        UserStoreManager userStoreManager = null;
+        boolean authStatus;
+        try {
+            userStoreManager = realmService.getTenantUserRealm(IdentityTenantUtil.getTenantId(userTenantDomain))
+                    .getUserStoreManager();
+        } catch (UserStoreException e) {
+            throw IdentityRuntimeException.error(e.getMessage(), e);
+        }
+        try {
+            authStatus = userStoreManager.authenticate(tenantAwareUserName, new String(password));
+        } catch (UserStoreException e) {
+            throw OAuth2AuthnException.error(e.getMessage(), e);
+        }
+        if (authStatus) {
+            if (username.indexOf(CarbonConstants.DOMAIN_SEPARATOR) < 0 &&
+                    StringUtils.isNotBlank(UserCoreUtil.getDomainFromThreadLocal())) {
+                username = UserCoreUtil.getDomainFromThreadLocal() + CarbonConstants.DOMAIN_SEPARATOR + username;
+            }
+            UserCoreUtil.addTenantDomainToEntry(tenantAwareUserName, userTenantDomain); // is this needed
+            messageContext.setAuthzUser(AuthenticatedUser.createLocalAuthenticatedUserFromSubjectIdentifier(username));
+        } else {
+            throw OAuth2AuthnException.error("Authentication failed for " + username);
+        }
     }
 }

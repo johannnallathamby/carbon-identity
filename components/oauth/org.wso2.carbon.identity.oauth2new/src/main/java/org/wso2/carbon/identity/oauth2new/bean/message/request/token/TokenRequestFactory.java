@@ -18,40 +18,36 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
-import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Set;
 
-public class ClientCredentialsGrantBuilder extends TokenRequestBuilder {
+public class TokenRequestFactory extends OAuth2InboundRequestFactory {
 
-    Set<String> scopes;
-    
-    public ClientCredentialsGrantBuilder(HttpServletRequest request, HttpServletResponse response) {
-        super(request, response);
+    @Override
+    public String getName() {
+        return "TokenRequestFactory";
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.equals(GrantType.CLIENT_CREDENTIALS.toString(), request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
+        if(StringUtils.isNotBlank(request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
             return true;
         }
         return false;
     }
 
-    @Override
-    public InboundAuthenticationRequest build() throws AuthenticationFrameworkRuntimeException {
+    public OAuth2TokenRequest create(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationFrameworkRuntimeException {
 
-        return new ClientCredentialsGrantRequest(this);
+        OAuth2TokenRequest.TokenRequestBuilder builder = new OAuth2TokenRequest.TokenRequestBuilder
+                (request, response);
+        builder.setGrantType(request.getParameter(OAuth.OAUTH_GRANT_TYPE));
+        return builder.build();
     }
 
-    public TokenRequestBuilder setScopes(Set<String> scopes) {
-        this.scopes = scopes;
-        return this;
-    }
 }

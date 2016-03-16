@@ -22,12 +22,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestBuilder;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ValidateRequestBuilder extends OAuth2InboundRequestBuilder {
+public class ValidateRequestBuilder extends OAuth2InboundRequestFactory {
 
     @Override
     public String getName() {

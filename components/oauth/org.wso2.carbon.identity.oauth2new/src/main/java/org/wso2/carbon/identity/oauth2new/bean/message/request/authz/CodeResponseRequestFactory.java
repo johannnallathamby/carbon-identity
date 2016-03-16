@@ -22,59 +22,37 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.message.types.ResponseType;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashSet;
-import java.util.Set;
 
-public class TokenResponseRequestBuilder extends AuthzRequestBuilder {
-
-    String clientId;
-    String redirectURI;
-    Set<String> scopes = new HashSet<>();
-
-    public TokenResponseRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
-        super(request, response);
-    }
-
-    public AuthzRequestBuilder setClientId(String clientId) {
-        this.clientId = clientId;
-        return this;
-    }
-
-    public AuthzRequestBuilder setRedirectURI(String redirectURI) {
-        this.redirectURI = redirectURI;
-        return this;
-    }
-
-    public AuthzRequestBuilder setScopes(Set<String> scopes) {
-        this.scopes = scopes;
-        return this;
-    }
+public class CodeResponseRequestFactory extends AuthzRequestFactory {
 
     @Override
     public String getName() {
-        return "TokenResponseRequestBuilder";
+        return "CodeResponseRequestFactory";
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.equals(ResponseType.TOKEN.toString(), request.getParameter(OAuth.OAUTH_RESPONSE_TYPE))) {
+        if(StringUtils.equals(ResponseType.CODE.toString(), request.getParameter(OAuth.OAUTH_RESPONSE_TYPE))) {
             return true;
         } else {
             return false;
         }
     }
 
-    public TokenResponseRequest build()
+    public CodeResponseRequest create(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationFrameworkRuntimeException {
 
-        this.setClientId(request.getParameter(OAuth.OAUTH_CLIENT_ID));
-        this.setRedirectURI(request.getParameter(OAuth.OAUTH_REDIRECT_URI));
-        this.setScopes(OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE)));
-        return new TokenResponseRequest(this);
+        CodeResponseRequest.CodeResponseRequestBuilder builder = new CodeResponseRequest.CodeResponseRequestBuilder
+                (request, response);
+        builder.setResponseType(request.getParameter(OAuth.OAUTH_RESPONSE_TYPE));
+        builder.setClientId(request.getParameter(OAuth.OAUTH_CLIENT_ID));
+        builder.setRedirectURI(request.getParameter(OAuth.OAUTH_REDIRECT_URI));
+        builder.setState(request.getParameter(OAuth.OAUTH_STATE));
+        builder.setScopes(OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE)));
+        return builder.build();
     }
 }

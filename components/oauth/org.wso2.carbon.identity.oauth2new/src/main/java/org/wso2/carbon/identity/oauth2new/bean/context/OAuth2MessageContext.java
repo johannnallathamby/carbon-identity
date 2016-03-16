@@ -27,13 +27,12 @@ import java.util.Map;
 /*
  * Message context that holds information about the request to an endpoint
  */
-public abstract class OAuth2MessageContext<T1 extends Serializable, T2 extends Serializable> extends InboundAuthenticationContext {
+public class OAuth2MessageContext<T1 extends Serializable, T2 extends Serializable> extends InboundAuthenticationContext {
 
     private static final long serialVersionUID = -3793959181562481432L;
 
-    public OAuth2MessageContext(OAuth2InboundRequest request, String tenantDomain,
-                                Map<T1,T2> parameters) {
-        super(request, tenantDomain, parameters);
+    public OAuth2MessageContext(OAuth2InboundRequest request, Map<T1,T2> parameters) {
+        super(request, parameters);
     }
 
     @Override

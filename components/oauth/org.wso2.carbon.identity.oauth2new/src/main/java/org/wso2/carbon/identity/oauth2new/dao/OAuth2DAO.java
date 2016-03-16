@@ -49,7 +49,9 @@ public abstract class OAuth2DAO {
     protected abstract void updateAccessTokenState(Connection connection, String tokenId, String tokenState, OAuth2MessageContext messageContext)
             throws OAuth2RuntimeException;
 
-    public abstract AccessToken getLatestAccessTokenByRefreshToken(String refreshToken, OAuth2MessageContext messageContext) throws OAuth2RuntimeException;
+    public abstract AccessToken getLatestAccessTokenByRefreshToken(char[] refreshToken,
+                                                                   OAuth2MessageContext messageContext)
+            throws OAuth2RuntimeException;
 
 //    public abstract String getTokenIdByToken(String token, OAuth2MessageContext messageContext) throws OAuth2RuntimeException;
 
@@ -58,7 +60,8 @@ public abstract class OAuth2DAO {
 
     public abstract AuthzCode getAuthzCode(String authzCode, OAuth2MessageContext messageContext) throws OAuth2RuntimeException;
 
-    public abstract void updateAuthzCodeState(Set<String> authzCode, String state, OAuth2MessageContext messageContext) throws OAuth2RuntimeException;
+    public abstract void updateAuthzCodeState(String authzCode, String state, OAuth2MessageContext messageContext)
+            throws OAuth2RuntimeException;
 
     protected abstract void updateAuthzCodeState(Connection connection, String authzCode,
                                               String state, OAuth2MessageContext messageContext) throws OAuth2RuntimeException;

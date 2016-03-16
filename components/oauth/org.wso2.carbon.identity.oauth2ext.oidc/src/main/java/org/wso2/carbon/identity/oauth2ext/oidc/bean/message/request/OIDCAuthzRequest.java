@@ -18,7 +18,6 @@
 
 package org.wso2.carbon.identity.oauth2ext.oidc.bean.message.request;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.authz.OAuth2AuthzRequest;
 
 public class OIDCAuthzRequest extends OAuth2AuthzRequest {

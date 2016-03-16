@@ -18,23 +18,27 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request.authz;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
 
-import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class CodeResponseRequest extends OAuth2AuthzRequest {
 
     private static final long serialVersionUID = -753843175388068502L;
-    
-    String clientId;
-    String redirectURI;
-    Set<String> scopes;
 
-    protected CodeResponseRequest(InboundAuthenticationRequestBuilder builder) {
+    protected CodeResponseRequest(CodeResponseRequestBuilder builder) {
         super(builder);
-        CodeResponseRequestBuilder requestBuilder = (CodeResponseRequestBuilder)builder;
-        this.clientId = requestBuilder.clientId;
-        this.redirectURI = requestBuilder.redirectURI;
-        this.scopes = requestBuilder.scopes;
+    }
+
+    public static class CodeResponseRequestBuilder extends AuthzRequestBuilder {
+
+        public CodeResponseRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
+            super(request, response);
+        }
+
+        public CodeResponseRequest build() throws AuthenticationFrameworkRuntimeException {
+            return new CodeResponseRequest(this);
+        }
     }
 }

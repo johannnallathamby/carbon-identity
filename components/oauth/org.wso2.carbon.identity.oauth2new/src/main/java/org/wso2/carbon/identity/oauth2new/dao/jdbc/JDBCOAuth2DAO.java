@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.core.util.IdentityDatabaseUtil;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
-import org.wso2.carbon.identity.oauth2new.HandlerManager;
+import org.wso2.carbon.identity.oauth2new.handler.HandlerManager;
 import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
 import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAO;
@@ -172,7 +172,8 @@ public class JDBCOAuth2DAO extends OAuth2DAO {
     }
 
     @Override
-    public AccessToken getLatestAccessTokenByRefreshToken(String refreshToken, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+    public AccessToken getLatestAccessTokenByRefreshToken(char[] refreshToken, OAuth2MessageContext messageContext)
+            throws OAuth2RuntimeException {
 
         AccessToken accessToken = null;
         Connection connection = IdentityDatabaseUtil.getDBConnection();
@@ -374,19 +375,16 @@ public class JDBCOAuth2DAO extends OAuth2DAO {
     }
 
     @Override
-    public void updateAuthzCodeState(Set<String> authzCodes, String state, OAuth2MessageContext messageContext)
+    public void updateAuthzCodeState(String authzCode, String state, OAuth2MessageContext messageContext)
             throws OAuth2RuntimeException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         TokenPersistenceProcessor processor = HandlerManager.getInstance().getTokenPersistenceProcessor(messageContext);
         PreparedStatement prepStmt = null;
         try {
-            for (String authzCode : authzCodes) {
-                prepStmt = connection.prepareStatement(SQLQueries.UPDATE_AUTHZ_CODE_STATE);
-                prepStmt.setString(1, state);
-                prepStmt.setString(2, processor.getProcessedAuthzCode(authzCode));
-                prepStmt.executeBatch();
-            }
+            prepStmt = connection.prepareStatement(SQLQueries.UPDATE_AUTHZ_CODE_STATE);
+            prepStmt.setString(1, state);
+            prepStmt.setString(2, processor.getProcessedAuthzCode(authzCode));
             connection.commit();
         } catch (SQLException e) {
             IdentityDatabaseUtil.rollBack(connection);

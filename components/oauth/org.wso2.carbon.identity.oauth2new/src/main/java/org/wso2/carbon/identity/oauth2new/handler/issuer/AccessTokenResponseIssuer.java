@@ -22,7 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.core.handler.AbstractIdentityHandler;
-import org.wso2.carbon.identity.oauth2new.HandlerManager;
+import org.wso2.carbon.identity.oauth2new.handler.HandlerManager;
 import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2AuthzMessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
@@ -45,7 +45,6 @@ public abstract class AccessTokenResponseIssuer extends AbstractIdentityHandler 
     protected static final String IS_ACCESS_TOKEN_VALID = "IsAccessTokenValid";
     protected static final String IS_REFRESH_TOKEN_VALID = "IsRefreshTokenValid";
     protected static final String MARK_ACCESS_TOKEN_EXPIRED = "MarkAccessTokenExpired";
-    protected static final String PREV_ACCESS_TOKEN = "PreviousAccessToken";
 
     /**
      * Issues the access token response.
@@ -109,9 +108,11 @@ public abstract class AccessTokenResponseIssuer extends AbstractIdentityHandler 
                 if (expireTime > 0 || expireTime < 0) {
                     if (log.isDebugEnabled()) {
                         if (expireTime > 0) {
-                            log.debug("Access Token : " + accessToken.getAccessTokenId() + " is still ACTIVE");
+                            log.debug("ACTIVE access token found for " + OAuth2Util.createUniqueAuthzGrantString
+                                    (authzUser, clientId, scopes));
                         } else if (expireTime < 0) {
-                            log.debug("Access Token : " + accessToken.getAccessTokenId() + " has infinite lifetime");
+                            log.debug("Infinite lifetime access token found for " + OAuth2Util
+                                    .createUniqueAuthzGrantString(authzUser, clientId, scopes));
                         }
                     }
                     isAccessTokenValid = true;
@@ -119,11 +120,11 @@ public abstract class AccessTokenResponseIssuer extends AbstractIdentityHandler 
                     if (refreshTokenExpiryTime < 0 || refreshTokenExpiryTime > 0) {
                         if (log.isDebugEnabled()) {
                             if (refreshTokenExpiryTime < 0) {
-                                log.debug("Refresh Token for AccessTokenID " + accessToken.getAccessTokenId() +
-                                        " has infinite lifetime");
+                                log.debug("Infinite lifetime refresh token found for " + OAuth2Util
+                                        .createUniqueAuthzGrantString(authzUser, clientId, scopes));
                             } else if (refreshTokenExpiryTime > 0) {
-                                log.debug("Refresh Token for AccessTokenID " + accessToken.getAccessTokenId() +
-                                        " is still ACTIVE");
+                                log.debug("ACTIVE refresh token found for " + OAuth2Util.createUniqueAuthzGrantString
+                                        (authzUser, clientId, scopes));
                             }
                         }
                         isRefreshTokenValid = true;
@@ -136,11 +137,11 @@ public abstract class AccessTokenResponseIssuer extends AbstractIdentityHandler 
                 if (refreshTokenExpiryTime < 0 || refreshTokenExpiryTime > 0) {
                     if (log.isDebugEnabled()) {
                         if (refreshTokenExpiryTime < 0) {
-                            log.debug("Refresh Token for AccessTokenID " + accessToken.getAccessTokenId() +
-                                    " has infinite lifetime");
+                            log.debug("Infinite lifetime refresh token found for " + OAuth2Util
+                                    .createUniqueAuthzGrantString(authzUser, clientId, scopes));
                         } else if (refreshTokenExpiryTime > 0) {
-                            log.debug("Refresh Token for AccessTokenID " + accessToken.getAccessTokenId() +
-                                    " is still ACTIVE");
+                            log.debug("ACTIVE refresh token found for " + OAuth2Util.createUniqueAuthzGrantString
+                                    (authzUser, clientId, scopes));
                         }
                     }
                     isRefreshTokenValid = true;
@@ -151,7 +152,7 @@ public abstract class AccessTokenResponseIssuer extends AbstractIdentityHandler 
         messageContext.addParameter(IS_ACCESS_TOKEN_VALID, isAccessTokenValid);
         messageContext.addParameter(IS_REFRESH_TOKEN_VALID, isRefreshTokenValid);
         messageContext.addParameter(MARK_ACCESS_TOKEN_EXPIRED, markAccessTokenExpired);
-        messageContext.addParameter(PREV_ACCESS_TOKEN, accessToken);
+        messageContext.addParameter(OAuth2.PREV_ACCESS_TOKEN, accessToken);
         return accessToken;
     }
 
@@ -170,7 +171,7 @@ public abstract class AccessTokenResponseIssuer extends AbstractIdentityHandler 
 
         boolean isRefreshTokenValid = (Boolean)messageContext.getParameter(IS_REFRESH_TOKEN_VALID);
         boolean markAccessTokenExpired = (Boolean)messageContext.getParameter(MARK_ACCESS_TOKEN_EXPIRED);
-        AccessToken prevAccessToken = (AccessToken)messageContext.getParameter(PREV_ACCESS_TOKEN);
+        AccessToken prevAccessToken = (AccessToken)messageContext.getParameter(OAuth2.PREV_ACCESS_TOKEN);
         String clientId = messageContext.getRequest().getClientId();
         AuthenticatedUser authzUser = messageContext.getAuthzUser();
         Set<String> scopes = messageContext.getApprovedScopes();
@@ -186,7 +187,7 @@ public abstract class AccessTokenResponseIssuer extends AbstractIdentityHandler 
 
         boolean isRefreshTokenValid = (Boolean)messageContext.getParameter(IS_REFRESH_TOKEN_VALID);
         boolean markAccessTokenExpired = (Boolean)messageContext.getParameter(MARK_ACCESS_TOKEN_EXPIRED);
-        AccessToken prevAccessToken = (AccessToken)messageContext.getParameter(PREV_ACCESS_TOKEN);
+        AccessToken prevAccessToken = (AccessToken)messageContext.getParameter(OAuth2.PREV_ACCESS_TOKEN);
         String clientId = messageContext.getClientId();
         AuthenticatedUser authzUser = messageContext.getAuthzUser();
         Set<String> scopes = messageContext.getApprovedScopes();

@@ -18,46 +18,41 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request.authz;
 
+import org.apache.commons.lang3.StringUtils;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestBuilder;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationConstants;
+import org.wso2.carbon.identity.oauth2new.OAuth2;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class AuthzApprovedRequestBuilder extends OAuth2InboundRequestBuilder {
-
-    String sessionDataKeyConsent;
-    String consent;
-
-    public AuthzApprovedRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
-        super(request, response);
-    }
+public class AuthzApprovedRequestFactory extends OAuth2InboundRequestFactory {
 
     @Override
     public String getName() {
-        return "AuthzApprovedRequestBuilder";
+        return "AuthzApprovedRequestFactory";
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationFrameworkRuntimeException {
 
+        if(StringUtils.isNotBlank(request.getParameter(OAuth2.CONSENT))){
+           return true;
+        }
         return false;
     }
 
-    public AuthzApprovedRequestBuilder setSessionDataKeyConsent(String sessionDataKeyConsent) {
-       this.sessionDataKeyConsent = sessionDataKeyConsent;
-       return this;
-    }
-
-    public AuthzApprovedRequestBuilder setConsent(String consent) {
-        this.consent = consent;
-        return this;
-    }
-
     @Override
-    public AuthzApprovedRequest build() throws AuthenticationFrameworkRuntimeException {
-        return new AuthzApprovedRequest(this);
+    public AuthzApprovedRequest create(HttpServletRequest request, HttpServletResponse response) throws
+            AuthenticationFrameworkRuntimeException {
+
+        AuthzApprovedRequest.AuthzApprovedRequestBuilder builder = new AuthzApprovedRequest.AuthzApprovedRequestBuilder
+                (request, response);
+        builder.setSessionDataKey(request.getParameter(InboundAuthenticationConstants.RequestProcessor
+                .SESSION_DATA_KEY));
+        builder.setConsent(request.getParameter(OAuth2.CONSENT));
+        return builder.build();
     }
 }

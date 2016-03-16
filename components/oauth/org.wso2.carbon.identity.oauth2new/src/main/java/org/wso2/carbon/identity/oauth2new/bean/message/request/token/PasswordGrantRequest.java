@@ -18,8 +18,10 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,11 +33,11 @@ public class PasswordGrantRequest extends OAuth2TokenRequest {
     private char[] password;
     private Set<String> scopes = new HashSet<>();
 
-    protected PasswordGrantRequest(InboundAuthenticationRequestBuilder builder) {
+    protected PasswordGrantRequest(PasswordGrantBuilder builder) {
         super(builder);
-        PasswordGrantBuilder passwordGrantBuilder = (PasswordGrantBuilder)builder;
-        this.username = passwordGrantBuilder.username;
-        this.password = passwordGrantBuilder.password;
+        this.username = builder.username;
+        this.password = builder.password;
+        this.scopes = builder.scopes;
     }
 
     public String getUsername() {
@@ -48,5 +50,36 @@ public class PasswordGrantRequest extends OAuth2TokenRequest {
 
     public Set<String> getScopes() {
         return scopes;
+    }
+
+    public static class PasswordGrantBuilder extends TokenRequestBuilder {
+
+        private String username;
+        private char[] password;
+        private Set<String> scopes;
+
+        public PasswordGrantBuilder(HttpServletRequest request, HttpServletResponse response) {
+            super(request, response);
+        }
+
+        public PasswordGrantBuilder setUsername(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public PasswordGrantBuilder setPassword(char[] password) {
+            this.password = password;
+            return this;
+        }
+
+        public PasswordGrantBuilder setScopes(Set<String> scopes) {
+            this.scopes = scopes;
+            return this;
+        }
+
+        @Override
+        public PasswordGrantRequest build() throws AuthenticationFrameworkRuntimeException {
+            return new PasswordGrantRequest(this);
+        }
     }
 }

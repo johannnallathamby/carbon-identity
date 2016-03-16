@@ -18,23 +18,27 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request.authz;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
 
-import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class TokenResponseRequest extends OAuth2AuthzRequest {
 
     private static final long serialVersionUID = -2571263137456231933L;
 
-    String clientId;
-    String redirectURI;
-    Set<String> scopes;
-
-    protected TokenResponseRequest(InboundAuthenticationRequestBuilder builder) {
+    protected TokenResponseRequest(TokenResponseRequestBuilder builder) {
         super(builder);
-        TokenResponseRequestBuilder requestBuilder = (TokenResponseRequestBuilder)builder;
-        this.clientId = requestBuilder.clientId;
-        this.redirectURI = requestBuilder.redirectURI;
-        this.scopes = requestBuilder.scopes;
+    }
+
+    public static class TokenResponseRequestBuilder extends AuthzRequestBuilder {
+
+        public TokenResponseRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
+            super(request, response);
+        }
+
+        public TokenResponseRequest build() throws AuthenticationFrameworkRuntimeException {
+            return new TokenResponseRequest(this);
+        }
     }
 }

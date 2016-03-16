@@ -16,55 +16,39 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.bean.message.request.authz;
+package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
+import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class AuthzRequestBuilder extends OAuth2InboundRequestBuilder {
-
-    String responseType;
-    String redirectURI;
-    String state;
-
-    public AuthzRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
-        super(request, response);
-    }
+public class AuthzCodeGrantFactory extends TokenRequestFactory {
 
     @Override
     public String getName() {
-        return "AuthzRequestBuilder";
+        return "AuthzCodeGrantFactory";
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.isNotBlank(request.getParameter(OAuth.OAUTH_RESPONSE_TYPE))) {
+        if(StringUtils.equals(GrantType.AUTHORIZATION_CODE.toString(), request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
             return true;
         }
         return false;
     }
 
-    public AuthzRequestBuilder setResponseType(String responseType) {
-        this.responseType = responseType;
-        return this;
-    }
+    @Override
+    public AuthzCodeGrantRequest create(HttpServletRequest request, HttpServletResponse response) throws
+            AuthenticationFrameworkRuntimeException {
 
-    public AuthzRequestBuilder setRedirectURI(String redirectURI) {
-        this.redirectURI = redirectURI;
-        return this;
-    }
-
-    public AuthzRequestBuilder setState(String state) {
-        this.state = state;
-        return this;
-    }
-
-    public OAuth2AuthzRequest build() throws AuthenticationFrameworkRuntimeException  {
-        return new OAuth2AuthzRequest(this);
+        AuthzCodeGrantRequest.AuthzCodeGrantBuilder builder = new AuthzCodeGrantRequest.AuthzCodeGrantBuilder
+                (request, response);
+        builder.setCode(request.getParameter(OAuth.OAUTH_CODE));
+        builder.setRedirectURI(request.getParameter(OAuth.OAUTH_REDIRECT_URI));
+        return builder.build();
     }
 }

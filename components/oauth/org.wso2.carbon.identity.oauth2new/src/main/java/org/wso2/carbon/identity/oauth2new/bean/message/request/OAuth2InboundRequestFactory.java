@@ -16,39 +16,42 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2ext.ntlm.builder.request;
+package org.wso2.carbon.identity.oauth2new.bean.message.request;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestFactory;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.token.OAuth2TokenRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class NTLMRequestBuilder extends OAuth2InboundRequestFactory {
+
+public class OAuth2InboundRequestFactory extends InboundAuthenticationRequestFactory {
 
     @Override
     public String getName() {
-        return "NTLMRequestBuilder";
-    }
-
-    @Override
-    public int getPriority() {
-        return 0;
+        return "OAuth2InboundRequestFactory";
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.isNotBlank(request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
+        if(StringUtils.isNotBlank(request.getParameter(OAuth.OAUTH_GRANT_TYPE)) ||
+                StringUtils.isNotBlank(request.getParameter(OAuth.OAUTH_RESPONSE_TYPE))) {
             return true;
         }
         return false;
     }
 
-    @Override
-    public InboundAuthenticationRequest buildRequest(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        return null;
+    public OAuth2InboundRequest create(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationFrameworkRuntimeException {
+
+        OAuth2TokenRequest.TokenRequestBuilder builder = new OAuth2TokenRequest.TokenRequestBuilder
+                (request, response);
+        builder.setGrantType(request.getParameter(OAuth.OAUTH_GRANT_TYPE));
+        builder.setGrantType(request.getParameter(OAuth.OAUTH_RESPONSE_TYPE));
+        return builder.build();
     }
+
 }

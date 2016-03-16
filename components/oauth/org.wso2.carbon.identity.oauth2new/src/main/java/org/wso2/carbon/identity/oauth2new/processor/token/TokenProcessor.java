@@ -27,18 +27,16 @@ import org.wso2.carbon.identity.application.authentication.framework.exception.F
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContext;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
-import org.wso2.carbon.identity.oauth2new.HandlerManager;
+import org.wso2.carbon.identity.oauth2new.handler.HandlerManager;
 import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.token.OAuth2TokenRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.response.OAuth2TokenResponse;
 import org.wso2.carbon.identity.oauth2new.common.ClientType;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 import org.wso2.carbon.identity.oauth2new.processor.OAuth2InboundRequestProcessor;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
-import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -54,7 +52,7 @@ public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
     }
 
     @Override
-    public String getCallbackPath(InboundAuthenticationContext context) throws FrameworkException {
+    public String getCallbackPath(InboundAuthenticationContext context) {
         return null;
     }
 
@@ -65,6 +63,9 @@ public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
 
     @Override
     public boolean canHandle(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
+        if(authenticationRequest.getParameterValue(OAuth.OAUTH_GRANT_TYPE) != null) {
+            return true;
+        }
         return false;
     }
 
@@ -72,17 +73,12 @@ public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
     public InboundAuthenticationResponse process(InboundAuthenticationRequest authenticationRequest)
             throws FrameworkException {
 
-        if(!(authenticationRequest instanceof OAuth2TokenRequest)) {
-            throw OAuth2RuntimeException.error("InboundAuthenticationRequest object not an instance of " +
-                    "OAuth2TokenRequest type");
-        }
-
-        String tenantDomain = authenticationRequest.getParameterValue(MultitenantConstants.TENANT_DOMAIN);
         OAuth2TokenMessageContext messageContext = new OAuth2TokenMessageContext(
-                (OAuth2TokenRequest)authenticationRequest, tenantDomain, new HashMap<String,String>());
+                (OAuth2TokenRequest)authenticationRequest, new HashMap<String,String>());
 
         if(ClientType.CONFIDENTIAL == clientType(messageContext)) {
-            authenticateClient(messageContext);
+            String clientId = authenticateClient(messageContext);
+            messageContext.setClientId(clientId);
         }
 
         validateGrant(messageContext);
@@ -110,7 +106,7 @@ public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
      * @throws OAuth2Exception
      */
     protected String authenticateClient(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
-        return HandlerManager.getInstance().handleClientAuthentication(messageContext);
+        return HandlerManager.getInstance().authenticateClient(messageContext);
     }
 
     /**
@@ -121,7 +117,8 @@ public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
      * @throws OAuth2Exception
      */
     protected void validateGrant(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
-        /* Method not implemented */
+
+        // Check the registered grant types for the SP and verify
     }
 
     /**
@@ -131,13 +128,13 @@ public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
      * @return OAuth2 access token response
      * @throws OAuth2Exception
      */
-    protected OAuth2TokenResponse issue(OAuth2TokenMessageContext messageContext) throws OAuth2RuntimeException {
+    protected InboundAuthenticationResponse issue(OAuth2TokenMessageContext messageContext) throws OAuth2RuntimeException {
 
         AccessToken accessToken = HandlerManager.getInstance().issueAccessToken(messageContext);
         return buildTokenResponse(accessToken, messageContext);
     }
 
-    protected OAuth2TokenResponse buildTokenResponse(AccessToken accessToken, OAuth2TokenMessageContext messageContext) {
+    protected InboundAuthenticationResponse buildTokenResponse(AccessToken accessToken, OAuth2TokenMessageContext messageContext) {
 
         long expiry = 0;
         if(accessToken.getAccessTokenValidity() > 0) {
@@ -148,7 +145,7 @@ public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
 
         // Have to check if refresh grant is allowed
 
-        String refreshToken = null;
+        char[] refreshToken = null;
         if(issueRefreshToken(messageContext)) {
             refreshToken = accessToken.getRefreshToken();
         }
@@ -156,7 +153,7 @@ public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
         OAuthASResponse.OAuthTokenResponseBuilder oltuRespBuilder = OAuthASResponse
                 .tokenResponse(HttpServletResponse.SC_OK)
                 .setAccessToken(accessToken.getAccessToken())
-                .setRefreshToken(refreshToken)
+                .setRefreshToken(new String(refreshToken))
                 .setExpiresIn(Long.toString(expiry))
                 .setTokenType(OAuth.OAUTH_HEADER_NAME);
         oltuRespBuilder.setScope(OAuth2Util.buildScopeString(accessToken.getScopes()));
@@ -168,7 +165,7 @@ public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
             throw OAuth2RuntimeException.error("Error occurred while generating Bearer token");
         }
 
-        OAuth2TokenResponse.InboundAuthenticationResponseBuilder builder = new OAuth2TokenResponse
+        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder builder = new InboundAuthenticationResponse
                 .InboundAuthenticationResponseBuilder();
         builder.setStatusCode(oltuASResponse.getResponseStatus());
         builder.setHeaders(oltuASResponse.getHeaders());
@@ -177,7 +174,7 @@ public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
                 OAuth2.HeaderValue.CACHE_CONTROL_NO_STORE);
         builder.addHeader(OAuth2.Header.PRAGMA,
                 OAuth2.HeaderValue.PRAGMA_NO_CACHE);
-        return (OAuth2TokenResponse)builder.build();
+        return builder.build();
 
     }
 }

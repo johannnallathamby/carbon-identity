@@ -22,8 +22,6 @@ import org.wso2.carbon.identity.application.authentication.framework.context.Ses
 import org.wso2.carbon.identity.application.authentication.framework.store.SessionContextDO;
 import org.wso2.carbon.identity.application.common.cache.CacheEntry;
 
-import java.util.concurrent.TimeUnit;
-
 public class SessionContextCacheEntry extends CacheEntry {
 
     private static final long serialVersionUID = 42165605438157753L;

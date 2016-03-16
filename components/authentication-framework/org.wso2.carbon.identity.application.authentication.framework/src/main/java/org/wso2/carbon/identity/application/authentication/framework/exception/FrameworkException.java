@@ -31,4 +31,12 @@ public class FrameworkException extends IdentityException {
     protected FrameworkException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public static FrameworkException error(String message) {
+        return new FrameworkException(message);
+    }
+
+    public static FrameworkException error(String message, Throwable cause) {
+        return new FrameworkException(message, cause);
+    }
 }

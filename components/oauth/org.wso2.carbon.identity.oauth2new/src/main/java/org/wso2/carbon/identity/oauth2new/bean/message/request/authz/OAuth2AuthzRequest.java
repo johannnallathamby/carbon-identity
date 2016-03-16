@@ -18,9 +18,12 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request.authz;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequest;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
 import java.util.Set;
 
 public class OAuth2AuthzRequest extends OAuth2InboundRequest {
@@ -28,19 +31,26 @@ public class OAuth2AuthzRequest extends OAuth2InboundRequest {
     private static final long serialVersionUID = 6738091486923517921L;
 
     private String responseType;
+    private String clientId;
     private String redirectURI;
     private String state;
+    private Set<String> scopes = new HashSet<>();
 
-    protected OAuth2AuthzRequest(InboundAuthenticationRequestBuilder builder) {
+    protected OAuth2AuthzRequest(AuthzRequestBuilder builder) {
         super(builder);
-        AuthzRequestBuilder authzRequestBuilder = ((AuthzRequestBuilder)builder);
-        this.responseType = authzRequestBuilder.responseType;
-        this.redirectURI = authzRequestBuilder.redirectURI;
-        this.state = authzRequestBuilder.state;
+        this.responseType = builder.responseType;
+        this.clientId = builder.clientId;
+        this.redirectURI = builder.redirectURI;
+        this.state = builder.state;
+        this.scopes = builder.scopes;
     }
 
     public String getResponseType() {
         return responseType;
+    }
+
+    public String getClientId() {
+        return clientId;
     }
 
     public String getRedirectURI() {
@@ -49,6 +59,52 @@ public class OAuth2AuthzRequest extends OAuth2InboundRequest {
 
     public String getState() {
         return state;
+    }
+
+    public Set<String> getScopes() {
+        return scopes;
+    }
+
+    public static class AuthzRequestBuilder extends OAuth2InboundRequestBuilder {
+
+        private String responseType;
+        private String clientId;
+        private String redirectURI;
+        private String state;
+        private Set<String> scopes = new HashSet<>();
+
+        public AuthzRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
+            super(request, response);
+        }
+
+        public AuthzRequestBuilder setResponseType(String responseType) {
+            this.responseType = responseType;
+            return this;
+        }
+
+        public AuthzRequestBuilder setClientId(String clientId) {
+            this.clientId = clientId;
+            return this;
+        }
+
+        public AuthzRequestBuilder setRedirectURI(String redirectURI) {
+            this.redirectURI = redirectURI;
+            return this;
+        }
+
+        public AuthzRequestBuilder setState(String state) {
+            this.state = state;
+            return this;
+        }
+
+        public AuthzRequestBuilder setScopes(Set<String> scopes) {
+            this.scopes = scopes;
+            return this;
+        }
+
+        public OAuth2AuthzRequest build() throws AuthenticationFrameworkRuntimeException  {
+            return new OAuth2AuthzRequest(this);
+        }
     }
 
 }

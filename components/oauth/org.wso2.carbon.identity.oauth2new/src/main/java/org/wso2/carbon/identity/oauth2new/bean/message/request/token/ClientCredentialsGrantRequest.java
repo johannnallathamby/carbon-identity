@@ -18,8 +18,10 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,11 +31,31 @@ public class ClientCredentialsGrantRequest extends OAuth2TokenRequest {
 
     private Set<String> scopes = new HashSet<>();
 
-    protected ClientCredentialsGrantRequest(InboundAuthenticationRequestBuilder builder) {
+    protected ClientCredentialsGrantRequest(ClientCredentialsGrantBuilder builder) {
         super(builder);
     }
 
     public Set<String> getScopes() {
         return scopes;
+    }
+
+
+    public static class ClientCredentialsGrantBuilder extends TokenRequestBuilder {
+
+        private Set<String> scopes;
+
+        public ClientCredentialsGrantBuilder(HttpServletRequest request, HttpServletResponse response) {
+            super(request, response);
+        }
+
+        public ClientCredentialsGrantBuilder setScopes(Set<String> scopes) {
+            this.scopes = scopes;
+            return this;
+        }
+
+        @Override
+        public ClientCredentialsGrantRequest build() throws AuthenticationFrameworkRuntimeException {
+            return new ClientCredentialsGrantRequest(this);
+        }
     }
 }

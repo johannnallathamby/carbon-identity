@@ -50,4 +50,15 @@ public class OAuth2 {
         public static final String CACHE_CONTROL_NO_STORE = "no-store";
         public static final String PRAGMA_NO_CACHE = "no-cache";
     }
+
+    public static final String CONSENT = "consent";
+    public static final String LOGGED_IN_USER = "loggedInUser";
+    public static final String SESSION_DATA_KEY_CONSENT = "sessionDataKeyConsent";
+
+    public static final String OAUTH2_SERVICE_PROVIDER = "OAuth2ServiceProvider";
+    public static final String OAUTH2_AUTHENTICATED_USER = "OAuth2AuthenticatedUser";
+    public static final String OAUTH2_RESOURCE_OWNER_AUTHN_REQUEST = "OAuth2ResourceOwnerAuthnRequest";
+    public static final String OAUTH2_RESOURCE_OWNER_AUTHZ_REQUEST = "OAuth2ResourceOwnerAuthzRequest";
+    public static final String QUERY_STRING = "QUERY_STRING";
+    public static final String PREV_ACCESS_TOKEN = "PreviousAccessToken";
 }

@@ -19,18 +19,20 @@
 package org.wso2.carbon.identity.application.authentication.framework.inbound;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InboundAuthenticationRequest <T extends InboundAuthenticationRequestBuilder> implements Serializable {
+public class InboundAuthenticationRequest implements Serializable {
 
     private static final long serialVersionUID = -7281184973045433976L;
 
-    private Map<String, String> headers = new HashMap<String, String>();
-    private Map<String, Cookie> cookies = new HashMap<String, Cookie>();
-    private Map<String, String[]> parameters = new HashMap<String, String[]>();
+    protected Map<String, String> headers = new HashMap<>();
+    protected Map<String, Cookie> cookies = new HashMap<>();
+    protected Map<String, String[]> parameters = new HashMap<>();
     protected String tenantDomain;
 
     public Map<String, String> getHeaders() {
@@ -49,6 +51,10 @@ public class InboundAuthenticationRequest <T extends InboundAuthenticationReques
         return parameters.get(paramName);
     }
 
+    public String getTenantDomain(){
+        return this.tenantDomain;
+    }
+
     public String getParameterValue(String paramName) {
         String[] values = parameters.get(paramName);
         if(values.length > 0){
@@ -57,14 +63,118 @@ public class InboundAuthenticationRequest <T extends InboundAuthenticationReques
         return null;
     }
 
-    public String getTenantDomain(){
-        return this.tenantDomain;
-    }
-
-    protected InboundAuthenticationRequest(T builder) {
+    protected InboundAuthenticationRequest(InboundAuthenticationRequestBuilder builder) {
         this.headers = builder.headers;
         this.cookies = builder.cookies;
         this.parameters = builder.parameters;
         this.tenantDomain = builder.tenantDomain;
+    }
+
+    public static class InboundAuthenticationRequestBuilder {
+
+        private HttpServletRequest request;
+        private HttpServletResponse response;
+        private Map<String, String> headers = new HashMap<>();
+        private Map<String, Cookie> cookies = new HashMap<>();
+        private Map<String, String[]> parameters = new HashMap<>();
+        private String tenantDomain;
+
+        public InboundAuthenticationRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
+            this.request = request;
+            this.response = response;
+        }
+
+        public InboundAuthenticationRequestBuilder setHeaders(Map<String, String> responseHeaders) {
+            this.headers = responseHeaders;
+            return this;
+        }
+
+        public InboundAuthenticationRequestBuilder addHeaders(Map<String, String> headers) {
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                if (this.headers.containsKey(header.getKey())) {
+                    throw AuthenticationFrameworkRuntimeException.error("Headers map trying to override existing " +
+                            "header " + header.getKey());
+                }
+                this.headers.put(header.getKey(), header.getValue());
+            }
+            return this;
+        }
+
+        public InboundAuthenticationRequestBuilder addHeader(String name, String value) {
+            if (this.headers.containsKey(name)) {
+                throw AuthenticationFrameworkRuntimeException.error("Headers map trying to override existing " +
+                        "header " + name);
+            }
+            this.headers.put(name, value);
+            return this;
+        }
+
+        public InboundAuthenticationRequestBuilder setCookies(Map<String, Cookie> cookies) {
+            this.cookies = cookies;
+            return this;
+        }
+
+        public InboundAuthenticationRequestBuilder addCookie(String name, Cookie value) {
+            if (this.cookies.containsKey(name)) {
+                throw AuthenticationFrameworkRuntimeException.error("Cookies map trying to override existing " +
+                        "cookie " + name);
+            }
+            this.cookies.put(name, value);
+            return this;
+        }
+
+        public InboundAuthenticationRequestBuilder addCookies(Map<String, Cookie> cookies) {
+            for (Map.Entry<String, Cookie> cookie : cookies.entrySet()) {
+                if (this.cookies.containsKey(cookie.getKey())) {
+                    throw AuthenticationFrameworkRuntimeException.error("Cookies map trying to override existing " +
+                            "cookie " + cookie.getKey());
+                }
+                this.cookies.put(cookie.getKey(), cookie.getValue());
+            }
+            return this;
+        }
+
+        public InboundAuthenticationRequestBuilder setParameters(Map<String, String[]> parameters) {
+            this.parameters = parameters;
+            return this;
+        }
+
+        public InboundAuthenticationRequestBuilder addParameter(String name, String[] values) {
+            if (this.parameters.containsKey(name)) {
+                throw AuthenticationFrameworkRuntimeException.error("Parameters map trying to override existing " +
+                        "key " + name);
+            }
+            this.parameters.put(name, values);
+            return this;
+        }
+
+        public InboundAuthenticationRequestBuilder addParameter(String name, String value) {
+            if (this.parameters.containsKey(name)) {
+                throw AuthenticationFrameworkRuntimeException.error("Parameters map trying to override existing " +
+                        "key " + name);
+            }
+            this.parameters.put(name, new String[]{value});
+            return this;
+        }
+
+        public InboundAuthenticationRequestBuilder addParameters(Map<String, String[]> parameters) {
+            for (Map.Entry<String, String[]> parameter : parameters.entrySet()) {
+                if (this.parameters.containsKey(parameter.getKey())) {
+                    throw AuthenticationFrameworkRuntimeException.error("Parameters map trying to override existing key " +
+                            parameter.getKey());
+                }
+                this.parameters.put(parameter.getKey(), parameter.getValue());
+            }
+            return this;
+        }
+
+        public InboundAuthenticationRequestBuilder setTenantDomain(String tenantDomain) {
+            this.tenantDomain = tenantDomain;
+            return this;
+        }
+
+        public InboundAuthenticationRequest build() throws AuthenticationFrameworkRuntimeException {
+            return new InboundAuthenticationRequest(this);
+        }
     }
 }

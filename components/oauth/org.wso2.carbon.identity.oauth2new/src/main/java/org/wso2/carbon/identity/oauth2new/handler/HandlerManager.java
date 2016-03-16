@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new;
+package org.wso2.carbon.identity.oauth2new.handler;
 
 import org.wso2.carbon.identity.core.handler.HandlerComparator;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
@@ -63,7 +63,7 @@ public class HandlerManager {
         throw OAuth2RuntimeException.error("Cannot find ClientAuthHandler to handle this request");
     }
 
-    public String handleClientAuthentication(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
+    public String authenticateClient(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
 
         List<ClientAuthHandler> handlers = OAuth2ServiceComponentHolder.getInstance().getClientAuthHandlers();
         Collections.sort(handlers, new HandlerComparator(messageContext));

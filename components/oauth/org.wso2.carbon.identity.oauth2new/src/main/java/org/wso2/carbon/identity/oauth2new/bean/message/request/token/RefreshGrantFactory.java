@@ -22,46 +22,34 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Set;
 
-public class PasswordGrantBuilder extends TokenRequestBuilder {
+public class RefreshGrantFactory extends TokenRequestFactory {
 
-    String username;
-    char[] password;
-    Set<String> scopes;
-
-    public PasswordGrantBuilder(HttpServletRequest request, HttpServletResponse response, String username,
-                                char[] password) {
-        super(request, response);
-        this.username = username;
-        this.password = password;
-    }
-
-    public TokenRequestBuilder setScopes(Set<String> scopes) {
-        this.scopes = scopes;
-        return this;
+    @Override
+    public String getName() {
+        return "RefreshGrantFactory";
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.equals(GrantType.PASSWORD.toString(), request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
+        if(StringUtils.equals(GrantType.REFRESH_TOKEN.toString(), request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
             return true;
         }
         return false;
     }
 
     @Override
-    public InboundAuthenticationRequest build() throws AuthenticationFrameworkRuntimeException {
+    public RefreshGrantRequest create(HttpServletRequest request, HttpServletResponse response) throws
+            AuthenticationFrameworkRuntimeException {
 
-        this.grantType = request.getParameter(OAuth.OAUTH_GRANT_TYPE);
-        this.scopes = OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE));
-        this.username = request.getParameter(OAuth.OAUTH_USERNAME);
-        this.password = request.getParameter(OAuth.OAUTH_PASSWORD).toCharArray();
-        return new PasswordGrantRequest(this);
+        RefreshGrantRequest.RefreshGrantBuilder builder = new RefreshGrantRequest.RefreshGrantBuilder
+                (request, response);
+        builder.setRefreshToken(request.getParameter(OAuth.OAUTH_REFRESH_TOKEN).toCharArray());
+        builder.setScopes(OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE)));
+        return builder.build();
     }
 }

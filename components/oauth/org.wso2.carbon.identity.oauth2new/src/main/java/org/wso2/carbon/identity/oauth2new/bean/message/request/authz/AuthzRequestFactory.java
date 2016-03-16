@@ -16,48 +16,38 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
+package org.wso2.carbon.identity.oauth2new.bean.message.request.authz;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestBuilder;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Set;
 
-public class TokenRequestBuilder extends OAuth2InboundRequestBuilder {
-
-    String grantType;
-
-    public TokenRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
-        super(request, response);
-    }
+public class AuthzRequestFactory extends OAuth2InboundRequestFactory {
 
     @Override
     public String getName() {
-        return "TokenRequestBuilder";
+        return "AuthzRequestFactory";
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.isNotBlank(request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
+        if(StringUtils.isNotBlank(request.getParameter(OAuth.OAUTH_RESPONSE_TYPE))) {
             return true;
         }
         return false;
     }
 
-    public TokenRequestBuilder setGrantType(String grantType) {
-        this.grantType = grantType;
-        return this;
+    public OAuth2AuthzRequest create(HttpServletRequest request, HttpServletResponse response) throws
+            AuthenticationFrameworkRuntimeException  {
+
+        OAuth2AuthzRequest.AuthzRequestBuilder builder = new OAuth2AuthzRequest.AuthzRequestBuilder
+                (request, response);
+        builder.setTenantDomain(request.getParameter(MultitenantConstants.TENANT_DOMAIN));
+        return builder.build();
     }
-
-    public OAuth2TokenRequest build()
-            throws AuthenticationFrameworkRuntimeException {
-
-        return new OAuth2TokenRequest(this);
-    }
-
 }

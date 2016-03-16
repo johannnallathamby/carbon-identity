@@ -18,27 +18,55 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request.authz;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequest;
 
-public class AuthzApprovedRequest extends InboundAuthenticationRequest {
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class AuthzApprovedRequest extends OAuth2InboundRequest {
 
     private static final long serialVersionUID = 3359421085612381634L;
 
-    private String sessionDataKeyConsent;
+    private String sessionDataKey;
     private String consent;
 
-    protected AuthzApprovedRequest(InboundAuthenticationRequestBuilder builder) {
+    protected AuthzApprovedRequest(AuthzApprovedRequestBuilder builder) {
         super(builder);
-        this.sessionDataKeyConsent = ((AuthzApprovedRequestBuilder)builder).sessionDataKeyConsent;
-        this.consent = ((AuthzApprovedRequestBuilder)builder).consent;
+        this.sessionDataKey = builder.sessionDataKey;
+        this.consent = builder.consent;
     }
 
-    public String getSessionDataKeyConsent() {
-        return this.sessionDataKeyConsent;
+    public String getSessionDataKey() {
+        return this.sessionDataKey;
     }
 
     public String getConsent() {
         return this.consent;
+    }
+
+    public static class AuthzApprovedRequestBuilder extends OAuth2InboundRequest.OAuth2InboundRequestBuilder {
+
+        private String sessionDataKey;
+        private String consent;
+
+        public AuthzApprovedRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
+            super(request, response);
+        }
+
+        public AuthzApprovedRequestBuilder setSessionDataKey(String sessionDataKey) {
+            this.sessionDataKey = sessionDataKey;
+            return this;
+        }
+
+        public AuthzApprovedRequestBuilder setConsent(String consent) {
+            this.consent = consent;
+            return this;
+        }
+
+        @Override
+        public AuthzApprovedRequest build() throws AuthenticationFrameworkRuntimeException {
+            return new AuthzApprovedRequest(this);
+        }
     }
 }

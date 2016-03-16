@@ -16,39 +16,41 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2ext.ntlm.builder.request;
+package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
+import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
+import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class NTLMRequestBuilder extends OAuth2InboundRequestFactory {
+public class PasswordGrantFactory extends TokenRequestFactory {
 
     @Override
     public String getName() {
-        return "NTLMRequestBuilder";
-    }
-
-    @Override
-    public int getPriority() {
-        return 0;
+        return "PasswordGrantFactory";
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.isNotBlank(request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
+        if(StringUtils.equals(GrantType.PASSWORD.toString(), request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
             return true;
         }
         return false;
     }
 
     @Override
-    public InboundAuthenticationRequest buildRequest(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        return null;
+    public PasswordGrantRequest create(HttpServletRequest request, HttpServletResponse response) throws
+            AuthenticationFrameworkRuntimeException {
+
+        PasswordGrantRequest.PasswordGrantBuilder builder = new PasswordGrantRequest.PasswordGrantBuilder
+                (request, response);
+        builder.setUsername(request.getParameter(OAuth.OAUTH_USERNAME));
+        builder.setPassword(request.getParameter(OAuth.OAUTH_PASSWORD).toCharArray());
+        builder.setScopes(OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE)));
+        return builder.build();
     }
 }

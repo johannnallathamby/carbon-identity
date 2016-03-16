@@ -32,7 +32,7 @@ import org.wso2.carbon.identity.application.authentication.framework.RequestPath
 import org.wso2.carbon.identity.application.authentication.framework.config.ConfigurationFacade;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.CommonInboundAuthenticationServlet;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestFactory;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestProcessor;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponseProcessor;
 import org.wso2.carbon.identity.application.authentication.framework.listener.AuthenticationEndpointTenantActivityListener;
@@ -77,16 +77,16 @@ import java.util.List;
  * policy="dynamic" bind="setIdentityCoreInitializedEventService" unbind="unsetIdentityCoreInitializedEventService"
  * @scr.reference name="application.requestprocessor"
  * interface="org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestProcessor"
- * cardinality="0..n" policy="dynamic" bind="setInboundRequestProcessor"
- * unbind="unsetInboundRequestProcessor"
+ * cardinality="0..n" policy="dynamic" bind="addInboundRequestProcessor"
+ * unbind="removeInboundRequestProcessor"
  * @scr.reference name="application.responseprocessor"
  * interface="org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponseProcessor"
- * cardinality="0..n" policy="dynamic" bind="setInboundResponseProcessor"
- * unbind="unsetInboundResponseProcessor"
+ * cardinality="0..n" policy="dynamic" bind="addInboundResponseProcessor"
+ * unbind="removeInboundResponseProcessor"
  * @scr.reference name="application.requestbuilder"
- * interface="org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder"
- * cardinality="0..n" policy="dynamic" bind="setInboundRequestBuilder"
- * unbind="unsetInboundRequestBuilder"
+ * interface="org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestFactory"
+ * cardinality="0..n" policy="dynamic" bind="addInboundRequestFactory"
+ * unbind="removeInboundRequestFactory"
  */
 
 
@@ -126,7 +126,7 @@ public class FrameworkServiceComponent {
         if (bundleContext == null) {
             String msg = "System has not been started properly. Bundle Context is null.";
             log.error(msg);
-            throw new FrameworkException(msg);
+            throw FrameworkException.error(msg);
         }
 
         return bundleContext;
@@ -284,7 +284,7 @@ public class FrameworkServiceComponent {
 
     }
 
-    protected void setInboundRequestProcessor(InboundAuthenticationRequestProcessor requestProcessor) {
+    protected void addInboundRequestProcessor(InboundAuthenticationRequestProcessor requestProcessor) {
 
         FrameworkServiceDataHolder.getInstance().getInboundAuthenticationRequestProcessors().add(requestProcessor);
         Collections.sort(FrameworkServiceDataHolder.getInstance().getInboundAuthenticationRequestProcessors(),
@@ -295,7 +295,7 @@ public class FrameworkServiceComponent {
         }
     }
 
-    protected void unsetInboundRequestProcessor(InboundAuthenticationRequestProcessor requestProcessor) {
+    protected void removeInboundRequestProcessor(InboundAuthenticationRequestProcessor requestProcessor) {
 
         FrameworkServiceDataHolder.getInstance().getInboundAuthenticationRequestProcessors().remove(requestProcessor);
 
@@ -305,7 +305,7 @@ public class FrameworkServiceComponent {
         }
     }
 
-    protected void setInboundResponseProcessor(InboundAuthenticationResponseProcessor responseProcessor) {
+    protected void addInboundResponseProcessor(InboundAuthenticationResponseProcessor responseProcessor) {
 
         FrameworkServiceDataHolder.getInstance().getInboundAuthenticationResponseProcessors().add(responseProcessor);
         Collections
@@ -317,7 +317,7 @@ public class FrameworkServiceComponent {
         }
     }
 
-    protected void unsetInboundResponseProcessor(InboundAuthenticationResponseProcessor responseProcessor) {
+    protected void removeInboundResponseProcessor(InboundAuthenticationResponseProcessor responseProcessor) {
 
         FrameworkServiceDataHolder.getInstance().getInboundAuthenticationResponseProcessors().remove(responseProcessor);
 
@@ -327,23 +327,23 @@ public class FrameworkServiceComponent {
 
     }
 
-    protected void setInboundRequestBuilder(InboundAuthenticationRequestBuilder requestBuilder) {
+    protected void addInboundRequestFactory(InboundAuthenticationRequestFactory factory) {
 
-        FrameworkServiceDataHolder.getInstance().getInboundAuthenticationRequestBuilders().add(requestBuilder);
+        FrameworkServiceDataHolder.getInstance().getInboundAuthenticationRequestFactories().add(factory);
         Collections
-                .sort(FrameworkServiceDataHolder.getInstance().getInboundAuthenticationRequestBuilders(), inboundRequestBuilder);
+                .sort(FrameworkServiceDataHolder.getInstance().getInboundAuthenticationRequestFactories(), inboundRequestFactory);
 
         if (log.isDebugEnabled()) {
-            log.debug("Added application inbound request builder : " + requestBuilder.getName());
+            log.debug("Added application inbound request builder : " + factory.getName());
         }
     }
 
-    protected void unsetInboundRequestBuilder(InboundAuthenticationRequestBuilder requestBuilder) {
+    protected void removeInboundRequestFactory(InboundAuthenticationRequestFactory factory) {
 
-        FrameworkServiceDataHolder.getInstance().getInboundAuthenticationRequestBuilders().remove(requestBuilder);
+        FrameworkServiceDataHolder.getInstance().getInboundAuthenticationRequestFactories().remove(factory);
 
         if (log.isDebugEnabled()) {
-            log.debug("Removed application inbound request builder : " + requestBuilder.getName());
+            log.debug("Removed application inbound request builder : " + factory.getName());
         }
 
     }
@@ -393,12 +393,12 @@ public class FrameworkServiceComponent {
                 }
             };
 
-    private static Comparator<InboundAuthenticationRequestBuilder> inboundRequestBuilder =
-            new Comparator<InboundAuthenticationRequestBuilder>() {
+    private static Comparator<InboundAuthenticationRequestFactory> inboundRequestFactory =
+            new Comparator<InboundAuthenticationRequestFactory>() {
 
                 @Override
-                public int compare(InboundAuthenticationRequestBuilder inboundRequestBuilder1,
-                        InboundAuthenticationRequestBuilder inboundRequestBuilder2) {
+                public int compare(InboundAuthenticationRequestFactory inboundRequestBuilder1,
+                        InboundAuthenticationRequestFactory inboundRequestBuilder2) {
 
                     if (inboundRequestBuilder1.getPriority() > inboundRequestBuilder2.getPriority()) {
                         return 1;

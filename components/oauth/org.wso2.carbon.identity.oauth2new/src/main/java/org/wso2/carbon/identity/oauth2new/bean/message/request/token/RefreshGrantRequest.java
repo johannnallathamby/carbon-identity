@@ -18,24 +18,54 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
 import java.util.Set;
 
 public class RefreshGrantRequest extends OAuth2TokenRequest {
 
-    char[] refreshToken;
-
+    private char[] refreshToken;
     private Set<String> scopes = new HashSet<>();
 
-    protected RefreshGrantRequest(InboundAuthenticationRequestBuilder builder) {
+    protected RefreshGrantRequest(RefreshGrantBuilder builder) {
         super(builder);
-        RefreshGrantBuilder refreshGrantBuilder = (RefreshGrantBuilder)builder;
-        this.refreshToken = refreshGrantBuilder.refreshToken;
+        this.refreshToken = builder.refreshToken;
+        this.scopes = builder.scopes;
+    }
+
+    public char[] getRefreshToken() {
+        return refreshToken;
     }
 
     public Set<String> getScopes() {
         return scopes;
+    }
+
+    public static class RefreshGrantBuilder extends TokenRequestBuilder {
+
+        private char[] refreshToken;
+        private Set<String> scopes = new HashSet<>();
+
+        public RefreshGrantBuilder(HttpServletRequest request, HttpServletResponse response) {
+            super(request, response);
+        }
+
+        public RefreshGrantBuilder setRefreshToken(char[] refreshToken) {
+            this.refreshToken = refreshToken;
+            return this;
+        }
+
+        public RefreshGrantBuilder setScopes(Set<String> scopes) {
+            this.scopes = scopes;
+            return this;
+        }
+
+        @Override
+        public RefreshGrantRequest build() throws AuthenticationFrameworkRuntimeException {
+            return new RefreshGrantRequest(this);
+        }
     }
 }

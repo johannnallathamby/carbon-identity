@@ -38,9 +38,8 @@ public class OAuth2AuthzMessageContext<T1 extends Serializable, T2 extends Seria
 
     private long validityPeriod;
 
-    public OAuth2AuthzMessageContext(OAuth2AuthzRequest request, String tenantDomain,
-                                     Map<T1,T2> parameters) {
-        super(request, tenantDomain, parameters);
+    public OAuth2AuthzMessageContext(OAuth2AuthzRequest request, Map<T1,T2> parameters) {
+        super(request, parameters);
     }
 
     public Set<String> getApprovedScopes() {

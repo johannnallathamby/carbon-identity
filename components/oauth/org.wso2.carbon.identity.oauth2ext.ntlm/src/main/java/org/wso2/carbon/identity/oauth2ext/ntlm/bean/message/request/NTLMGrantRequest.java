@@ -18,7 +18,6 @@
 
 package org.wso2.carbon.identity.oauth2ext.ntlm.bean.message.request;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.token.OAuth2TokenRequest;
 
 public class NTLMGrantRequest extends OAuth2TokenRequest {

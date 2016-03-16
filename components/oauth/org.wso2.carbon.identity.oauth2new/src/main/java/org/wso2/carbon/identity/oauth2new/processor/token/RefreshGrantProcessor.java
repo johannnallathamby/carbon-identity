@@ -18,11 +18,19 @@
 
 package org.wso2.carbon.identity.oauth2new.processor.token;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
+import org.wso2.carbon.identity.oauth2new.handler.HandlerManager;
+import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.token.RefreshGrantRequest;
+import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAO;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2ClientException;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
+import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 
 /*
  * InboundRequestProcessor for grant_type=refresh_token
@@ -42,7 +50,26 @@ public class RefreshGrantProcessor extends TokenProcessor {
     }
 
     @Override
-    protected void validateGrant(OAuth2TokenMessageContext messageContext) {
-         /* Method not implemented */
+    protected void validateGrant(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
+
+        char[] refreshToken = ((RefreshGrantRequest)messageContext.getRequest()).getRefreshToken();
+
+        OAuth2DAO dao = HandlerManager.getInstance().getOAuth2DAO(messageContext);
+
+        AccessToken accessToken = dao.getLatestAccessTokenByRefreshToken(refreshToken, messageContext);
+
+        if(StringUtils.equals(accessToken.getClientId(), messageContext.getClientId())) {
+            throw OAuth2ClientException.error("Unauthorized client trying to refresh token");
+        }
+
+        if (!OAuth2.TokenState.ACTIVE.equals(accessToken.getRefreshToken()) &&
+                !OAuth2.TokenState.EXPIRED.equals(accessToken.getAccessTokenState())) {
+            throw OAuth2ClientException.error("Invalid refresh token");
+        }
+
+        messageContext.setAuthzUser(accessToken.getAuthzUser());
+        messageContext.setApprovedScopes(accessToken.getScopes());
+        messageContext.addParameter(OAuth2.PREV_ACCESS_TOKEN, accessToken);
+
     }
 }

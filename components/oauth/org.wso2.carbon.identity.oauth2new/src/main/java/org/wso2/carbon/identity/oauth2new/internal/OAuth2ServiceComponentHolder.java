@@ -19,7 +19,7 @@
 package org.wso2.carbon.identity.oauth2new.internal;
 
 import org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestBuilder;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
 import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAOHandler;
 import org.wso2.carbon.identity.oauth2new.handler.client.ClientAuthHandler;
 import org.wso2.carbon.identity.oauth2new.handler.issuer.AccessTokenResponseIssuer;
@@ -38,7 +38,7 @@ public class OAuth2ServiceComponentHolder {
     private RegistryService registryService;
     private IdentityCoreInitializedEvent identityCoreInitializedEvent;
     private List<OAuth2InboundRequestProcessor> processors = new ArrayList<>();
-    private List<OAuth2InboundRequestBuilder> builders = new ArrayList<>();
+    private List<OAuth2InboundRequestFactory> builders = new ArrayList<>();
     private List<ClientAuthHandler> clientAuthHandlers = new ArrayList<>();
     private List<AccessTokenResponseIssuer> accessTokenIssuers = new ArrayList<>();
     private List<TokenPersistenceProcessor> tokenPersistenceProcessors = new ArrayList<>();
@@ -80,7 +80,7 @@ public class OAuth2ServiceComponentHolder {
         return processors;
     }
 
-    public List<OAuth2InboundRequestBuilder> getBuilders() {
+    public List<OAuth2InboundRequestFactory> getBuilders() {
         return builders;
     }
 

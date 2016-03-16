@@ -19,13 +19,26 @@
 package org.wso2.carbon.identity.oauth2new.bean.message.request;
 
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestBuilder;
 
-public abstract class OAuth2InboundRequest extends InboundAuthenticationRequest {
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class OAuth2InboundRequest extends InboundAuthenticationRequest {
 
     private static final long serialVersionUID = 5255384558894431030L;
 
     protected OAuth2InboundRequest(InboundAuthenticationRequestBuilder builder) {
         super(builder);
+    }
+
+    public static class OAuth2InboundRequestBuilder extends InboundAuthenticationRequestBuilder {
+
+        public OAuth2InboundRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
+            super(request, response);
+        }
+
+        public OAuth2InboundRequest build() {
+            return new OAuth2InboundRequest(this);
+        }
     }
 }

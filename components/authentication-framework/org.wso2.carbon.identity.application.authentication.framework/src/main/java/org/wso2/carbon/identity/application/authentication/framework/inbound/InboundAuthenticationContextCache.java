@@ -54,7 +54,7 @@ public class InboundAuthenticationContextCache
         super.addToCache(key, entry);
         if (enableRequestScopeCache) {
             int tenantId = MultitenantConstants.INVALID_TENANT_ID;
-            String tenantDomain = entry.getInboundAuthenticationContext().getTenantDomain();
+            String tenantDomain = entry.getInboundAuthenticationContext().getRequest().getTenantDomain();
             if (tenantDomain != null) {
                 tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
             }

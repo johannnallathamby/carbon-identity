@@ -21,6 +21,7 @@ package org.wso2.carbon.identity.oauth2new.util;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 import org.wso2.carbon.identity.oauth2new.model.OAuth2ServerConfig;
 
@@ -113,5 +114,19 @@ public class OAuth2Util {
             return remainingRefreshTokenValidity;
         }
         return 0;
+    }
+
+    public static String createUniqueAuthzGrantString(AuthenticatedUser authzUser, String clientId,
+                                                      Set<String> scopes) {
+        if(authzUser == null || StringUtils.isBlank(clientId)){
+            throw new IllegalArgumentException("Invalid arguments: AuthenticatedUser is " + authzUser + " and " +
+                    "clientId is " + clientId);
+        }
+        StringBuilder builder = new StringBuilder("");
+        builder.append(authzUser.toString()).append(":").append(clientId);
+        if(!scopes.isEmpty()){
+            builder.append(":").append(OAuth2Util.buildScopeString(scopes));
+        }
+        return builder.toString();
     }
 }

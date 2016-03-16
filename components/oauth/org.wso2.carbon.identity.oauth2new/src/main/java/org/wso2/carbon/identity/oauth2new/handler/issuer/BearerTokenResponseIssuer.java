@@ -36,7 +36,6 @@ import org.wso2.carbon.identity.oauth2new.model.OAuth2ServerConfig;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
-import java.util.UUID;
 
 public class BearerTokenResponseIssuer extends AccessTokenResponseIssuer {
 
@@ -61,8 +60,6 @@ public class BearerTokenResponseIssuer extends AccessTokenResponseIssuer {
                                               AccessToken prevAccessToken, long accessTokenCallbackValidity,
                                               long refreshTokenCallbackValidity, String grantOrResponseType,
                                               OAuth2MessageContext messageContext) {
-
-
 
         Timestamp timestamp = new Timestamp(new Date().getTime());
 
@@ -97,7 +94,7 @@ public class BearerTokenResponseIssuer extends AccessTokenResponseIssuer {
         refreshTokenValidity = refreshTokenValidity * 1000;
 
         String bearerToken;
-        String refreshToken = null;
+        char[] refreshToken = null;
         try {
             bearerToken = oltuIssuer.accessToken();
         } catch (OAuthSystemException e) {
@@ -107,13 +104,13 @@ public class BearerTokenResponseIssuer extends AccessTokenResponseIssuer {
             refreshToken = prevAccessToken.getRefreshToken();
         } else {
             try {
-                refreshToken = oltuIssuer.refreshToken();
+                refreshToken = oltuIssuer.refreshToken().toCharArray();
             } catch (OAuthSystemException e) {
                 throw OAuth2RuntimeException.error(e.getMessage(), e);
             }
         }
 
-        AccessToken newAccessToken = new AccessToken(UUID.randomUUID().toString(), bearerToken, clientId, authzUser.toString(),
+        AccessToken newAccessToken = new AccessToken(bearerToken, clientId, authzUser.toString(),
                 grantOrResponseType, OAuth2.TokenState.ACTIVE, accessTokenIssuedTime, accessTokenValidity);
 
         newAccessToken.setAuthzUser(authzUser);
