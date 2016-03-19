@@ -25,6 +25,7 @@ import org.wso2.carbon.identity.core.bean.context.MessageContext;
 import org.wso2.carbon.identity.core.handler.AbstractIdentityHandler;
 import org.wso2.carbon.identity.core.handler.IdentityHandler;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
+import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 import org.wso2.carbon.identity.oauth2new.model.AuthzCode;
@@ -72,81 +73,68 @@ public final class OAuth2DAOHandler extends OAuth2DAO implements IdentityHandler
 
     @Override
     public void init(Properties properties) throws IdentityRuntimeException {
-
+        identityHandler.init(properties);
     }
 
     @Override
     public String getName() {
-        return null;
+        return identityHandler.getName();
     }
 
     @Override
     public boolean isEnabled(MessageContext messageContext) throws IdentityException {
-        return false;
+        return identityHandler.isEnabled(messageContext);
     }
 
     @Override
     public int getPriority(MessageContext messageContext) throws IdentityRuntimeException {
-        return 0;
+        return identityHandler.getPriority(messageContext);
     }
 
     @Override
     public boolean canHandle(MessageContext messageContext) throws IdentityRuntimeException {
-        return false;
+        return identityHandler.canHandle(messageContext);
     }
 
     @Override
     public AccessToken getLatestActiveOrExpiredAccessToken(String consumerKey, AuthenticatedUser authzUser, Set<String> scopes, OAuth2MessageContext messageContext) {
-        return null;
+        return wrappedDAO.getLatestActiveOrExpiredAccessToken(consumerKey, authzUser, scopes, messageContext);
     }
 
     @Override
-    public void storeAccessToken(AccessToken newAccessToken, String oldAccessTokenId, String tokenState, String authzCodeId, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+    public void storeAccessToken(AccessToken newAccessToken, String oldAccessToken, String authzCode, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+        wrappedDAO.storeAccessToken(newAccessToken, oldAccessToken, authzCode, messageContext);
+    }
 
+    public void updateAccessTokenState(String accessToken, String tokenState,
+                                                OAuth2TokenMessageContext messageContext) throws
+            OAuth2RuntimeException {
+        wrappedDAO.updateAuthzCodeState(accessToken, tokenState, messageContext);
     }
 
     @Override
-    protected void storeAccessToken(Connection connection, AccessToken newAccessToken, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
-
+    public String getAccessTokenByAuthzCode(String authorizationCode, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
+        return wrappedDAO.getAccessTokenByAuthzCode(authorizationCode, messageContext);
     }
 
     @Override
-    public void updateAccessTokenState(Set<String> accessTokenIds, String tokenState, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
-
-    }
-
-    @Override
-    protected void updateAccessTokenState(Connection connection, String tokenId, String tokenState, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
-
-    }
-
-    @Override
-    public AccessToken getLatestAccessTokenByRefreshToken(char[] refreshToken, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
-        return null;
+    public AccessToken getLatestAccessTokenByRefreshToken(String refreshToken, OAuth2MessageContext messageContext)
+            throws OAuth2RuntimeException {
+        return wrappedDAO.getLatestAccessTokenByRefreshToken(refreshToken, messageContext);
     }
 
     @Override
     public void storeAuthzCode(AuthzCode authzCode, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
-
+        wrappedDAO.storeAuthzCode(authzCode, messageContext);
     }
 
     @Override
     public AuthzCode getAuthzCode(String authzCode, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
-        return null;
+        return wrappedDAO.getAuthzCode(authzCode, messageContext);
     }
 
     @Override
     public void updateAuthzCodeState(String authzCode, String state, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
-
-    }
-
-    @Override
-    protected void updateAuthzCodeState(Connection connection, String authzCode, String state, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
-
-    }
-
-    @Override
-    protected void updateTokenIdForAuthzCodeId(Connection connection, String oldAccessTokenId, String newAccessTokenId, OAuth2MessageContext messageContext) throws OAuth2RuntimeException {
-
+        wrappedDAO.updateAuthzCodeState(authzCode, state, messageContext);
     }
 }

@@ -22,6 +22,7 @@ import org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
 import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAOHandler;
 import org.wso2.carbon.identity.oauth2new.handler.client.ClientAuthHandler;
+import org.wso2.carbon.identity.oauth2new.handler.grant.AuthorizationGrantHandler;
 import org.wso2.carbon.identity.oauth2new.handler.issuer.AccessTokenResponseIssuer;
 import org.wso2.carbon.identity.oauth2new.handler.persist.TokenPersistenceProcessor;
 import org.wso2.carbon.identity.oauth2new.processor.OAuth2InboundRequestProcessor;
@@ -43,6 +44,7 @@ public class OAuth2ServiceComponentHolder {
     private List<AccessTokenResponseIssuer> accessTokenIssuers = new ArrayList<>();
     private List<TokenPersistenceProcessor> tokenPersistenceProcessors = new ArrayList<>();
     private List<OAuth2DAOHandler> oAuth2DAOHandlers = new ArrayList<>();
+    private List<AuthorizationGrantHandler> grantHandlers = new ArrayList<>();
 
     private OAuth2ServiceComponentHolder() {
 
@@ -98,5 +100,9 @@ public class OAuth2ServiceComponentHolder {
 
     public List<OAuth2DAOHandler> getOAuth2DAOHandlers() {
         return oAuth2DAOHandlers;
+    }
+
+    public List<AuthorizationGrantHandler> getGrantHandlers() {
+        return grantHandlers;
     }
 }

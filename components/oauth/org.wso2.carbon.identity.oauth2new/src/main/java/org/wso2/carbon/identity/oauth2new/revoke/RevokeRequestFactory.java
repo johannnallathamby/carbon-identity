@@ -16,40 +16,44 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
+package org.wso2.carbon.identity.oauth2new.revoke;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class RefreshGrantFactory extends TokenRequestFactory {
+public class RevokeRequestFactory extends OAuth2InboundRequestFactory {
 
     @Override
     public String getName() {
-        return "RefreshGrantFactory";
+        return "RevokeRequestFactory";
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.equals(GrantType.REFRESH_TOKEN.toString(), request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
+        if(StringUtils.isNotBlank(request.getParameter("token"))) {
             return true;
         }
         return false;
     }
 
     @Override
-    public RefreshGrantRequest create(HttpServletRequest request, HttpServletResponse response) throws
+    public RevokeRequest create(HttpServletRequest request, HttpServletResponse response) throws
             AuthenticationFrameworkRuntimeException {
 
-        RefreshGrantRequest.RefreshGrantBuilder builder = new RefreshGrantRequest.RefreshGrantBuilder
+        RevokeRequest.RevokeRequestBuilder builder = new RevokeRequest.RevokeRequestBuilder
                 (request, response);
-        builder.setRefreshToken(request.getParameter(OAuth.OAUTH_REFRESH_TOKEN));
-        builder.setScopes(OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE)));
+        builder.setTenantDomain(request.getParameter(MultitenantConstants.TENANT_DOMAIN));
+        builder.setToken(request.getParameter("token"));
+        builder.setTokenTypeHint(request.getParameter("token_type_hint"));
+        builder.setCallback(request.getParameter("callback"));
         return builder.build();
     }
 }

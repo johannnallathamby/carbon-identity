@@ -19,10 +19,13 @@
 package org.wso2.carbon.identity.oauth2new.dao;
 
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
+import org.wso2.carbon.identity.base.IdentityRuntimeException;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
+import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 import org.wso2.carbon.identity.oauth2new.model.AuthzCode;
+import org.wso2.carbon.identity.oauth2new.revoke.RevocationMessageContext;
 
 import java.sql.Connection;
 import java.util.Set;
@@ -36,24 +39,18 @@ public abstract class OAuth2DAO {
                                                                     Set<String> scopes,
                                                                     OAuth2MessageContext messageContext);
 
-    public abstract void storeAccessToken(AccessToken newAccessToken, String oldAccessTokenId, String tokenState,
-                                          String authzCodeId, OAuth2MessageContext messageContext) throws OAuth2RuntimeException;
+    public abstract void storeAccessToken(AccessToken newAccessToken, String oldAccessToken, String authzCode,
+                                          OAuth2MessageContext messageContext) throws OAuth2RuntimeException;
 
-    protected abstract void storeAccessToken(Connection connection, AccessToken newAccessToken,
-                                             OAuth2MessageContext messageContext)
+    public abstract String getAccessTokenByAuthzCode(String authorizationCode, OAuth2MessageContext messageContext)
             throws OAuth2RuntimeException;
 
-    public abstract void updateAccessTokenState(Set<String> accessTokenIds, String tokenState,
-                                                OAuth2MessageContext messageContext) throws OAuth2RuntimeException;
+    public abstract void updateAccessTokenState(String accessToken, String tokenState,
+                                                OAuth2TokenMessageContext messageContext) throws OAuth2RuntimeException;
 
-    protected abstract void updateAccessTokenState(Connection connection, String tokenId, String tokenState, OAuth2MessageContext messageContext)
-            throws OAuth2RuntimeException;
-
-    public abstract AccessToken getLatestAccessTokenByRefreshToken(char[] refreshToken,
+    public abstract AccessToken getLatestAccessTokenByRefreshToken(String refreshToken,
                                                                    OAuth2MessageContext messageContext)
             throws OAuth2RuntimeException;
-
-//    public abstract String getTokenIdByToken(String token, OAuth2MessageContext messageContext) throws OAuth2RuntimeException;
 
     public abstract void storeAuthzCode(AuthzCode authzCode, OAuth2MessageContext messageContext) throws
             OAuth2RuntimeException;
@@ -63,13 +60,17 @@ public abstract class OAuth2DAO {
     public abstract void updateAuthzCodeState(String authzCode, String state, OAuth2MessageContext messageContext)
             throws OAuth2RuntimeException;
 
-    protected abstract void updateAuthzCodeState(Connection connection, String authzCode,
-                                              String state, OAuth2MessageContext messageContext) throws OAuth2RuntimeException;
+    public abstract Set<String> getAuthorizedClientIDs(AuthenticatedUser authzUser,
+                                                       RevocationMessageContext messageContext)
+            throws OAuth2RuntimeException;
 
-    protected abstract void updateTokenIdForAuthzCodeId(Connection connection, String oldAccessTokenId,
-                                                      String newAccessTokenId, OAuth2MessageContext messageContext) throws OAuth2RuntimeException;
+    public abstract AccessToken getAccessToken(String bearerToken, RevocationMessageContext messageContext) throws
+            OAuth2RuntimeException;
 
-//    public abstract String getCodeIdByAuthzCode(String authzCode, OAuth2MessageContext messageContext) throws
-//            OAuth2RuntimeException;
+    public abstract void revokeAccessToken(String accessToken, RevocationMessageContext messageContext) throws
+            IdentityRuntimeException;
+
+    public abstract void revokeRefreshToken(String refreshToken, RevocationMessageContext messageContext) throws
+            OAuth2RuntimeException;
 
 }

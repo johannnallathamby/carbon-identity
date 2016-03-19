@@ -16,16 +16,15 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2ext.revoke;
+package org.wso2.carbon.identity.oauth2new.handler.grant;
 
-import org.wso2.carbon.identity.application.common.model.User;
-import org.wso2.carbon.identity.oauth2new.exception.OAuth2InternalException;
+import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 
-import java.util.Set;
+public class AuthzCodeGrantHandler extends AuthorizationGrantHandler {
 
-public interface OAuth2RevocationService {
+    public void validateGrant(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
 
-    Set<String> getAppsAuthorizedByUser(User user) throws OAuth2InternalException;
 
-    void revokeApplication(String application) throws OAuth2InternalException;
+    }
 }

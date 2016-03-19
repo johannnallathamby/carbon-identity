@@ -43,8 +43,8 @@ public abstract class TokenPersistenceProcessor extends AbstractIdentityHandler 
 
     public abstract String getPreprocessedAccessToken(String processedAccessToken) throws OAuth2RuntimeException;
 
-    public abstract String getProcessedRefreshToken(char[] refreshToken) throws OAuth2RuntimeException;
+    public abstract String getProcessedRefreshToken(String refreshToken) throws OAuth2RuntimeException;
 
-    public abstract char[] getPreprocessedRefreshToken(String processedRefreshToken) throws OAuth2RuntimeException;
+    public abstract String getPreprocessedRefreshToken(String processedRefreshToken) throws OAuth2RuntimeException;
 
 }

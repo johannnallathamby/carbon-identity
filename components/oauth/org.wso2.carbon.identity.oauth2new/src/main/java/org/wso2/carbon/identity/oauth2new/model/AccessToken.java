@@ -30,7 +30,7 @@ public class AccessToken implements Serializable {
 
     private String accessToken;
 
-    private char[] refreshToken;
+    private String refreshToken;
 
     private String clientId;
 
@@ -64,11 +64,24 @@ public class AccessToken implements Serializable {
         this.accessTokenValidity = accessTokenValidity;
     }
 
+    public static AccessToken createAccessToken(AccessToken accessToken, String tokenState) {
+
+        AccessToken newAccessToken = new AccessToken(accessToken.getAccessToken(), accessToken.getClientId(),
+                accessToken.getSubjectIdentifier(), accessToken.getGrantType(), tokenState,
+                accessToken.getAccessTokenIssuedTime(), accessToken.getAccessTokenValidity());
+        newAccessToken.setAuthzUser(accessToken.getAuthzUser());
+        newAccessToken.setScopes(accessToken.getScopes());
+        newAccessToken.setRefreshToken(accessToken.getRefreshToken());
+        newAccessToken.setRefreshTokenIssuedTime(accessToken.getRefreshTokenIssuedTime());
+        newAccessToken.setRefreshTokenValidity(accessToken.getRefreshTokenValidity());
+        return accessToken;
+    }
+
     public String getAccessToken() {
         return accessToken;
     }
 
-    public char[] getRefreshToken() {
+    public String getRefreshToken() {
         return refreshToken;
     }
 
@@ -112,7 +125,7 @@ public class AccessToken implements Serializable {
         return refreshTokenValidity;
     }
 
-    public void setRefreshToken(char[] refreshToken) {
+    public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 

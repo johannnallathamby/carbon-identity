@@ -19,6 +19,7 @@
 package org.wso2.carbon.identity.oauth2new.handler.client;
 
 import org.wso2.carbon.identity.core.handler.AbstractIdentityHandler;
+import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
 import org.wso2.carbon.identity.oauth2new.common.ClientType;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
@@ -35,7 +36,7 @@ public abstract class ClientAuthHandler extends AbstractIdentityHandler {
      * @return Returns the client type - confidential or public.
      * @throws OAuth2RuntimeException
      */
-    public abstract ClientType clientType(OAuth2TokenMessageContext messageContext) throws OAuth2RuntimeException;
+    public abstract ClientType clientType(OAuth2MessageContext messageContext) throws OAuth2RuntimeException;
 
     /**
      * Authenticates the OAuth 2.0 client
@@ -44,6 +45,6 @@ public abstract class ClientAuthHandler extends AbstractIdentityHandler {
      * @return Client ID if authentication was successful, {@code null} otherwise
      * @throws OAuth2Exception Error when authenticating the client
      */
-    public abstract String authenticate(OAuth2TokenMessageContext messageContext) throws OAuth2Exception;
+    public abstract String authenticate(OAuth2MessageContext messageContext) throws OAuth2Exception;
 
 }

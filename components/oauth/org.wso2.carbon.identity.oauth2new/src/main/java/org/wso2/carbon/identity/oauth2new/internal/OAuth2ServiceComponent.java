@@ -25,6 +25,7 @@ import org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
 import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAOHandler;
 import org.wso2.carbon.identity.oauth2new.handler.client.ClientAuthHandler;
+import org.wso2.carbon.identity.oauth2new.handler.grant.AuthorizationGrantHandler;
 import org.wso2.carbon.identity.oauth2new.handler.issuer.AccessTokenResponseIssuer;
 import org.wso2.carbon.identity.oauth2new.handler.persist.TokenPersistenceProcessor;
 import org.wso2.carbon.identity.oauth2new.model.OAuth2ServerConfig;
@@ -63,6 +64,9 @@ import org.wso2.carbon.user.core.service.RealmService;
  * @scr.reference name="oauth2.handler.dao"
  * interface="org.wso2.carbon.identity.oauth2new.dao.OAuth2DAO" cardinality="0..n"
  * policy="dynamic" bind="addOAuth2DAOHandler" unbind="removeOAuth2DAOHandler"
+ * @scr.reference name="oauth2.handler.grant"
+ * interface="org.wso2.carbon.identity.oauth2new.handler.grant.AuthorizationGrantHandler" cardinality="0..n"
+ * policy="dynamic" bind="addAuthorizationGrantHandler" unbind="removeAuthorizationGrantHandler"
  *
  */
 public class OAuth2ServiceComponent {
@@ -218,5 +222,19 @@ public class OAuth2ServiceComponent {
             log.debug("Removing AccessTokenResponseIssuer " + handler.getName());
         }
         OAuth2ServiceComponentHolder.getInstance().getOAuth2DAOHandlers().remove(handler);
+    }
+
+    protected void addAuthorizationGrantHandler(AuthorizationGrantHandler handler) {
+        if (log.isDebugEnabled()) {
+            log.debug("Adding AuthorizationGrantHandler " + handler.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getGrantHandlers().add(handler);
+    }
+
+    protected void removeAuthorizationGrantHandler(AuthorizationGrantHandler handler) {
+        if (log.isDebugEnabled()) {
+            log.debug("Removing AuthorizationGrantHandler " + handler.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getGrantHandlers().remove(handler);
     }
 }

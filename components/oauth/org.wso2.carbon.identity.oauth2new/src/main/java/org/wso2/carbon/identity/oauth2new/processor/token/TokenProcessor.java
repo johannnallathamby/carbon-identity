@@ -44,7 +44,12 @@ import java.util.HashMap;
 /*
  * InboundRequestProcessor for OAuth2 Token Endpoint
  */
-public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
+public class TokenProcessor extends OAuth2InboundRequestProcessor {
+
+    @Override
+    public String getName() {
+        return "TokenProcessor";
+    }
 
     @Override
     public int getPriority() {
@@ -83,7 +88,9 @@ public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
 
         validateGrant(messageContext);
 
-        return issue(messageContext);
+        AccessToken accessToken = issueAccessToken(messageContext);
+
+        return buildTokenResponse(accessToken, messageContext);
 
     }
 
@@ -117,24 +124,11 @@ public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
      * @throws OAuth2Exception
      */
     protected void validateGrant(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
-
-        // Check the registered grant types for the SP and verify
+        HandlerManager.getInstance().getGrantHandler(messageContext).validateGrant(messageContext);
     }
 
-    /**
-     * Issues the access token
-     *
-     * @param messageContext The runtime message context
-     * @return OAuth2 access token response
-     * @throws OAuth2Exception
-     */
-    protected InboundAuthenticationResponse issue(OAuth2TokenMessageContext messageContext) throws OAuth2RuntimeException {
-
-        AccessToken accessToken = HandlerManager.getInstance().issueAccessToken(messageContext);
-        return buildTokenResponse(accessToken, messageContext);
-    }
-
-    protected InboundAuthenticationResponse buildTokenResponse(AccessToken accessToken, OAuth2TokenMessageContext messageContext) {
+    protected InboundAuthenticationResponse buildTokenResponse(AccessToken accessToken,
+                                                               OAuth2TokenMessageContext messageContext) {
 
         long expiry = 0;
         if(accessToken.getAccessTokenValidity() > 0) {
@@ -145,7 +139,7 @@ public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
 
         // Have to check if refresh grant is allowed
 
-        char[] refreshToken = null;
+        String refreshToken = null;
         if(issueRefreshToken(messageContext)) {
             refreshToken = accessToken.getRefreshToken();
         }
@@ -176,5 +170,17 @@ public abstract class TokenProcessor extends OAuth2InboundRequestProcessor {
                 OAuth2.HeaderValue.PRAGMA_NO_CACHE);
         return builder.build();
 
+    }
+
+    /**
+     * Issues the access token
+     *
+     * @param messageContext The runtime message context
+     * @return OAuth2 access token response
+     * @throws OAuth2Exception
+     */
+    protected AccessToken issueAccessToken(OAuth2TokenMessageContext messageContext) throws OAuth2RuntimeException {
+
+        return HandlerManager.getInstance().issueAccessToken(messageContext);
     }
 }

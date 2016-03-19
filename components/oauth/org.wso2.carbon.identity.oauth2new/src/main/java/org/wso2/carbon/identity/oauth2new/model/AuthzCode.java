@@ -56,6 +56,14 @@ public class AuthzCode implements Serializable {
         this.codeState = codeState;
     }
 
+    public static AuthzCode createAuthzCode(AuthzCode authzCode, String codeState) {
+        AuthzCode newAuthzCode = new AuthzCode(authzCode.getAuthzCode(), authzCode.getClientId(),
+                authzCode.getRedirectURI(), authzCode.getAuthzUser(), authzCode.getIssuedTime(),
+                authzCode.getValidityPeriod(), codeState);
+        newAuthzCode.setScopes(authzCode.getScopes());
+        return newAuthzCode;
+    }
+
     public String getAuthzCode() {
         return authzCode;
     }

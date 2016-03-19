@@ -31,6 +31,7 @@ public class InboundAuthenticationResponse implements Serializable {
 
     private Map<String, String> headers = new HashMap<String, String>();
     private Map<String, Cookie> cookies = new HashMap<String, Cookie>();
+    private String contentType;
     private Map<String, String[]> parameters = new HashMap<>();
     private String body;
     private int statusCode;
@@ -42,6 +43,10 @@ public class InboundAuthenticationResponse implements Serializable {
 
     public Map<String, Cookie> getCookies() {
         return Collections.unmodifiableMap(cookies);
+    }
+
+    public String getContentType() {
+        return contentType;
     }
 
     public Map<String, String[]> getParameters() {
@@ -75,6 +80,7 @@ public class InboundAuthenticationResponse implements Serializable {
     protected InboundAuthenticationResponse(InboundAuthenticationResponseBuilder builder) {
         this.headers = builder.headers;
         this.cookies = builder.cookies;
+        this.contentType = builder.contentType;
         this.parameters = builder.parameters;
         this.statusCode = builder.statusCode;
         this.redirectURL = builder.redirectURL;
@@ -86,6 +92,7 @@ public class InboundAuthenticationResponse implements Serializable {
 
         private Map<String, String> headers = new HashMap<String, String>();
         private Map<String, Cookie> cookies = new HashMap<String, Cookie>();
+        private String contentType;
         private Map<String, String[]> parameters = new HashMap<>();
         private int statusCode;
         private String redirectURL;
@@ -150,6 +157,11 @@ public class InboundAuthenticationResponse implements Serializable {
                 }
                 this.cookies.put(cookie.getKey(), cookie.getValue());
             }
+            return this;
+        }
+
+        public InboundAuthenticationResponseBuilder setContentType(String contentType) {
+            this.contentType = contentType;
             return this;
         }
 

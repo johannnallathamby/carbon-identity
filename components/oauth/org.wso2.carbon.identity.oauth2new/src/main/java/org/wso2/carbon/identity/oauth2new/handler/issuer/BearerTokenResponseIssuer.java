@@ -94,7 +94,7 @@ public class BearerTokenResponseIssuer extends AccessTokenResponseIssuer {
         refreshTokenValidity = refreshTokenValidity * 1000;
 
         String bearerToken;
-        char[] refreshToken = null;
+        String refreshToken = null;
         try {
             bearerToken = oltuIssuer.accessToken();
         } catch (OAuthSystemException e) {
@@ -104,7 +104,7 @@ public class BearerTokenResponseIssuer extends AccessTokenResponseIssuer {
             refreshToken = prevAccessToken.getRefreshToken();
         } else {
             try {
-                refreshToken = oltuIssuer.refreshToken().toCharArray();
+                refreshToken = oltuIssuer.refreshToken();
             } catch (OAuthSystemException e) {
                 throw OAuth2RuntimeException.error(e.getMessage(), e);
             }

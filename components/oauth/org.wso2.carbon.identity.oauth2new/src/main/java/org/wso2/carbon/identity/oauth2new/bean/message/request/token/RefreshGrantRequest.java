@@ -27,7 +27,7 @@ import java.util.Set;
 
 public class RefreshGrantRequest extends OAuth2TokenRequest {
 
-    private char[] refreshToken;
+    private String refreshToken;
     private Set<String> scopes = new HashSet<>();
 
     protected RefreshGrantRequest(RefreshGrantBuilder builder) {
@@ -36,7 +36,7 @@ public class RefreshGrantRequest extends OAuth2TokenRequest {
         this.scopes = builder.scopes;
     }
 
-    public char[] getRefreshToken() {
+    public String getRefreshToken() {
         return refreshToken;
     }
 
@@ -46,14 +46,14 @@ public class RefreshGrantRequest extends OAuth2TokenRequest {
 
     public static class RefreshGrantBuilder extends TokenRequestBuilder {
 
-        private char[] refreshToken;
+        private String refreshToken;
         private Set<String> scopes = new HashSet<>();
 
         public RefreshGrantBuilder(HttpServletRequest request, HttpServletResponse response) {
             super(request, response);
         }
 
-        public RefreshGrantBuilder setRefreshToken(char[] refreshToken) {
+        public RefreshGrantBuilder setRefreshToken(String refreshToken) {
             this.refreshToken = refreshToken;
             return this;
         }

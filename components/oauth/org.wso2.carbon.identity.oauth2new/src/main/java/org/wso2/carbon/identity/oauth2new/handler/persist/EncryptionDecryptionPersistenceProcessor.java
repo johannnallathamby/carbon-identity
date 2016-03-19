@@ -81,12 +81,12 @@ public class EncryptionDecryptionPersistenceProcessor extends TokenPersistencePr
     }
 
     @Override
-    public String getProcessedRefreshToken(char[] refreshToken) {
+    public String getProcessedRefreshToken(String refreshToken) {
         return null;
     }
 
     @Override
-    public char[] getPreprocessedRefreshToken(String processedRefreshToken) {
+    public String getPreprocessedRefreshToken(String processedRefreshToken) {
         return null;
     }
 }

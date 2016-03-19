@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2ext.revoke;
+package org.wso2.carbon.identity.oauth2new.revoke;
 
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2InternalException;
@@ -27,5 +27,6 @@ public interface OAuth2RevocationService {
 
     Set<String> getAppsAuthorizedByUser(User user) throws OAuth2InternalException;
 
-    void revokeApplication(String application) throws OAuth2InternalException;
+    void revokeApplication(String application, String tenantDomain) throws OAuth2InternalException;
+
 }

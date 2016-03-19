@@ -28,6 +28,7 @@ import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAOHandler;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 import org.wso2.carbon.identity.oauth2new.handler.client.ClientAuthHandler;
+import org.wso2.carbon.identity.oauth2new.handler.grant.AuthorizationGrantHandler;
 import org.wso2.carbon.identity.oauth2new.handler.issuer.AccessTokenResponseIssuer;
 import org.wso2.carbon.identity.oauth2new.handler.persist.TokenPersistenceProcessor;
 import org.wso2.carbon.identity.oauth2new.internal.OAuth2ServiceComponentHolder;
@@ -51,7 +52,7 @@ public class HandlerManager {
         return instance;
     }
 
-    public ClientType clientType(OAuth2TokenMessageContext messageContext) {
+    public ClientType clientType(OAuth2MessageContext messageContext) {
 
         List<ClientAuthHandler> handlers = OAuth2ServiceComponentHolder.getInstance().getClientAuthHandlers();
         Collections.sort(handlers, new HandlerComparator(messageContext));
@@ -63,7 +64,7 @@ public class HandlerManager {
         throw OAuth2RuntimeException.error("Cannot find ClientAuthHandler to handle this request");
     }
 
-    public String authenticateClient(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
+    public String authenticateClient(OAuth2MessageContext messageContext) throws OAuth2Exception {
 
         List<ClientAuthHandler> handlers = OAuth2ServiceComponentHolder.getInstance().getClientAuthHandlers();
         Collections.sort(handlers, new HandlerComparator(messageContext));
@@ -123,6 +124,19 @@ public class HandlerManager {
             }
         }
         throw OAuth2RuntimeException.error("Cannot find AccessTokenResponseIssuer to handle this request");
+    }
+
+    public AuthorizationGrantHandler getGrantHandler(OAuth2TokenMessageContext messageContext) throws
+            OAuth2RuntimeException {
+
+        List<AuthorizationGrantHandler> handlers = OAuth2ServiceComponentHolder.getInstance().getGrantHandlers();
+        Collections.sort(handlers, new HandlerComparator(messageContext));
+        for(AuthorizationGrantHandler handler:handlers){
+            if(handler.canHandle(messageContext)){
+                return handler;
+            }
+        }
+        throw OAuth2RuntimeException.error("Cannot find AuthorizationGrantHandler to handle this request");
     }
 
 }
