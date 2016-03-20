@@ -16,10 +16,9 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.revoke;
+package org.wso2.carbon.identity.oauth2new.introspect;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContext;
@@ -27,20 +26,18 @@ import org.wso2.carbon.identity.application.authentication.framework.inbound.Inb
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
 import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.common.ClientType;
-import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAO;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 import org.wso2.carbon.identity.oauth2new.handler.HandlerManager;
-import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 import org.wso2.carbon.identity.oauth2new.processor.OAuth2InboundRequestProcessor;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
-public class RevokeRequestProcessor extends OAuth2InboundRequestProcessor {
+public class IntrospectionRequestProcessor extends OAuth2InboundRequestProcessor {
 
     @Override
     public String getName() {
-        return "RevokeRequestProcessor";
+        return "IntrospectionRequestProcessor";
     }
 
     @Override
@@ -69,8 +66,8 @@ public class RevokeRequestProcessor extends OAuth2InboundRequestProcessor {
     @Override
     public InboundAuthenticationResponse process(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
 
-        RevokeRequest revokeRequest = (RevokeRequest)authenticationRequest;
-        RevocationMessageContext messageContext = new RevocationMessageContext(revokeRequest,
+        IntrospectionRequest introspectionRequest = (IntrospectionRequest)authenticationRequest;
+        IntrospectionMessageContext messageContext = new IntrospectionMessageContext(introspectionRequest,
                 new HashMap<String,String>());
 
         if(ClientType.CONFIDENTIAL == clientType(messageContext)) {
@@ -78,49 +75,22 @@ public class RevokeRequestProcessor extends OAuth2InboundRequestProcessor {
             messageContext.setClientId(clientId);
         }
 
-        String token = revokeRequest.getToken();
-        String tokenTypeHint = revokeRequest.getTokenTypeHint();
-        String callback = revokeRequest.getCallback();
-        OAuth2DAO dao = HandlerManager.getInstance().getOAuth2DAO(messageContext);
-        boolean refreshTokenFirst = GrantType.REFRESH_TOKEN.toString().equals(tokenTypeHint) ? true : false;
-        AccessToken accessToken = null;
-        if (refreshTokenFirst) {
-            accessToken = dao.getLatestAccessTokenByRefreshToken(token, messageContext);
-            if(accessToken != null) {
-                dao.revokeRefreshToken(token, messageContext);
-            } else {
-                accessToken = dao.getAccessToken(token, messageContext);
-                if(accessToken != null) {
-                    dao.revokeAccessToken(accessToken.getAccessToken(), messageContext);
-                }
-            }
-        } else {
-            accessToken = dao.getAccessToken(token, messageContext);
-            if (accessToken != null) {
-                dao.revokeAccessToken(token, messageContext);
-            } else {
-                accessToken = dao.getLatestAccessTokenByRefreshToken(token, messageContext);
-                if(accessToken != null) {
-                    dao.revokeRefreshToken(token, messageContext);
-                }
-            }
-        }
-        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder builder = new
+
+        IntrospectionResponseBuilder introspectionResponseBuilder = introspect(messageContext);
+        String introspectionResponse = introspectionResponseBuilder.build();
+        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder responseBuilder = new
                 InboundAuthenticationResponse.InboundAuthenticationResponseBuilder();
-        builder.setStatusCode(HttpServletResponse.SC_OK);
-        if (StringUtils.isNotEmpty(callback)) {
-            builder.setBody(callback + "();");
-        }
-        builder.addHeader(OAuth2.Header.CACHE_CONTROL, OAuth2.HeaderValue.CACHE_CONTROL_NO_STORE);
-        builder.addHeader(OAuth2.Header.PRAGMA, OAuth2.HeaderValue.PRAGMA_NO_CACHE);
+        responseBuilder.setStatusCode(HttpServletResponse.SC_OK);
+        responseBuilder.setBody(introspectionResponse);
+        responseBuilder.addHeader(OAuth2.Header.CACHE_CONTROL, OAuth2.HeaderValue.CACHE_CONTROL_NO_STORE);
+        responseBuilder.addHeader(OAuth2.Header.PRAGMA, OAuth2.HeaderValue.PRAGMA_NO_CACHE);
+        return responseBuilder.build();
 
-        if (StringUtils.isNotEmpty(callback)) {
-            builder.setContentType("application/javascript");
-        } else {
-            builder.setContentType("text/html");
-        }
+    }
 
-        return builder.build();
+    protected IntrospectionResponseBuilder introspect(IntrospectionMessageContext messageContext) throws OAuth2Exception {
+        IntrospectionHandler handler = HandlerManager.getInstance().getIntrospectionHandler(messageContext);
+        return handler.introspect(messageContext);
     }
 
     /**
@@ -130,7 +100,7 @@ public class RevokeRequestProcessor extends OAuth2InboundRequestProcessor {
      * @return {@code true} only if the client was confidential and was authenticated successfully
      * @throws org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception
      */
-    protected ClientType clientType(RevocationMessageContext messageContext) {
+    protected ClientType clientType(IntrospectionMessageContext messageContext) {
         return HandlerManager.getInstance().clientType(messageContext);
     }
 
@@ -141,7 +111,7 @@ public class RevokeRequestProcessor extends OAuth2InboundRequestProcessor {
      * @return {@code true} only if the client was confidential and was authenticated successfully
      * @throws org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception
      */
-    protected String authenticateClient(RevocationMessageContext messageContext) throws OAuth2Exception {
+    protected String authenticateClient(IntrospectionMessageContext messageContext) throws OAuth2Exception {
         return HandlerManager.getInstance().authenticateClient(messageContext);
     }
 }

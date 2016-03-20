@@ -85,7 +85,6 @@ public class InboundAuthenticationResponse implements Serializable {
         this.statusCode = builder.statusCode;
         this.redirectURL = builder.redirectURL;
         this.body = builder.body;
-
     }
 
     public static class InboundAuthenticationResponseBuilder {

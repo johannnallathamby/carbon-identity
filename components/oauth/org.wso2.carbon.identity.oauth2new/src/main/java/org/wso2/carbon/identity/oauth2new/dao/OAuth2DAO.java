@@ -64,7 +64,7 @@ public abstract class OAuth2DAO {
                                                        RevocationMessageContext messageContext)
             throws OAuth2RuntimeException;
 
-    public abstract AccessToken getAccessToken(String bearerToken, RevocationMessageContext messageContext) throws
+    public abstract AccessToken getAccessToken(String bearerToken, OAuth2MessageContext messageContext) throws
             OAuth2RuntimeException;
 
     public abstract void revokeAccessToken(String accessToken, RevocationMessageContext messageContext) throws

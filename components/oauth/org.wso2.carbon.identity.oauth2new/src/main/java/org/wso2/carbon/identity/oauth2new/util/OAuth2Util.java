@@ -70,7 +70,7 @@ public class OAuth2Util {
         throw new IllegalArgumentException("Scopes are NULL");
     }
 
-    public static long getTokenExpireTimeMillis(AccessToken accessToken) {
+    public static long getTokenValidityPeriod(AccessToken accessToken) {
 
         if (accessToken == null) {
             throw new IllegalArgumentException("AccessToken is NULL");
@@ -98,7 +98,7 @@ public class OAuth2Util {
         return 0;
     }
 
-    public static long getRefreshTokenExpireTimeMillis(AccessToken accessToken) {
+    public static long getRefreshTokenValidityPeriod(AccessToken accessToken) {
 
         if (accessToken == null) {
             throw new IllegalArgumentException("AccessToken is NULL");
@@ -114,6 +114,27 @@ public class OAuth2Util {
             return remainingRefreshTokenValidity;
         }
         return 0;
+    }
+
+    public static long getAccessTokenValidityPeriod(AccessToken accessToken) {
+
+        if(accessToken == null){
+            throw new IllegalArgumentException("AccessToken is NULL");
+        }
+
+        long validityPeriod = accessToken.getAccessTokenValidity();
+        if (validityPeriod < 0) {
+            return -1;
+        }
+        long timestampSkew = OAuth2ServerConfig.getInstance().getTimeStampSkew() * 1000;
+        long issuedTime = accessToken.getAccessTokenIssuedTime().getTime();
+        long currentTime = System.currentTimeMillis();
+        long remainingValidity = issuedTime + validityPeriod - (currentTime + timestampSkew);
+        if (remainingValidity > 1000) {
+            return remainingValidity;
+        } else {
+            return 0;
+        }
     }
 
     public static String createUniqueAuthzGrantString(AuthenticatedUser authzUser, String clientId,

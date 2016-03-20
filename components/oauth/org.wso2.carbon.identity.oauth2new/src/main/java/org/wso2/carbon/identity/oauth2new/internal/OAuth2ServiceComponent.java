@@ -28,6 +28,7 @@ import org.wso2.carbon.identity.oauth2new.handler.client.ClientAuthHandler;
 import org.wso2.carbon.identity.oauth2new.handler.grant.AuthorizationGrantHandler;
 import org.wso2.carbon.identity.oauth2new.handler.issuer.AccessTokenResponseIssuer;
 import org.wso2.carbon.identity.oauth2new.handler.persist.TokenPersistenceProcessor;
+import org.wso2.carbon.identity.oauth2new.introspect.IntrospectionHandler;
 import org.wso2.carbon.identity.oauth2new.model.OAuth2ServerConfig;
 import org.wso2.carbon.identity.oauth2new.processor.OAuth2InboundRequestProcessor;
 import org.wso2.carbon.registry.core.service.RegistryService;
@@ -67,6 +68,9 @@ import org.wso2.carbon.user.core.service.RealmService;
  * @scr.reference name="oauth2.handler.grant"
  * interface="org.wso2.carbon.identity.oauth2new.handler.grant.AuthorizationGrantHandler" cardinality="0..n"
  * policy="dynamic" bind="addAuthorizationGrantHandler" unbind="removeAuthorizationGrantHandler"
+ * @scr.reference name="oauth2.introspection.grant"
+ * interface="org.wso2.carbon.identity.oauth2new.introspection.IntrospectionHandler" cardinality="0..n"
+ * policy="dynamic" bind="addIntrospectionHandler" unbind="removeIntrospectionHandler"
  *
  */
 public class OAuth2ServiceComponent {
@@ -236,5 +240,19 @@ public class OAuth2ServiceComponent {
             log.debug("Removing AuthorizationGrantHandler " + handler.getName());
         }
         OAuth2ServiceComponentHolder.getInstance().getGrantHandlers().remove(handler);
+    }
+
+    protected void addIntrospectionHandler(IntrospectionHandler handler) {
+        if (log.isDebugEnabled()) {
+            log.debug("Adding IntrospectionHandler " + handler.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getIntrospectionHandlers().add(handler);
+    }
+
+    protected void removeIntrospectionHandler(IntrospectionHandler handler) {
+        if (log.isDebugEnabled()) {
+            log.debug("Removing IntrospectionHandler " + handler.getName());
+        }
+        OAuth2ServiceComponentHolder.getInstance().getIntrospectionHandlers().remove(handler);
     }
 }

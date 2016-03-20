@@ -160,7 +160,7 @@ public class CacheBackedOAuth2DAO extends OAuth2DAO {
         return wrappedDAO.getAuthorizedClientIDs(authzUser, messageContext);
     }
 
-    public AccessToken getAccessToken(String bearerToken, RevocationMessageContext messageContext) throws
+    public AccessToken getAccessToken(String bearerToken, OAuth2MessageContext messageContext) throws
             OAuth2RuntimeException {
 
         AccessToken accessToken = AccessTokenCache.getInstance().getValueFromCache(bearerToken);

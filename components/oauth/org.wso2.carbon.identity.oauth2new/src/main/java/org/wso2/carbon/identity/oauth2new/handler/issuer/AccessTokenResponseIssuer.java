@@ -104,7 +104,7 @@ public abstract class AccessTokenResponseIssuer extends AbstractIdentityHandler 
 
         if (accessToken != null) {
             if (OAuth2.TokenState.ACTIVE.equals(accessToken.getAccessTokenState())) {
-                long expireTime = OAuth2Util.getTokenExpireTimeMillis(accessToken);
+                long expireTime = OAuth2Util.getTokenValidityPeriod(accessToken);
                 if (expireTime > 0 || expireTime < 0) {
                     if (log.isDebugEnabled()) {
                         if (expireTime > 0) {
@@ -116,7 +116,7 @@ public abstract class AccessTokenResponseIssuer extends AbstractIdentityHandler 
                         }
                     }
                     isAccessTokenValid = true;
-                    long refreshTokenExpiryTime = OAuth2Util.getRefreshTokenExpireTimeMillis(accessToken);
+                    long refreshTokenExpiryTime = OAuth2Util.getRefreshTokenValidityPeriod(accessToken);
                     if (refreshTokenExpiryTime < 0 || refreshTokenExpiryTime > 0) {
                         if (log.isDebugEnabled()) {
                             if (refreshTokenExpiryTime < 0) {
@@ -133,7 +133,7 @@ public abstract class AccessTokenResponseIssuer extends AbstractIdentityHandler 
                     markAccessTokenExpired = true;
                 }
             } else {
-                long refreshTokenExpiryTime = OAuth2Util.getRefreshTokenExpireTimeMillis(accessToken);
+                long refreshTokenExpiryTime = OAuth2Util.getRefreshTokenValidityPeriod(accessToken);
                 if (refreshTokenExpiryTime < 0 || refreshTokenExpiryTime > 0) {
                     if (log.isDebugEnabled()) {
                         if (refreshTokenExpiryTime < 0) {

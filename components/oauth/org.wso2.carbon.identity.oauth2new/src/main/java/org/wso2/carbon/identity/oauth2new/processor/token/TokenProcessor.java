@@ -124,7 +124,7 @@ public class TokenProcessor extends OAuth2InboundRequestProcessor {
      * @throws OAuth2Exception
      */
     protected void validateGrant(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
-        HandlerManager.getInstance().getGrantHandler(messageContext).validateGrant(messageContext);
+        HandlerManager.getInstance().validateGrant(messageContext);
     }
 
     protected InboundAuthenticationResponse buildTokenResponse(AccessToken accessToken,

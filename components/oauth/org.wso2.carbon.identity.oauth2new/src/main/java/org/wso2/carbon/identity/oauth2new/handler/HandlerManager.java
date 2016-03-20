@@ -32,6 +32,8 @@ import org.wso2.carbon.identity.oauth2new.handler.grant.AuthorizationGrantHandle
 import org.wso2.carbon.identity.oauth2new.handler.issuer.AccessTokenResponseIssuer;
 import org.wso2.carbon.identity.oauth2new.handler.persist.TokenPersistenceProcessor;
 import org.wso2.carbon.identity.oauth2new.internal.OAuth2ServiceComponentHolder;
+import org.wso2.carbon.identity.oauth2new.introspect.IntrospectionHandler;
+import org.wso2.carbon.identity.oauth2new.introspect.IntrospectionMessageContext;
 import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 
 import java.util.Collections;
@@ -126,17 +128,29 @@ public class HandlerManager {
         throw OAuth2RuntimeException.error("Cannot find AccessTokenResponseIssuer to handle this request");
     }
 
-    public AuthorizationGrantHandler getGrantHandler(OAuth2TokenMessageContext messageContext) throws
-            OAuth2RuntimeException {
+    public void validateGrant(OAuth2TokenMessageContext messageContext) throws
+            OAuth2Exception {
 
         List<AuthorizationGrantHandler> handlers = OAuth2ServiceComponentHolder.getInstance().getGrantHandlers();
         Collections.sort(handlers, new HandlerComparator(messageContext));
         for(AuthorizationGrantHandler handler:handlers){
             if(handler.canHandle(messageContext)){
-                return handler;
+                handler.validateGrant(messageContext);
             }
         }
         throw OAuth2RuntimeException.error("Cannot find AuthorizationGrantHandler to handle this request");
     }
 
+    public IntrospectionHandler getIntrospectionHandler(IntrospectionMessageContext messageContext) throws
+            OAuth2RuntimeException {
+
+        List<IntrospectionHandler> handlers = OAuth2ServiceComponentHolder.getInstance().getIntrospectionHandlers();
+        Collections.sort(handlers, new HandlerComparator(messageContext));
+        for(IntrospectionHandler handler:handlers){
+            if(handler.canHandle(messageContext)){
+                return handler;
+            }
+        }
+        throw OAuth2RuntimeException.error("Cannot find IntrospectionHandler to handle this request");
+    }
 }

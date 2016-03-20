@@ -25,6 +25,7 @@ import org.wso2.carbon.identity.oauth2new.handler.client.ClientAuthHandler;
 import org.wso2.carbon.identity.oauth2new.handler.grant.AuthorizationGrantHandler;
 import org.wso2.carbon.identity.oauth2new.handler.issuer.AccessTokenResponseIssuer;
 import org.wso2.carbon.identity.oauth2new.handler.persist.TokenPersistenceProcessor;
+import org.wso2.carbon.identity.oauth2new.introspect.IntrospectionHandler;
 import org.wso2.carbon.identity.oauth2new.processor.OAuth2InboundRequestProcessor;
 import org.wso2.carbon.registry.api.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
@@ -45,6 +46,7 @@ public class OAuth2ServiceComponentHolder {
     private List<TokenPersistenceProcessor> tokenPersistenceProcessors = new ArrayList<>();
     private List<OAuth2DAOHandler> oAuth2DAOHandlers = new ArrayList<>();
     private List<AuthorizationGrantHandler> grantHandlers = new ArrayList<>();
+    private List<IntrospectionHandler> introspectionHandlers = new ArrayList<>();
 
     private OAuth2ServiceComponentHolder() {
 
@@ -104,5 +106,9 @@ public class OAuth2ServiceComponentHolder {
 
     public List<AuthorizationGrantHandler> getGrantHandlers() {
         return grantHandlers;
+    }
+
+    public List<IntrospectionHandler> getIntrospectionHandlers() {
+        return introspectionHandlers;
     }
 }
