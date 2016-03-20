@@ -18,20 +18,10 @@
 
 package org.wso2.carbon.identity.oauth2new.handler.grant;
 
-import org.apache.commons.lang3.StringUtils;
 import org.wso2.carbon.identity.core.handler.AbstractIdentityHandler;
-import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.token.AuthzCodeGrantRequest;
-import org.wso2.carbon.identity.oauth2new.common.ClientType;
-import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAO;
-import org.wso2.carbon.identity.oauth2new.exception.OAuth2ClientException;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
-import org.wso2.carbon.identity.oauth2new.handler.HandlerManager;
-import org.wso2.carbon.identity.oauth2new.model.AccessToken;
-import org.wso2.carbon.identity.oauth2new.model.AuthzCode;
-import org.wso2.carbon.identity.oauth2new.model.OAuth2ServerConfig;
 
 /*
  * To authenticate OAuth2 clients
@@ -52,37 +42,6 @@ public class AuthorizationGrantHandler extends AbstractIdentityHandler {
      */
     public void validateGrant(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
 
-        String authorizationCode = ((AuthzCodeGrantRequest)messageContext.getRequest()).getCode();
-        String redirectURI = ((AuthzCodeGrantRequest)messageContext.getRequest()).getRedirectURI();
-        OAuth2DAO dao = HandlerManager.getInstance().getOAuth2DAO(messageContext);
-        AuthzCode authzCode = dao.getAuthzCode(authorizationCode, messageContext);
-        if (authzCode != null && !OAuth2.TokenState.INACTIVE.equals(authzCode.getCodeState())) {
-            String bearerToken = dao.getAccessTokenByAuthzCode(authorizationCode, messageContext);
-            dao.updateAccessTokenState(bearerToken, OAuth2.TokenState.REVOKED, messageContext);
-        } else if(authzCode == null || !OAuth2.TokenState.ACTIVE.equals(authzCode.getCodeState())) {
-            throw OAuth2ClientException.error("Invalid authorization code");
-        }
-
-        // Validate redirect_uri if it was presented in authorization request
-        if (StringUtils.isNotBlank(authzCode.getRedirectURI())) {
-            if(StringUtils.equals(authzCode.getRedirectURI(), redirectURI)) {
-                throw OAuth2ClientException.error("Invalid redirect_uri");
-            }
-        }
-
-        // Check whether the grant is expired
-        long issuedTimeInMillis = authzCode.getIssuedTime().getTime();
-        long validityPeriodInMillis = authzCode.getValidityPeriod();
-        long timestampSkew = OAuth2ServerConfig.getInstance().getTimeStampSkew() * 1000;
-        long currentTimeInMillis = System.currentTimeMillis();
-
-        if ((currentTimeInMillis + timestampSkew) > (issuedTimeInMillis + validityPeriodInMillis)) {
-            dao.updateAuthzCodeState(authorizationCode, OAuth2.TokenState.EXPIRED, messageContext);
-            throw OAuth2ClientException.error("Authorization code expired");
-        }
-
-        messageContext.setAuthzUser(messageContext.getAuthzUser());
-        messageContext.setApprovedScopes(authzCode.getScopes());
-        messageContext.addParameter(OAuth2.AUTHZ_CODE, authzCode);
+        // validate with registered grant types for the application
     }
 }

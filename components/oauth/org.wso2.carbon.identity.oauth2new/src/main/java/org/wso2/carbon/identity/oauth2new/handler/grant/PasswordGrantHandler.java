@@ -19,10 +19,12 @@
 package org.wso2.carbon.identity.oauth2new.handler.grant;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.application.common.model.ServiceProvider;
 import org.wso2.carbon.identity.base.IdentityRuntimeException;
+import org.wso2.carbon.identity.core.bean.context.MessageContext;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.token.PasswordGrantRequest;
@@ -37,7 +39,20 @@ import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 public class PasswordGrantHandler extends AuthorizationGrantHandler {
 
+    @Override
+    public boolean canHandle(MessageContext messageContext) {
+        if(messageContext instanceof OAuth2TokenMessageContext) {
+            if(GrantType.PASSWORD.toString().equals(((OAuth2TokenMessageContext) messageContext).getRequest()
+                    .getGrantType())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void validateGrant(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
+
+        super.validateGrant(messageContext);
 
         String username = ((PasswordGrantRequest)messageContext.getRequest()).getUsername();
         String tenantAwareUserName = MultitenantUtils.getTenantAwareUsername(username);

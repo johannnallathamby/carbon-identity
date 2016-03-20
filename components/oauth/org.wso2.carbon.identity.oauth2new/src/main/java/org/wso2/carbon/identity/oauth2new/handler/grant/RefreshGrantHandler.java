@@ -19,6 +19,8 @@
 package org.wso2.carbon.identity.oauth2new.handler.grant;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.oltu.oauth2.common.message.types.GrantType;
+import org.wso2.carbon.identity.core.bean.context.MessageContext;
 import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.token.RefreshGrantRequest;
@@ -30,7 +32,20 @@ import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 
 public class RefreshGrantHandler extends AuthorizationGrantHandler {
 
+    @Override
+    public boolean canHandle(MessageContext messageContext) {
+        if(messageContext instanceof OAuth2TokenMessageContext) {
+            if(GrantType.REFRESH_TOKEN.toString().equals(((OAuth2TokenMessageContext) messageContext).getRequest()
+                    .getGrantType())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void validateGrant(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
+
+        super.validateGrant(messageContext);
 
         String refreshToken = ((RefreshGrantRequest)messageContext.getRequest()).getRefreshToken();
 
