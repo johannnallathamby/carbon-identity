@@ -130,7 +130,7 @@ public class BearerTokenResponseIssuer extends AccessTokenResponseIssuer {
         // if authzCode != null, invalidate it
         // if markAccessTokenExpired == true, mark it expired
         // if persist new access token
-        // All the above should go as a asynchronous task
+        // All the above should go as a single transaction
 
     }
 

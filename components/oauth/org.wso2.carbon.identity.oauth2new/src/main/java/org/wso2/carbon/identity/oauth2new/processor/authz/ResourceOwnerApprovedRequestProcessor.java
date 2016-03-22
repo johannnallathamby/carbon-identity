@@ -37,6 +37,7 @@ import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2AuthzMessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.authz.OAuth2AuthzRequest;
+import org.wso2.carbon.identity.oauth2new.exception.OAuth2AuthnException;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2ConsentException;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2InternalException;
@@ -93,17 +94,22 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthe
 
             messageContext.addParameter(OAuth2.OAUTH2_RESOURCE_OWNER_AUTHN_REQUEST, authenticationRequest);
             AuthenticationResult authnResult = processResponseFromFrameworkLogin(messageContext);
-            AuthenticatedUser authenticatedUser = authnResult.getSubject();
-            messageContext.setAuthzUser(authenticatedUser);
 
-            // add authenticated IDPs to message context
+            AuthenticatedUser authenticatedUser = null;
+            if(authnResult.isAuthenticated()) {
+                authenticatedUser = authnResult.getSubject();
+                messageContext.setAuthzUser(authenticatedUser);
 
-            if(!OAuth2ServerConfig.getInstance().isSkipConsentPage()) {
+            } else {
+                throw OAuth2AuthnException.error("Resource owner authentication failed");
+            }
 
-                String spName = ((ServiceProvider)messageContext.getParameter(OAuth2.OAUTH2_SERVICE_PROVIDER)).getApplicationName();
+            if (!OAuth2ServerConfig.getInstance().isSkipConsentPage()) {
 
-                if(!OAuth2ConsentStore.getInstance().hasUserApprovedAppAlways(authenticatedUser, spName)) {
-                    return initiateConsent(messageContext);
+                String spName = ((ServiceProvider) messageContext.getParameter(OAuth2.OAUTH2_SERVICE_PROVIDER)).getApplicationName();
+
+                if (!OAuth2ConsentStore.getInstance().hasUserApprovedAppAlways(authenticatedUser, spName)) {
+                    return getConsentBuilder(messageContext).build();
                 } else {
                     messageContext.addParameter(OAuth2.CONSENT, "ApproveAlways");
                 }
@@ -114,13 +120,15 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthe
         }
 
         // if this line is reached that means this is a consent response or consent is skipped due config or approve
-        // always
+        // always. We set the inbound request to message context only if it has gone through consent process
+        // if consent consent was skipped due to configuration or approve always,
+        // authenticated request and authorized request are the same
         if(!StringUtils.equals("ApproveAlways", (String)messageContext.getParameter(OAuth2.CONSENT)) &&
                 !StringUtils.equals("SkipOAuth2Consent", (String)messageContext.getParameter(OAuth2.CONSENT))) {
             messageContext.addParameter(OAuth2.OAUTH2_RESOURCE_OWNER_AUTHZ_REQUEST, authenticationRequest);
             processConsent(messageContext);
         }
-        return buildAuthzResponse(messageContext);
+        return getAuthzResponseBuilder(messageContext).build();
     }
 
     /**
@@ -130,8 +138,8 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthe
      * @return OAuth2 authorization endpoint
      * @throws OAuth2RuntimeException Exception occurred while issuing authorization endpoint response
      */
-    protected InboundAuthenticationResponse initiateConsent(OAuth2AuthzMessageContext messageContext)
-            throws OAuth2RuntimeException {
+    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getConsentBuilder(
+            OAuth2AuthzMessageContext messageContext) throws OAuth2RuntimeException {
 
         String sessionDataKeyConsent = UUID.randomUUID().toString();
         addAuthenticationContextToCache(sessionDataKeyConsent, messageContext);
@@ -156,7 +164,7 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthe
                 InboundAuthenticationResponse.InboundAuthenticationResponseBuilder();
         builder.setStatusCode(HttpServletResponse.SC_FOUND);
         builder.setRedirectURL(consentPage);
-        return builder.build();
+        return builder;
     }
 
     private void addAuthenticationContextToCache(String key, OAuth2MessageContext messageContext) {
@@ -196,6 +204,6 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthe
      * @return OAuth2 authorization endpoint response
      * @throws org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException Exception occurred while issuing authorization endpoint response
      */
-    protected abstract InboundAuthenticationResponse buildAuthzResponse(OAuth2AuthzMessageContext messageContext)
-            throws OAuth2RuntimeException;
+    protected abstract InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getAuthzResponseBuilder(
+            OAuth2AuthzMessageContext messageContext) throws OAuth2RuntimeException;
 }

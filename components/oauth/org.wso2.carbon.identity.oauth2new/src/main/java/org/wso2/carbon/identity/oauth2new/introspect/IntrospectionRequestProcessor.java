@@ -77,20 +77,27 @@ public class IntrospectionRequestProcessor extends OAuth2InboundRequestProcessor
 
 
         IntrospectionResponseBuilder introspectionResponseBuilder = introspect(messageContext);
-        String introspectionResponse = introspectionResponseBuilder.build();
-        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder responseBuilder = new
-                InboundAuthenticationResponse.InboundAuthenticationResponseBuilder();
-        responseBuilder.setStatusCode(HttpServletResponse.SC_OK);
-        responseBuilder.setBody(introspectionResponse);
-        responseBuilder.addHeader(OAuth2.Header.CACHE_CONTROL, OAuth2.HeaderValue.CACHE_CONTROL_NO_STORE);
-        responseBuilder.addHeader(OAuth2.Header.PRAGMA, OAuth2.HeaderValue.PRAGMA_NO_CACHE);
-        return responseBuilder.build();
+        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder builder = getIntrospectionResponseBuilder(
+                introspectionResponseBuilder, messageContext);
+        return builder.build();
 
     }
 
     protected IntrospectionResponseBuilder introspect(IntrospectionMessageContext messageContext) throws OAuth2Exception {
         IntrospectionHandler handler = HandlerManager.getInstance().getIntrospectionHandler(messageContext);
         return handler.introspect(messageContext);
+    }
+
+    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getIntrospectionResponseBuilder
+            (IntrospectionResponseBuilder builder, IntrospectionMessageContext messageContext) {
+
+        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder responseBuilder = new
+                InboundAuthenticationResponse.InboundAuthenticationResponseBuilder();
+        responseBuilder.setStatusCode(HttpServletResponse.SC_OK);
+        responseBuilder.setBody(builder.build());
+        responseBuilder.addHeader(OAuth2.Header.CACHE_CONTROL, OAuth2.HeaderValue.CACHE_CONTROL_NO_STORE);
+        responseBuilder.addHeader(OAuth2.Header.PRAGMA, OAuth2.HeaderValue.PRAGMA_NO_CACHE);
+        return responseBuilder;
     }
 
     /**

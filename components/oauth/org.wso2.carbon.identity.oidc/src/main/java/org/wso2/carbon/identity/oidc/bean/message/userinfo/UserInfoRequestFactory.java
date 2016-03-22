@@ -16,39 +16,35 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
+package org.wso2.carbon.identity.oidc.bean.message.userinfo;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.oltu.oauth2.common.OAuth;
-import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
+import org.wso2.carbon.identity.oidc.bean.message.userinfo.UserInfoRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ClientCredentialsGrantFactory extends TokenRequestFactory {
+public class UserInfoRequestFactory extends OAuth2InboundRequestFactory {
 
     @Override
     public String getName() {
-        return "ClientCredentialsGrantFactory";
+        return "UserInfoRequestFactory";
+    }
+
+    @Override
+    public int getPriority() {
+        return 0;
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.equals(GrantType.CLIENT_CREDENTIALS.toString(), request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
-            return true;
-        }
         return false;
     }
 
     @Override
-    public ClientCredentialsGrantRequest create(HttpServletRequest request, HttpServletResponse response) throws
+    public UserInfoRequest create(HttpServletRequest request, HttpServletResponse response) throws
             AuthenticationFrameworkRuntimeException {
-
-        ClientCredentialsGrantRequest.ClientCredentialsGrantBuilder builder = new ClientCredentialsGrantRequest
-                .ClientCredentialsGrantBuilder(request, response);
-        builder.setScopes(OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE)));
-        return builder.build();
+        return null;
     }
 }

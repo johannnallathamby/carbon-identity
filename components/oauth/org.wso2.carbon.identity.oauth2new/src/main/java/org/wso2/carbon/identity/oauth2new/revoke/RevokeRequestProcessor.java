@@ -80,7 +80,6 @@ public class RevokeRequestProcessor extends OAuth2InboundRequestProcessor {
 
         String token = revokeRequest.getToken();
         String tokenTypeHint = revokeRequest.getTokenTypeHint();
-        String callback = revokeRequest.getCallback();
         OAuth2DAO dao = HandlerManager.getInstance().getOAuth2DAO(messageContext);
         boolean refreshTokenFirst = GrantType.REFRESH_TOKEN.toString().equals(tokenTypeHint) ? true : false;
         AccessToken accessToken = null;
@@ -88,39 +87,50 @@ public class RevokeRequestProcessor extends OAuth2InboundRequestProcessor {
             accessToken = dao.getLatestAccessTokenByRefreshToken(token, messageContext);
             if(accessToken != null) {
                 dao.revokeRefreshToken(token, messageContext);
+                messageContext.addParameter("RevokedAccessToken", accessToken);
             } else {
                 accessToken = dao.getAccessToken(token, messageContext);
                 if(accessToken != null) {
                     dao.revokeAccessToken(accessToken.getAccessToken(), messageContext);
+                    messageContext.addParameter("RevokedAccessToken", accessToken);
                 }
             }
         } else {
             accessToken = dao.getAccessToken(token, messageContext);
             if (accessToken != null) {
                 dao.revokeAccessToken(token, messageContext);
+                messageContext.addParameter("RevokedAccessToken", accessToken);
             } else {
                 accessToken = dao.getLatestAccessTokenByRefreshToken(token, messageContext);
                 if(accessToken != null) {
                     dao.revokeRefreshToken(token, messageContext);
+                    messageContext.addParameter("RevokedAccessToken", accessToken);
                 }
             }
         }
-        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder builder = new
-                InboundAuthenticationResponse.InboundAuthenticationResponseBuilder();
-        builder.setStatusCode(HttpServletResponse.SC_OK);
-        if (StringUtils.isNotEmpty(callback)) {
-            builder.setBody(callback + "();");
-        }
-        builder.addHeader(OAuth2.Header.CACHE_CONTROL, OAuth2.HeaderValue.CACHE_CONTROL_NO_STORE);
-        builder.addHeader(OAuth2.Header.PRAGMA, OAuth2.HeaderValue.PRAGMA_NO_CACHE);
-
-        if (StringUtils.isNotEmpty(callback)) {
-            builder.setContentType("application/javascript");
-        } else {
-            builder.setContentType("text/html");
-        }
-
+        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder builder = getRevokeResponseBuilder
+                (messageContext);
         return builder.build();
+    }
+
+    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getRevokeResponseBuilder
+            (RevocationMessageContext messageContext) {
+
+        String callback = ((RevokeRequest)messageContext.getRequest()).getCallback();
+        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder responseBuilder = new
+                InboundAuthenticationResponse.InboundAuthenticationResponseBuilder();
+        responseBuilder.setStatusCode(HttpServletResponse.SC_OK);
+        if (StringUtils.isNotEmpty(callback)) {
+            responseBuilder.setBody(callback + "();");
+        }
+        responseBuilder.addHeader(OAuth2.Header.CACHE_CONTROL, OAuth2.HeaderValue.CACHE_CONTROL_NO_STORE);
+        responseBuilder.addHeader(OAuth2.Header.PRAGMA, OAuth2.HeaderValue.PRAGMA_NO_CACHE);
+        if (StringUtils.isNotEmpty(callback)) {
+            responseBuilder.setContentType("application/javascript");
+        } else {
+            responseBuilder.setContentType("text/html");
+        }
+        return responseBuilder;
     }
 
     /**

@@ -16,9 +16,10 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
+package org.wso2.carbon.identity.oauth2new.bean.message.request.token.authzcode;
 
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.token.OAuth2TokenRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

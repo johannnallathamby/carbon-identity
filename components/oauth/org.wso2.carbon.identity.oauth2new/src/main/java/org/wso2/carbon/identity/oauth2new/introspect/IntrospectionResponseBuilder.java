@@ -22,6 +22,15 @@ import com.google.gson.Gson;
 
 public class IntrospectionResponseBuilder {
 
+    protected IntrospectionMessageContext messageContext;
+
+    public IntrospectionResponseBuilder(IntrospectionMessageContext messageContext) {
+        this.messageContext = messageContext;
+    }
+
+    public IntrospectionResponseBuilder() {
+
+    }
 
     /*
      * REQUIRED. Boolean indicator of whether or not the presented token is currently active. The specifics of a token's

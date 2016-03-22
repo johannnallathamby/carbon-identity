@@ -21,17 +21,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.wso2.carbon.identity.application.authentication.framework.cache.AuthenticationRequestCacheEntry;
 import org.wso2.carbon.identity.application.authentication.framework.cache.AuthenticationResultCacheEntry;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
-import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticationRequest;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticationResult;
 import org.wso2.carbon.identity.application.authentication.framework.util.FrameworkConstants;
 import org.wso2.carbon.identity.application.authentication.framework.util.FrameworkUtils;
 import org.wso2.carbon.identity.application.common.IdentityApplicationManagementException;
-import org.wso2.carbon.identity.application.common.util.IdentityApplicationConstants;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.registry.core.utils.UUIDGenerator;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -108,8 +105,8 @@ public abstract class InboundAuthenticationRequestProcessor {
      * @throws IOException
      * @throws FrameworkException
      */
-    protected InboundAuthenticationResponse buildResponseForFrameworkLogin(InboundAuthenticationContext context)
-            throws AuthenticationFrameworkRuntimeException {
+    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getBuilderForFrameworkLogin(
+            InboundAuthenticationContext context) throws AuthenticationFrameworkRuntimeException {
 
         String sessionDataKey = UUIDGenerator.generateUUID();
 
@@ -130,6 +127,8 @@ public abstract class InboundAuthenticationRequestProcessor {
 
         authenticationRequest.setRelyingParty(getRelyingPartyId());
         authenticationRequest.setType(getName());
+        authenticationRequest.setPassiveAuth((Boolean)context.getParameter(InboundAuthenticationConstants.PassiveAuth));
+        authenticationRequest.setForceAuth((Boolean)context.getParameter(InboundAuthenticationConstants.ForceAuth));
         try {
             authenticationRequest.setCommonAuthCallerPath(URLEncoder.encode(getCallbackPath(context), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
@@ -157,7 +156,7 @@ public abstract class InboundAuthenticationRequestProcessor {
                 new String[]{getName()});
         String commonAuthURL = IdentityUtil.getServerURL(FrameworkConstants.COMMONAUTH, true, true);
         responseBuilder.setRedirectURL(commonAuthURL);
-        return responseBuilder.build();
+        return responseBuilder;
     }
 
     /**
@@ -169,8 +168,8 @@ public abstract class InboundAuthenticationRequestProcessor {
      * @throws IdentityApplicationManagementException
      * @throws FrameworkException
      */
-    protected InboundAuthenticationResponse buildResponseForFrameworkLogout(InboundAuthenticationContext context)
-            throws AuthenticationFrameworkRuntimeException {
+    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getBuilderForFrameworkLogout(
+            InboundAuthenticationContext context) throws AuthenticationFrameworkRuntimeException {
 
         String sessionDataKey = UUIDGenerator.generateUUID();
 
@@ -217,7 +216,7 @@ public abstract class InboundAuthenticationRequestProcessor {
         responseBuilder.addParameter(InboundAuthenticationConstants.RequestProcessor.AUTH_TYPE, new String[]{getName()});
         String commonAuthURL = IdentityUtil.getServerURL(FrameworkConstants.COMMONAUTH, true, true);
         responseBuilder.setRedirectURL(commonAuthURL);
-        return responseBuilder.build();
+        return responseBuilder;
     }
 
     protected boolean isContextAvailable(InboundAuthenticationRequest request) {
@@ -259,7 +258,7 @@ public abstract class InboundAuthenticationRequestProcessor {
         }
         FrameworkUtils.removeAuthenticationResultFromCache(sessionDataKey);
         if (authnResult.isAuthenticated()) {
-            context.addParameter(InboundAuthenticationConstants.RequestProcessor.AUTHENTICATED_USER, authnResult);
+            context.addParameter(InboundAuthenticationConstants.RequestProcessor.AUTHENTICATION_RESULT, authnResult);
         }
         return authnResult;
     }

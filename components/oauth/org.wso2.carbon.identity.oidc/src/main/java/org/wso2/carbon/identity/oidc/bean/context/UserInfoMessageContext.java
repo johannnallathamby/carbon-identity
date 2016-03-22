@@ -16,9 +16,10 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oidc;
+package org.wso2.carbon.identity.oidc.bean.context;
 
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
+import org.wso2.carbon.identity.oidc.bean.message.userinfo.UserInfoRequest;
 
 import java.io.Serializable;
 import java.util.Map;

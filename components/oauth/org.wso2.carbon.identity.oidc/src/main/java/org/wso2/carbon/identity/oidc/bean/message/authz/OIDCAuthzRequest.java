@@ -16,13 +16,15 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oidc;
+package org.wso2.carbon.identity.oidc.bean.message.authz;
 
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.authz.OAuth2AuthzRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
+import java.util.Set;
 
 public class OIDCAuthzRequest extends OAuth2AuthzRequest {
 
@@ -32,7 +34,10 @@ public class OIDCAuthzRequest extends OAuth2AuthzRequest {
     private String display;
     private String idTokenHint;
     private String loginHint;
-    private String prompt;
+    private Set<String> prompts;
+    private boolean isLoginRequired = false;
+    private boolean isConsentRequired = false;
+    private boolean isPromptNone = false;
 
     protected OIDCAuthzRequest(OIDCAuthzRequestBuilder builder) {
         super(builder);
@@ -40,7 +45,10 @@ public class OIDCAuthzRequest extends OAuth2AuthzRequest {
         this.display = builder.display;
         this.idTokenHint = builder.idTokenHint;
         this.loginHint = builder.loginHint;
-        this.prompt = builder.prompt;
+        this.prompts = builder.prompts;
+        this.isLoginRequired = builder.isLoginRequired;
+        this.isConsentRequired = builder.isConsentRequired;
+        this.isPromptNone = builder.isPromptNone;
     }
 
     public String getNonce() {
@@ -59,8 +67,20 @@ public class OIDCAuthzRequest extends OAuth2AuthzRequest {
         return loginHint;
     }
 
-    public String getPrompt() {
-        return prompt;
+    public Set<String> getPrompts() {
+        return prompts;
+    }
+
+    public boolean isLoginRequired() {
+        return this.isLoginRequired;
+    }
+
+    public boolean isConsentRequired() {
+        return this.isConsentRequired;
+    }
+
+    public boolean isPromptNone() {
+        return this.isPromptNone;
     }
 
     public static class OIDCAuthzRequestBuilder extends AuthzRequestBuilder {
@@ -69,7 +89,10 @@ public class OIDCAuthzRequest extends OAuth2AuthzRequest {
         private String display;
         private String idTokenHint;
         private String loginHint;
-        private String prompt;
+        private Set<String> prompts = new HashSet<>();
+        private boolean isLoginRequired = false;
+        private boolean isConsentRequired = false;
+        private boolean isPromptNone = false;
 
         public OIDCAuthzRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
             super(request, response);
@@ -95,8 +118,28 @@ public class OIDCAuthzRequest extends OAuth2AuthzRequest {
             return this;
         }
 
-        public OIDCAuthzRequestBuilder setPrompt(String prompt) {
-            this.prompt = prompt;
+        public OIDCAuthzRequestBuilder setPrompts(Set<String> prompts) {
+            this.prompts = prompts;
+            return this;
+        }
+
+        public OIDCAuthzRequestBuilder addPrompt(String prompt) {
+            this.prompts.add(prompt);
+            return this;
+        }
+
+        public OIDCAuthzRequestBuilder setLoginRequired(boolean isLoginRequired) {
+            this.isLoginRequired = isLoginRequired;
+            return this;
+        }
+
+        public OIDCAuthzRequestBuilder setConsentRequired(boolean isConsentRequired) {
+            this.isConsentRequired = isConsentRequired;
+            return this;
+        }
+
+        public OIDCAuthzRequestBuilder setPromptNone(boolean isPromptNone) {
+            this.isPromptNone = isPromptNone;
             return this;
         }
 

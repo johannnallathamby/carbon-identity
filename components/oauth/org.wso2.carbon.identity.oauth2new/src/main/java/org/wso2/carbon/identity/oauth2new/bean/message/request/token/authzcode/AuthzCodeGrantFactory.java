@@ -16,41 +16,40 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oidc;
+package org.wso2.carbon.identity.oauth2new.bean.message.request.token.authzcode;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
+import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.token.TokenRequestFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UserInfoRequestFactory extends OAuth2InboundRequestFactory {
+public class AuthzCodeGrantFactory extends TokenRequestFactory {
 
     @Override
     public String getName() {
-        return "OIDCUserInfoRequestFactory";
-    }
-
-    @Override
-    public int getPriority() {
-        return 0;
+        return "AuthzCodeGrantFactory";
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.isNotBlank(request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
+        if(StringUtils.equals(GrantType.AUTHORIZATION_CODE.toString(), request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
             return true;
         }
         return false;
     }
 
     @Override
-    public UserInfoRequest create(HttpServletRequest request, HttpServletResponse response) throws
+    public AuthzCodeGrantRequest create(HttpServletRequest request, HttpServletResponse response) throws
             AuthenticationFrameworkRuntimeException {
-        return null;
+
+        AuthzCodeGrantRequest.AuthzCodeGrantBuilder builder = new AuthzCodeGrantRequest.AuthzCodeGrantBuilder
+                (request, response);
+        builder.setCode(request.getParameter(OAuth.OAUTH_CODE));
+        builder.setRedirectURI(request.getParameter(OAuth.OAUTH_REDIRECT_URI));
+        return builder.build();
     }
 }

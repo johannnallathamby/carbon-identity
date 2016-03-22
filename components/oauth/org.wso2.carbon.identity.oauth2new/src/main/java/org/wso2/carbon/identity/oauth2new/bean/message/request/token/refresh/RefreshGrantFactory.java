@@ -16,42 +16,40 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.bean.message.request.authz;
+package org.wso2.carbon.identity.oauth2new.bean.message.request.token.refresh;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
-import org.apache.oltu.oauth2.common.message.types.ResponseType;
+import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.token.TokenRequestFactory;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class CodeResponseRequestFactory extends AuthzRequestFactory {
+public class RefreshGrantFactory extends TokenRequestFactory {
 
     @Override
     public String getName() {
-        return "CodeResponseRequestFactory";
+        return "RefreshGrantFactory";
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.equals(ResponseType.CODE.toString(), request.getParameter(OAuth.OAUTH_RESPONSE_TYPE))) {
+        if(StringUtils.equals(GrantType.REFRESH_TOKEN.toString(), request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
-    public CodeResponseRequest create(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationFrameworkRuntimeException {
+    @Override
+    public RefreshGrantRequest create(HttpServletRequest request, HttpServletResponse response) throws
+            AuthenticationFrameworkRuntimeException {
 
-        CodeResponseRequest.CodeResponseRequestBuilder builder = new CodeResponseRequest.CodeResponseRequestBuilder
+        RefreshGrantRequest.RefreshGrantBuilder builder = new RefreshGrantRequest.RefreshGrantBuilder
                 (request, response);
-        builder.setResponseType(request.getParameter(OAuth.OAUTH_RESPONSE_TYPE));
-        builder.setClientId(request.getParameter(OAuth.OAUTH_CLIENT_ID));
-        builder.setRedirectURI(request.getParameter(OAuth.OAUTH_REDIRECT_URI));
-        builder.setState(request.getParameter(OAuth.OAUTH_STATE));
+        builder.setRefreshToken(request.getParameter(OAuth.OAUTH_REFRESH_TOKEN));
         builder.setScopes(OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE)));
         return builder.build();
     }

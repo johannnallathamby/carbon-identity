@@ -26,9 +26,7 @@ import org.wso2.carbon.identity.application.authentication.framework.inbound.Inb
 import org.wso2.carbon.identity.application.common.model.ServiceProvider;
 import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2AuthzMessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.authz.CodeResponseRequest;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.authz.OAuth2AuthzRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.authz.TokenResponseRequest;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2ClientException;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 import org.wso2.carbon.identity.oauth2new.processor.OAuth2InboundRequestProcessor;
@@ -72,36 +70,16 @@ public class AuthzProcessor extends OAuth2InboundRequestProcessor {
 
         validateClient(messageContext);
 
-        return initiateResourceOwnerAuthentication(messageContext);
+        return getBuilderForFrameworkLogin(messageContext).build();
     }
 
     protected void validateClient(OAuth2AuthzMessageContext messageContext) throws OAuth2ClientException {
 
-        // Can go to subclass
-        String clientId = null;
-        if(messageContext.getRequest() instanceof CodeResponseRequest){
-            clientId = ((CodeResponseRequest)messageContext.getRequest()).getClientId();
-        } else {
-            clientId = ((TokenResponseRequest)messageContext.getRequest()).getClientId();
-        }
+        String clientId = messageContext.getRequest().getClientId();
 
         ServiceProvider serviceProvider = null;
         // Validate clientId, redirect_uri, response_type allowed
         messageContext.addParameter(OAuth2.OAUTH2_SERVICE_PROVIDER, serviceProvider);
-    }
-
-    /**
-     * Initiate the request to authenticate resource owner
-     *
-     * @param messageContext The runtime message context
-     * @return OAuth2 authorization endpoint
-     * @throws OAuth2RuntimeException Exception occurred while issuing authorization endpoint response
-     */
-    protected InboundAuthenticationResponse initiateResourceOwnerAuthentication(OAuth2AuthzMessageContext
-                                                                                        messageContext)
-            throws OAuth2ClientException, OAuth2RuntimeException {
-
-        return buildResponseForFrameworkLogin(messageContext);
     }
 
 }

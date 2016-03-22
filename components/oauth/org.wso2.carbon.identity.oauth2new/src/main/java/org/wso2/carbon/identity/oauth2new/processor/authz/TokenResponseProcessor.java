@@ -29,8 +29,6 @@ import org.wso2.carbon.identity.application.authentication.framework.inbound.Inb
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
 import org.wso2.carbon.identity.oauth2new.handler.HandlerManager;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2AuthzMessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.authz.CodeResponseRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.authz.TokenResponseRequest;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
@@ -40,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 public class TokenResponseProcessor extends ResourceOwnerApprovedRequestProcessor {
 
     public String getName() {
-        return "CodeResponseProcessor";
+        return "TokenResponseProcessor";
     }
 
     public boolean canHandle(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
@@ -58,7 +56,8 @@ public class TokenResponseProcessor extends ResourceOwnerApprovedRequestProcesso
      * @return OAuth2 authorization endpoint response
      * @throws org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException Exception occurred while issuing authorization endpoint response
      */
-    protected InboundAuthenticationResponse buildAuthzResponse(OAuth2AuthzMessageContext messageContext) throws OAuth2RuntimeException {
+    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getAuthzResponseBuilder(
+            OAuth2AuthzMessageContext messageContext) throws OAuth2RuntimeException {
 
         AccessToken accessToken = HandlerManager.getInstance().issueAccessToken(messageContext);
 
@@ -69,13 +68,7 @@ public class TokenResponseProcessor extends ResourceOwnerApprovedRequestProcesso
             expiry = Long.MAX_VALUE/1000;
         }
 
-        // Can go to subclass
-        String state = null;
-        if(messageContext.getRequest() instanceof CodeResponseRequest){
-            state = ((CodeResponseRequest)messageContext.getRequest()).getState();
-        } else {
-            state = ((TokenResponseRequest)messageContext.getRequest()).getState();
-        }
+        String state = messageContext.getRequest().getState();
 
         // read redirect_uri from application.mgt
         String redirectURI = null;
@@ -94,8 +87,6 @@ public class TokenResponseProcessor extends ResourceOwnerApprovedRequestProcesso
             oltuRespBuilder.setParam(OAuth.OAUTH_REFRESH_TOKEN, new String(accessToken.getRefreshToken()));
         }
 
-        // add authenticated IDPs to query string
-
         OAuthResponse oltuResponse;
         try {
             oltuResponse = oltuRespBuilder.buildQueryMessage();
@@ -109,7 +100,7 @@ public class TokenResponseProcessor extends ResourceOwnerApprovedRequestProcesso
                 .setHeaders(oltuResponse.getHeaders())
                 .setBody(oltuResponse.getBody())
                 .setRedirectURL(oltuResponse.getLocationUri());
-        return builder.build();
+        return getAuthzResponseBuilder(messageContext);
     }
 
     protected boolean issueRefreshToken(OAuth2AuthzMessageContext messageContext) {

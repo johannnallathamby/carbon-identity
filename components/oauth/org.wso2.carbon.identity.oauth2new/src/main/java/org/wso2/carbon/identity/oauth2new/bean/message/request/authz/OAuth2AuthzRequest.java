@@ -102,6 +102,11 @@ public class OAuth2AuthzRequest extends OAuth2InboundRequest {
             return this;
         }
 
+        public AuthzRequestBuilder addScope(String scope) {
+            this.scopes.add(scope);
+            return this;
+        }
+
         public OAuth2AuthzRequest build() throws AuthenticationFrameworkRuntimeException  {
             return new OAuth2AuthzRequest(this);
         }

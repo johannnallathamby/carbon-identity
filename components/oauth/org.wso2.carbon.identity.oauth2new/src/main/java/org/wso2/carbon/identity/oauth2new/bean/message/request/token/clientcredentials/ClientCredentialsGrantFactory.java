@@ -16,43 +16,39 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.bean.message.request.authz;
+package org.wso2.carbon.identity.oauth2new.bean.message.request.token.clientcredentials;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
-import org.apache.oltu.oauth2.common.message.types.ResponseType;
+import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.token.TokenRequestFactory;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class TokenResponseRequestFactory extends AuthzRequestFactory {
+public class ClientCredentialsGrantFactory extends TokenRequestFactory {
 
     @Override
     public String getName() {
-        return "TokenResponseRequestFactory";
+        return "ClientCredentialsGrantFactory";
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.equals(ResponseType.TOKEN.toString(), request.getParameter(OAuth.OAUTH_RESPONSE_TYPE))) {
+        if(StringUtils.equals(GrantType.CLIENT_CREDENTIALS.toString(), request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
-    public TokenResponseRequest create(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationFrameworkRuntimeException {
+    @Override
+    public ClientCredentialsGrantRequest create(HttpServletRequest request, HttpServletResponse response) throws
+            AuthenticationFrameworkRuntimeException {
 
-        super.create(request, response);
-        TokenResponseRequest.TokenResponseRequestBuilder builder = new TokenResponseRequest.TokenResponseRequestBuilder
-                (request, response);
-        builder.setResponseType(request.getParameter(OAuth.OAUTH_RESPONSE_TYPE));
-        builder.setClientId(request.getParameter(OAuth.OAUTH_CLIENT_ID));
-        builder.setRedirectURI(request.getParameter(OAuth.OAUTH_REDIRECT_URI));
-        builder.setState(request.getParameter(OAuth.OAUTH_STATE));
+        ClientCredentialsGrantRequest.ClientCredentialsGrantBuilder builder = new ClientCredentialsGrantRequest
+                .ClientCredentialsGrantBuilder(request, response);
         builder.setScopes(OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE)));
         return builder.build();
     }

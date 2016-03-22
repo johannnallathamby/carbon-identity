@@ -59,7 +59,8 @@ public class CodeResponseProcessor extends ResourceOwnerApprovedRequestProcessor
         return false;
     }
 
-    protected InboundAuthenticationResponse buildAuthzResponse(OAuth2AuthzMessageContext messageContext) {
+    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getAuthzResponseBuilder(
+            OAuth2AuthzMessageContext messageContext) {
 
         // Select the given redirect_uri; there an be multiple registered
         String redirectURI = null;
@@ -93,8 +94,6 @@ public class CodeResponseProcessor extends ResourceOwnerApprovedRequestProcessor
                 .setExpiresIn(Long.toString(authzCodeValidity))
                 .setParam(OAuth.OAUTH_STATE, messageContext.getRequest().getState());
 
-        // add authenticated IDPs to query string
-
         OAuthResponse oltuResponse;
         try {
             oltuResponse = oltuRespBuilder.buildQueryMessage();
@@ -106,8 +105,7 @@ public class CodeResponseProcessor extends ResourceOwnerApprovedRequestProcessor
                 .InboundAuthenticationResponseBuilder();
         builder.setStatusCode(oltuResponse.getResponseStatus())
                 .setHeaders(oltuResponse.getHeaders())
-                .setBody(oltuResponse.getBody())
                 .setRedirectURL(oltuResponse.getLocationUri());
-        return builder.build();
+        return getAuthzResponseBuilder(messageContext);
     }
 }

@@ -16,39 +16,42 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
+package org.wso2.carbon.identity.oauth2new.bean.message.request.token.password;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.token.TokenRequestFactory;
+import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class AuthzCodeGrantFactory extends TokenRequestFactory {
+public class PasswordGrantFactory extends TokenRequestFactory {
 
     @Override
     public String getName() {
-        return "AuthzCodeGrantFactory";
+        return "PasswordGrantFactory";
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.equals(GrantType.AUTHORIZATION_CODE.toString(), request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
+        if(StringUtils.equals(GrantType.PASSWORD.toString(), request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
             return true;
         }
         return false;
     }
 
     @Override
-    public AuthzCodeGrantRequest create(HttpServletRequest request, HttpServletResponse response) throws
+    public PasswordGrantRequest create(HttpServletRequest request, HttpServletResponse response) throws
             AuthenticationFrameworkRuntimeException {
 
-        AuthzCodeGrantRequest.AuthzCodeGrantBuilder builder = new AuthzCodeGrantRequest.AuthzCodeGrantBuilder
+        PasswordGrantRequest.PasswordGrantBuilder builder = new PasswordGrantRequest.PasswordGrantBuilder
                 (request, response);
-        builder.setCode(request.getParameter(OAuth.OAUTH_CODE));
-        builder.setRedirectURI(request.getParameter(OAuth.OAUTH_REDIRECT_URI));
+        builder.setUsername(request.getParameter(OAuth.OAUTH_USERNAME));
+        builder.setPassword(request.getParameter(OAuth.OAUTH_PASSWORD).toCharArray());
+        builder.setScopes(OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE)));
         return builder.build();
     }
 }

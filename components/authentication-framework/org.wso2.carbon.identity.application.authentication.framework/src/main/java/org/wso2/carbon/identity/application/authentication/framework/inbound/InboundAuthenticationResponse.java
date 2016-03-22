@@ -169,6 +169,15 @@ public class InboundAuthenticationResponse implements Serializable {
             return this;
         }
 
+        public InboundAuthenticationResponseBuilder addParameter(String name, String value) {
+            if(this.parameters.containsKey(name)) {
+                throw AuthenticationFrameworkRuntimeException.error("Parameters map trying to override existing " +
+                        "key " + name);
+            }
+            this.parameters.put(name, new String[]{value});
+            return this;
+        }
+
         public InboundAuthenticationResponseBuilder addParameter(String name, String[] values) {
             if(this.parameters.containsKey(name)) {
                 throw AuthenticationFrameworkRuntimeException.error("Parameters map trying to override existing " +

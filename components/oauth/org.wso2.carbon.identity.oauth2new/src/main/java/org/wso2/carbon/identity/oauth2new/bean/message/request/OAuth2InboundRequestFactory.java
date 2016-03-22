@@ -20,6 +20,7 @@ package org.wso2.carbon.identity.oauth2new.bean.message.request;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
+import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestFactory;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.token.OAuth2TokenRequest;
@@ -45,7 +46,7 @@ public class OAuth2InboundRequestFactory extends InboundAuthenticationRequestFac
     }
 
     public OAuth2InboundRequest create(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationFrameworkRuntimeException {
+            throws AuthenticationFrameworkRuntimeException, FrameworkException {
 
         OAuth2TokenRequest.TokenRequestBuilder builder = new OAuth2TokenRequest.TokenRequestBuilder
                 (request, response);

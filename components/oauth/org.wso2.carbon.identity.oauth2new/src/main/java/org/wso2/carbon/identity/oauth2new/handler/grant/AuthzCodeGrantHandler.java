@@ -23,7 +23,7 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
 import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.token.AuthzCodeGrantRequest;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.token.authzcode.AuthzCodeGrantRequest;
 import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAO;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2ClientException;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;

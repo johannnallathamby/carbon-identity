@@ -68,7 +68,7 @@ import org.wso2.carbon.user.core.service.RealmService;
  * @scr.reference name="oauth2.handler.grant"
  * interface="org.wso2.carbon.identity.oauth2new.handler.grant.AuthorizationGrantHandler" cardinality="0..n"
  * policy="dynamic" bind="addAuthorizationGrantHandler" unbind="removeAuthorizationGrantHandler"
- * @scr.reference name="oauth2.introspection.grant"
+ * @scr.reference name="oauth2.handler.introspection"
  * interface="org.wso2.carbon.identity.oauth2new.introspection.IntrospectionHandler" cardinality="0..n"
  * policy="dynamic" bind="addIntrospectionHandler" unbind="removeIntrospectionHandler"
  *
@@ -82,9 +82,6 @@ public class OAuth2ServiceComponent {
         try {
             OAuth2ServerConfig.getInstance();
             if (log.isDebugEnabled()) {
-                log.debug("OAuth2Service is registered");
-            }
-            if (log.isDebugEnabled()) {
                 log.debug("OAuth2 bundle is activated");
             }
         } catch (Throwable e) {
@@ -94,9 +91,6 @@ public class OAuth2ServiceComponent {
 
     protected void deactivate(ComponentContext context) {
 
-        if (log.isDebugEnabled()) {
-            log.debug("OAuth2 service is unregistered");
-        }
         if (log.isDebugEnabled()) {
             log.debug("OAuth2 bundle is deactivated");
         }

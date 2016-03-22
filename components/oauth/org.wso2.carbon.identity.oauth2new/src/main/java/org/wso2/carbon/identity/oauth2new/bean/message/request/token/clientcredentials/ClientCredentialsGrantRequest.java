@@ -16,35 +16,47 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oidc;
+package org.wso2.carbon.identity.oauth2new.bean.message.request.token.clientcredentials;
 
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.token.OAuth2TokenRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
+import java.util.Set;
 
-public class OIDCTokenRequest extends OAuth2TokenRequest {
+public class ClientCredentialsGrantRequest extends OAuth2TokenRequest {
 
-    private static final long serialVersionUID = -3009563708954787261L;
+    private static final long serialVersionUID = -1664111039532276033L;
 
-    protected OIDCTokenRequest(OIDCTokenRequestBuilder builder) {
+    private Set<String> scopes = new HashSet<>();
+
+    protected ClientCredentialsGrantRequest(ClientCredentialsGrantBuilder builder) {
         super(builder);
     }
 
-    public static class OIDCTokenRequestBuilder extends TokenRequestBuilder {
+    public Set<String> getScopes() {
+        return scopes;
+    }
 
-        public OIDCTokenRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
+
+    public static class ClientCredentialsGrantBuilder extends TokenRequestBuilder {
+
+        private Set<String> scopes;
+
+        public ClientCredentialsGrantBuilder(HttpServletRequest request, HttpServletResponse response) {
             super(request, response);
         }
 
-        public OIDCTokenRequestBuilder setGrantType(String grantType) {
+        public ClientCredentialsGrantBuilder setScopes(Set<String> scopes) {
+            this.scopes = scopes;
             return this;
         }
 
-        public OIDCTokenRequest build() throws AuthenticationFrameworkRuntimeException {
-            return new OIDCTokenRequest(this);
+        @Override
+        public ClientCredentialsGrantRequest build() throws AuthenticationFrameworkRuntimeException {
+            return new ClientCredentialsGrantRequest(this);
         }
-
     }
 }

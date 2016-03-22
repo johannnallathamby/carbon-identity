@@ -16,46 +16,57 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.bean.message.request.token;
+package org.wso2.carbon.identity.oauth2new.bean.message.request.token.refresh;
 
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.token.OAuth2TokenRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ClientCredentialsGrantRequest extends OAuth2TokenRequest {
+public class RefreshGrantRequest extends OAuth2TokenRequest {
 
-    private static final long serialVersionUID = -1664111039532276033L;
-
+    private String refreshToken;
     private Set<String> scopes = new HashSet<>();
 
-    protected ClientCredentialsGrantRequest(ClientCredentialsGrantBuilder builder) {
+    protected RefreshGrantRequest(RefreshGrantBuilder builder) {
         super(builder);
+        this.refreshToken = builder.refreshToken;
+        this.scopes = builder.scopes;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
     }
 
     public Set<String> getScopes() {
         return scopes;
     }
 
+    public static class RefreshGrantBuilder extends TokenRequestBuilder {
 
-    public static class ClientCredentialsGrantBuilder extends TokenRequestBuilder {
+        private String refreshToken;
+        private Set<String> scopes = new HashSet<>();
 
-        private Set<String> scopes;
-
-        public ClientCredentialsGrantBuilder(HttpServletRequest request, HttpServletResponse response) {
+        public RefreshGrantBuilder(HttpServletRequest request, HttpServletResponse response) {
             super(request, response);
         }
 
-        public ClientCredentialsGrantBuilder setScopes(Set<String> scopes) {
+        public RefreshGrantBuilder setRefreshToken(String refreshToken) {
+            this.refreshToken = refreshToken;
+            return this;
+        }
+
+        public RefreshGrantBuilder setScopes(Set<String> scopes) {
             this.scopes = scopes;
             return this;
         }
 
         @Override
-        public ClientCredentialsGrantRequest build() throws AuthenticationFrameworkRuntimeException {
-            return new ClientCredentialsGrantRequest(this);
+        public RefreshGrantRequest build() throws AuthenticationFrameworkRuntimeException {
+            return new RefreshGrantRequest(this);
         }
     }
 }

@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oidc;
+package org.wso2.carbon.identity.oidc.bean.message.userinfo;
 
 import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequest;
 

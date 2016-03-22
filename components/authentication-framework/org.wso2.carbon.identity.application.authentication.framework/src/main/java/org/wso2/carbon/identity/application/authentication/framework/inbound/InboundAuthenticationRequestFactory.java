@@ -18,6 +18,8 @@
 
 package org.wso2.carbon.identity.application.authentication.framework.inbound;
 
+import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,7 +48,7 @@ public class InboundAuthenticationRequestFactory {
     }
 
     public InboundAuthenticationRequest create(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationFrameworkRuntimeException {
+            throws AuthenticationFrameworkRuntimeException, FrameworkException {
 
         InboundAuthenticationRequest.InboundAuthenticationRequestBuilder builder = new InboundAuthenticationRequest
                 .InboundAuthenticationRequestBuilder(request, response);

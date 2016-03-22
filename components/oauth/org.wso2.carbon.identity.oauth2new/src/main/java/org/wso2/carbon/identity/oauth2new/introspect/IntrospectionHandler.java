@@ -73,7 +73,7 @@ public class IntrospectionHandler extends AbstractIdentityHandler {
     public IntrospectionResponseBuilder introspectAccessToken(AccessToken accessToken, IntrospectionMessageContext messageContext) throws
             OAuth2Exception {
 
-        IntrospectionResponseBuilder builder = new IntrospectionResponseBuilder();
+        IntrospectionResponseBuilder builder = new IntrospectionResponseBuilder(messageContext);
 
         if(!OAuth2.TokenState.ACTIVE.equals(accessToken.getAccessTokenState())) {
             // json string should not contain other attributes, only active=false
@@ -105,7 +105,7 @@ public class IntrospectionHandler extends AbstractIdentityHandler {
     public IntrospectionResponseBuilder introspectRefreshToken(AccessToken accessToken, IntrospectionMessageContext messageContext) throws
             OAuth2Exception {
 
-        IntrospectionResponseBuilder builder = new IntrospectionResponseBuilder();
+        IntrospectionResponseBuilder builder = new IntrospectionResponseBuilder(messageContext);
 
         if(!OAuth2.TokenState.ACTIVE.equals(accessToken.getAccessTokenState())) {
             // json string should not contain other attributes, only active=false

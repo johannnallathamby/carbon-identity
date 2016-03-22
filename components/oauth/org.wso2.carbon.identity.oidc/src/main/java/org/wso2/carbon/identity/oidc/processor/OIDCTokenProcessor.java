@@ -16,27 +16,27 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.processor.token;
+package org.wso2.carbon.identity.oidc.processor;
 
 
 import org.apache.oltu.oauth2.as.response.OAuthASResponse;
 import org.apache.oltu.oauth2.common.OAuth;
-import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
-import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContext;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
-import org.wso2.carbon.identity.oauth2new.handler.HandlerManager;
-import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.message.request.token.OAuth2TokenRequest;
 import org.wso2.carbon.identity.oauth2new.common.ClientType;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
+import org.wso2.carbon.identity.oauth2new.handler.HandlerManager;
 import org.wso2.carbon.identity.oauth2new.model.AccessToken;
-import org.wso2.carbon.identity.oauth2new.processor.OAuth2InboundRequestProcessor;
+import org.wso2.carbon.identity.oauth2new.processor.token.TokenProcessor;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
+import org.wso2.carbon.identity.oidc.IDTokenBuilder;
+import org.wso2.carbon.identity.oidc.OIDC;
+import org.wso2.carbon.identity.oidc.handler.OIDCHandlerManager;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -44,11 +44,11 @@ import java.util.HashMap;
 /*
  * InboundRequestProcessor for OAuth2 Token Endpoint
  */
-public class TokenProcessor extends OAuth2InboundRequestProcessor {
+public class OIDCTokenProcessor extends TokenProcessor {
 
     @Override
     public String getName() {
-        return "TokenProcessor";
+        return "OIDCTokenProcessor";
     }
 
     @Override
@@ -99,7 +99,7 @@ public class TokenProcessor extends OAuth2InboundRequestProcessor {
      *
      * @param messageContext The runtime message context
      * @return {@code true} only if the client was confidential and was authenticated successfully
-     * @throws OAuth2Exception
+     * @throws org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception
      */
     protected ClientType clientType(OAuth2TokenMessageContext messageContext) {
         return HandlerManager.getInstance().clientType(messageContext);
@@ -110,7 +110,7 @@ public class TokenProcessor extends OAuth2InboundRequestProcessor {
      *
      * @param messageContext The runtime message context
      * @return {@code true} only if the client was confidential and was authenticated successfully
-     * @throws OAuth2Exception
+     * @throws org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception
      */
     protected String authenticateClient(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
         return HandlerManager.getInstance().authenticateClient(messageContext);
@@ -121,34 +121,10 @@ public class TokenProcessor extends OAuth2InboundRequestProcessor {
      *
      * @param messageContext The runtime message context
      * @return {@code true} only if the authorization grant is valid
-     * @throws OAuth2Exception
+     * @throws org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception
      */
     protected void validateGrant(OAuth2TokenMessageContext messageContext) throws OAuth2Exception {
         HandlerManager.getInstance().validateGrant(messageContext);
-    }
-
-    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder buildTokenResponse(
-            AccessToken accessToken, OAuth2TokenMessageContext messageContext) {
-
-        OAuthASResponse.OAuthTokenResponseBuilder oltuRespBuilder = buildOLTUTokenResponse(accessToken, messageContext);
-        OAuthResponse oltuASResponse = null;
-        try {
-            oltuASResponse = oltuRespBuilder.buildJSONMessage();
-        } catch (OAuthSystemException e1) {
-            throw OAuth2RuntimeException.error("Error occurred while generating Bearer token");
-        }
-
-        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder builder = new InboundAuthenticationResponse
-                .InboundAuthenticationResponseBuilder();
-        builder.setStatusCode(oltuASResponse.getResponseStatus());
-        builder.setHeaders(oltuASResponse.getHeaders());
-        builder.setBody(oltuASResponse.getBody());
-        builder.addHeader(OAuth2.Header.CACHE_CONTROL,
-                OAuth2.HeaderValue.CACHE_CONTROL_NO_STORE);
-        builder.addHeader(OAuth2.Header.PRAGMA,
-                OAuth2.HeaderValue.PRAGMA_NO_CACHE);
-        return builder;
-
     }
 
     protected OAuthASResponse.OAuthTokenResponseBuilder buildOLTUTokenResponse(
@@ -175,7 +151,18 @@ public class TokenProcessor extends OAuth2InboundRequestProcessor {
                 .setExpiresIn(Long.toString(expiry))
                 .setTokenType(OAuth.OAUTH_HEADER_NAME);
         oltuRespBuilder.setScope(OAuth2Util.buildScopeString(accessToken.getScopes()));
+        if(accessToken.getScopes().contains(OIDC.OPENID_SCOPE)){
+            buildIDToken(oltuRespBuilder, messageContext);
+        }
         return oltuRespBuilder;
+    }
+
+    protected OAuthASResponse.OAuthTokenResponseBuilder buildIDToken(
+            OAuthASResponse.OAuthTokenResponseBuilder builder, OAuth2TokenMessageContext messageContext) {
+
+        IDTokenBuilder idTokenBuilder = OIDCHandlerManager.getInstance().buildIDToken(messageContext);
+        String idToken = idTokenBuilder.build();
+        return builder.setParam("id_token", idToken);
     }
 
     /**
@@ -183,7 +170,7 @@ public class TokenProcessor extends OAuth2InboundRequestProcessor {
      *
      * @param messageContext The runtime message context
      * @return OAuth2 access token response
-     * @throws OAuth2Exception
+     * @throws org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception
      */
     protected AccessToken issueAccessToken(OAuth2TokenMessageContext messageContext) throws OAuth2RuntimeException {
 

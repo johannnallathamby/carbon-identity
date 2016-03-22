@@ -16,38 +16,48 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.oauth2new.bean.message.request.authz;
+package org.wso2.carbon.identity.oidc.bean.message.authz;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
+import org.wso2.carbon.identity.oauth2new.bean.message.request.authz.AuthzRequestFactory;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2ClientException;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
+import org.wso2.carbon.identity.oidc.OIDC;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Set;
 
-public class AuthzRequestFactory extends OAuth2InboundRequestFactory {
+public class OIDCAuthzRequestFactory extends AuthzRequestFactory {
 
     @Override
     public String getName() {
-        return "AuthzRequestFactory";
+        return "OIDCAuthzRequestFactory";
+    }
+
+    @Override
+    public int getPriority() {
+        return 0;
     }
 
     @Override
     public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
-        if(StringUtils.isNotBlank(request.getParameter(OAuth.OAUTH_RESPONSE_TYPE))) {
-            return true;
+        if(super.canHandle(request, response)) {
+            Set<String> scopes = OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE));
+            if (scopes.contains(OIDC.OPENID_SCOPE)) {
+                return true;
+            }
         }
         return false;
     }
 
-    public OAuth2AuthzRequest create(HttpServletRequest request, HttpServletResponse response) throws
+    @Override
+    public OIDCAuthzRequest create(HttpServletRequest request, HttpServletResponse response) throws
             AuthenticationFrameworkRuntimeException, OAuth2ClientException {
 
-        OAuth2AuthzRequest.AuthzRequestBuilder builder = new OAuth2AuthzRequest.AuthzRequestBuilder
+        OIDCAuthzRequest.OIDCAuthzRequestBuilder builder = new OIDCAuthzRequest.OIDCAuthzRequestBuilder
                 (request, response);
         builder.setTenantDomain(request.getParameter(MultitenantConstants.TENANT_DOMAIN));
         builder.setResponseType(request.getParameter(OAuth.OAUTH_RESPONSE_TYPE));
@@ -55,6 +65,22 @@ public class AuthzRequestFactory extends OAuth2InboundRequestFactory {
         builder.setRedirectURI(request.getParameter(OAuth.OAUTH_REDIRECT_URI));
         builder.setState(request.getParameter(OAuth.OAUTH_STATE));
         builder.setScopes(OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE)));
+        builder.setNonce(request.getParameter(OIDC.NONCE));
+        builder.setDisplay(request.getParameter(OIDC.DISPLAY));
+        builder.setIdTokenHint(request.getParameter(OIDC.ID_TOKEN_HINT));
+        builder.setLoginHint(request.getParameter(OIDC.LOGIN_HINT));
+        Set<String> prompts = OAuth2Util.buildScopeSet(request.getParameter(OIDC.PROMPT));
+        if(prompts.contains(OIDC.Prompt.NONE) && prompts.size() > 1){
+            throw OAuth2ClientException.error("Prompt value 'none' cannot be used with other " +
+            "prompts. Prompt: " + request.getParameter(OIDC.PROMPT));
+        }
+        builder.setPrompts(prompts);
+        if (prompts.contains(OIDC.Prompt.LOGIN)) {
+            builder.setLoginRequired(true);
+        }
+        if(prompts.contains(OIDC.Prompt.CONSENT)) {
+            builder.setConsentRequired(true);
+        }
         return builder.build();
     }
 }
