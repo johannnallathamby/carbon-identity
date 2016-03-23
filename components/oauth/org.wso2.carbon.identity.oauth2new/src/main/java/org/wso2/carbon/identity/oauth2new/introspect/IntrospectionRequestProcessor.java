@@ -20,10 +20,10 @@ package org.wso2.carbon.identity.oauth2new.introspect;
 
 import org.apache.commons.lang.StringUtils;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContext;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.FrameworkRuntimeException;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundMessageContext;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundRequest;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundResponse;
 import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.common.ClientType;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
@@ -41,7 +41,7 @@ public class IntrospectionRequestProcessor extends OAuth2InboundRequestProcessor
     }
 
     @Override
-    public String getCallbackPath(InboundAuthenticationContext context) throws AuthenticationFrameworkRuntimeException {
+    public String getCallbackPath(InboundMessageContext context) throws FrameworkRuntimeException {
         return null;
     }
 
@@ -56,17 +56,17 @@ public class IntrospectionRequestProcessor extends OAuth2InboundRequestProcessor
     }
 
     @Override
-    public boolean canHandle(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
-        if(StringUtils.isNotBlank(authenticationRequest.getParameterValue("token"))) {
+    public boolean canHandle(InboundRequest inboundRequest) {
+        if(StringUtils.isNotBlank(inboundRequest.getParameter("token"))) {
             return true;
         }
         return false;
     }
 
     @Override
-    public InboundAuthenticationResponse process(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
+    public InboundResponse process(InboundRequest inboundRequest) throws FrameworkException {
 
-        IntrospectionRequest introspectionRequest = (IntrospectionRequest)authenticationRequest;
+        IntrospectionRequest introspectionRequest = (IntrospectionRequest) inboundRequest;
         IntrospectionMessageContext messageContext = new IntrospectionMessageContext(introspectionRequest,
                 new HashMap<String,String>());
 
@@ -77,7 +77,7 @@ public class IntrospectionRequestProcessor extends OAuth2InboundRequestProcessor
 
 
         IntrospectionResponseBuilder introspectionResponseBuilder = introspect(messageContext);
-        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder builder = getIntrospectionResponseBuilder(
+        InboundResponse.InboundResponseBuilder builder = buildIntrospectionResponse(
                 introspectionResponseBuilder, messageContext);
         return builder.build();
 
@@ -88,11 +88,11 @@ public class IntrospectionRequestProcessor extends OAuth2InboundRequestProcessor
         return handler.introspect(messageContext);
     }
 
-    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getIntrospectionResponseBuilder
+    protected InboundResponse.InboundResponseBuilder buildIntrospectionResponse
             (IntrospectionResponseBuilder builder, IntrospectionMessageContext messageContext) {
 
-        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder responseBuilder = new
-                InboundAuthenticationResponse.InboundAuthenticationResponseBuilder();
+        InboundResponse.InboundResponseBuilder responseBuilder = new
+                InboundResponse.InboundResponseBuilder();
         responseBuilder.setStatusCode(HttpServletResponse.SC_OK);
         responseBuilder.setBody(builder.build());
         responseBuilder.addHeader(OAuth2.Header.CACHE_CONTROL, OAuth2.HeaderValue.CACHE_CONTROL_NO_STORE);

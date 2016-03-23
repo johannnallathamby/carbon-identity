@@ -19,7 +19,7 @@
 package org.wso2.carbon.identity.oauth2new.internal;
 
 import org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
+import org.wso2.carbon.identity.oauth2new.bean.message.OAuth2InboundRequestFactory;
 import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAOHandler;
 import org.wso2.carbon.identity.oauth2new.handler.client.ClientAuthHandler;
 import org.wso2.carbon.identity.oauth2new.handler.grant.AuthorizationGrantHandler;

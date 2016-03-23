@@ -18,8 +18,8 @@
 
 package org.wso2.carbon.identity.oidc.bean.message.authz;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.authz.OAuth2AuthzRequest;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.FrameworkRuntimeException;
+import org.wso2.carbon.identity.oauth2new.bean.message.authz.OAuth2AuthzRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -98,6 +98,10 @@ public class OIDCAuthzRequest extends OAuth2AuthzRequest {
             super(request, response);
         }
 
+        public OIDCAuthzRequestBuilder() {
+
+        }
+
         public OIDCAuthzRequestBuilder setNonce(String nonce) {
             this.nonce = nonce;
             return this;
@@ -143,7 +147,7 @@ public class OIDCAuthzRequest extends OAuth2AuthzRequest {
             return this;
         }
 
-        public OIDCAuthzRequest build() throws AuthenticationFrameworkRuntimeException {
+        public OIDCAuthzRequest build() throws FrameworkRuntimeException {
             return new OIDCAuthzRequest(this);
         }
 

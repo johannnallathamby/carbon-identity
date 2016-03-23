@@ -18,8 +18,8 @@
 
 package org.wso2.carbon.identity.oauth2.assertion.saml2.grant;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.token.OAuth2TokenRequest;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.FrameworkRuntimeException;
+import org.wso2.carbon.identity.oauth2new.bean.message.token.OAuth2TokenRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -79,7 +79,7 @@ public class SAML2AssertionGrantRequest extends OAuth2TokenRequest {
         }
 
         @Override
-        public SAML2AssertionGrantRequest build() throws AuthenticationFrameworkRuntimeException {
+        public SAML2AssertionGrantRequest build() throws FrameworkRuntimeException {
             return new SAML2AssertionGrantRequest(this);
         }
     }

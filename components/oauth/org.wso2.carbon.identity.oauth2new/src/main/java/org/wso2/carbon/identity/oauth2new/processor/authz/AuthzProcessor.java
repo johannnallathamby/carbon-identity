@@ -20,15 +20,14 @@ package org.wso2.carbon.identity.oauth2new.processor.authz;
 
 import org.apache.oltu.oauth2.common.OAuth;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContext;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundMessageContext;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundRequest;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundResponse;
 import org.wso2.carbon.identity.application.common.model.ServiceProvider;
 import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2AuthzMessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.authz.OAuth2AuthzRequest;
+import org.wso2.carbon.identity.oauth2new.bean.message.authz.OAuth2AuthzRequest;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2ClientException;
-import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 import org.wso2.carbon.identity.oauth2new.processor.OAuth2InboundRequestProcessor;
 
 import java.util.HashMap;
@@ -47,7 +46,7 @@ public class AuthzProcessor extends OAuth2InboundRequestProcessor {
         return 0;
     }
 
-    public String getCallbackPath(InboundAuthenticationContext context) {
+    public String getCallbackPath(InboundMessageContext context) {
         return null;
     }
 
@@ -55,22 +54,21 @@ public class AuthzProcessor extends OAuth2InboundRequestProcessor {
         return null;
     }
 
-    public boolean canHandle(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
-        if(authenticationRequest.getParameterValue(OAuth.OAUTH_RESPONSE_TYPE) != null) {
+    public boolean canHandle(InboundRequest inboundRequest) {
+        if(inboundRequest.getParameter(OAuth.OAUTH_RESPONSE_TYPE) != null) {
             return true;
         }
         return false;
     }
 
-    public InboundAuthenticationResponse process(InboundAuthenticationRequest authenticationRequest)
-            throws FrameworkException {
+    public InboundResponse process(InboundRequest inboundRequest) throws FrameworkException {
 
         OAuth2AuthzMessageContext messageContext = new OAuth2AuthzMessageContext(
-                (OAuth2AuthzRequest)authenticationRequest, new HashMap<String,String>());
+                (OAuth2AuthzRequest) inboundRequest, new HashMap<String,String>());
 
         validateClient(messageContext);
 
-        return getBuilderForFrameworkLogin(messageContext).build();
+        return initializeResourceOwnerAuthentication(messageContext);
     }
 
     protected void validateClient(OAuth2AuthzMessageContext messageContext) throws OAuth2ClientException {
@@ -80,6 +78,10 @@ public class AuthzProcessor extends OAuth2InboundRequestProcessor {
         ServiceProvider serviceProvider = null;
         // Validate clientId, redirect_uri, response_type allowed
         messageContext.addParameter(OAuth2.OAUTH2_SERVICE_PROVIDER, serviceProvider);
+    }
+
+    protected InboundResponse initializeResourceOwnerAuthentication(OAuth2AuthzMessageContext messageContext) {
+        return buildResponseForFrameworkLogin(messageContext).build();
     }
 
 }

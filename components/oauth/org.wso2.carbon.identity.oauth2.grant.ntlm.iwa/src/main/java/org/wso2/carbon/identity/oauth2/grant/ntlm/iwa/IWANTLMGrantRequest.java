@@ -18,8 +18,8 @@
 
 package org.wso2.carbon.identity.oauth2.grant.ntlm.iwa;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.token.OAuth2TokenRequest;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.FrameworkRuntimeException;
+import org.wso2.carbon.identity.oauth2new.bean.message.token.OAuth2TokenRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,7 +67,7 @@ public class IWANTLMGrantRequest extends OAuth2TokenRequest {
         }
 
         @Override
-        public IWANTLMGrantRequest build() throws AuthenticationFrameworkRuntimeException {
+        public IWANTLMGrantRequest build() throws FrameworkRuntimeException {
             return new IWANTLMGrantRequest(this);
         }
     }

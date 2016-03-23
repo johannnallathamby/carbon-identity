@@ -21,9 +21,9 @@ package org.wso2.carbon.identity.oidc.processor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationConstants;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundRequest;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundResponse;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticationResult;
 import org.wso2.carbon.identity.application.common.model.ServiceProvider;
@@ -37,8 +37,8 @@ import org.wso2.carbon.identity.oauth2new.util.OAuth2ConsentStore;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
 import org.wso2.carbon.identity.oidc.IDTokenBuilder;
 import org.wso2.carbon.identity.oidc.OIDC;
-import org.wso2.carbon.identity.oidc.handler.OIDCHandlerManager;
 import org.wso2.carbon.identity.oidc.bean.message.authz.OIDCAuthzRequest;
+import org.wso2.carbon.identity.oidc.handler.OIDCHandlerManager;
 
 import java.util.Set;
 
@@ -48,9 +48,9 @@ public class OIDCTokenResponseProcessor extends TokenResponseProcessor {
         return "OIDCTokenResponseProcessor";
     }
 
-    public boolean canHandle(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
-        if(super.canHandle(authenticationRequest)) {
-            Set<String> scopes = OAuth2Util.buildScopeSet(authenticationRequest.getParameterValue(OAuth.OAUTH_SCOPE));
+    public boolean canHandle(InboundRequest inboundRequest) throws FrameworkException {
+        if(super.canHandle(inboundRequest)) {
+            Set<String> scopes = OAuth2Util.buildScopeSet(inboundRequest.getParameter(OAuth.OAUTH_SCOPE));
             if (scopes.contains(OIDC.OPENID_SCOPE)) {
                 return true;
             }
@@ -59,13 +59,13 @@ public class OIDCTokenResponseProcessor extends TokenResponseProcessor {
     }
 
     @Override
-    public InboundAuthenticationResponse process(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
+    public InboundResponse process(InboundRequest inboundRequest) throws FrameworkException {
 
-        OAuth2AuthzMessageContext messageContext = (OAuth2AuthzMessageContext)getContextIfAvailable(authenticationRequest);
+        OAuth2AuthzMessageContext messageContext = (OAuth2AuthzMessageContext)getContextIfAvailable(inboundRequest);
 
         if(messageContext.getAuthzUser() == null) { // authentication response
 
-            messageContext.addParameter(OAuth2.OAUTH2_RESOURCE_OWNER_AUTHN_REQUEST, authenticationRequest);
+            messageContext.addParameter(OAuth2.OAUTH2_RESOURCE_OWNER_AUTHN_REQUEST, inboundRequest);
             AuthenticationResult authnResult = processResponseFromFrameworkLogin(messageContext);
 
             AuthenticatedUser authenticatedUser = null;
@@ -81,14 +81,14 @@ public class OIDCTokenResponseProcessor extends TokenResponseProcessor {
             boolean isPromptNone = ((OIDCAuthzRequest)messageContext.getRequest()).isPromptNone();
 
             if(isConsentRequired){
-                return getConsentBuilder(messageContext).build();
+                return initiateResourceOwnerConsent(messageContext).build();
             } else if (!OAuth2ServerConfig.getInstance().isSkipConsentPage()) {
 
                 String spName = ((ServiceProvider) messageContext.getParameter(OAuth2.OAUTH2_SERVICE_PROVIDER)).getApplicationName();
 
                 if (!OAuth2ConsentStore.getInstance().hasUserApprovedAppAlways(authenticatedUser, spName)) {
                     if(!isPromptNone) {
-                        return getConsentBuilder(messageContext).build();
+                        return initiateResourceOwnerConsent(messageContext).build();
                     } else {
                         throw OAuth2ConsentException.error("Prompt contains none, but user approval required");
                     }
@@ -107,21 +107,21 @@ public class OIDCTokenResponseProcessor extends TokenResponseProcessor {
         // authenticated request and authorized request are the same
         if(!StringUtils.equals("ApproveAlways", (String)messageContext.getParameter(OAuth2.CONSENT)) &&
                 !StringUtils.equals("SkipOAuth2Consent", (String)messageContext.getParameter(OAuth2.CONSENT))) {
-            messageContext.addParameter(OAuth2.OAUTH2_RESOURCE_OWNER_AUTHZ_REQUEST, authenticationRequest);
+            messageContext.addParameter(OAuth2.OAUTH2_RESOURCE_OWNER_AUTHZ_REQUEST, inboundRequest);
             processConsent(messageContext);
         }
-        return getAuthzResponseBuilder(messageContext).build();
+        return buildAuthzResponse(messageContext).build();
     }
 
-    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getAuthzResponseBuilder(
+    protected InboundResponse.InboundResponseBuilder buildAuthzResponse(
             OAuth2AuthzMessageContext messageContext) {
 
-        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder builder =
-                super.getAuthzResponseBuilder(messageContext);
+        InboundResponse.InboundResponseBuilder builder =
+                super.buildAuthzResponse(messageContext);
         AuthenticationResult authenticationResult = (AuthenticationResult)messageContext.getParameter(
-                InboundAuthenticationConstants.RequestProcessor.AUTHENTICATION_RESULT);
+                InboundConstants.RequestProcessor.AUTHENTICATION_RESULT);
         if(StringUtils.isNotBlank(authenticationResult.getAuthenticatedIdPs())){
-            builder.addParameter(InboundAuthenticationConstants.LOGGED_IN_IDPS,
+            builder.addParameter(InboundConstants.LOGGED_IN_IDPS,
                     authenticationResult.getAuthenticatedIdPs());
         }
         if(messageContext.getRequest().getResponseType().contains("id_token")) {
@@ -130,8 +130,8 @@ public class OIDCTokenResponseProcessor extends TokenResponseProcessor {
         return builder;
     }
 
-    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder buildIDToken(
-            InboundAuthenticationResponse.InboundAuthenticationResponseBuilder builder,
+    protected InboundResponse.InboundResponseBuilder buildIDToken(
+            InboundResponse.InboundResponseBuilder builder,
             OAuth2AuthzMessageContext messageContext) {
 
         IDTokenBuilder idTokenBuilder = OIDCHandlerManager.getInstance().buildIDToken(messageContext);

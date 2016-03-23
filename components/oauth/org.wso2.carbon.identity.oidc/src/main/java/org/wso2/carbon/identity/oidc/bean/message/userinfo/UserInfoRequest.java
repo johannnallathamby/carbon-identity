@@ -18,7 +18,10 @@
 
 package org.wso2.carbon.identity.oidc.bean.message.userinfo;
 
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequest;
+import org.wso2.carbon.identity.oauth2new.bean.message.OAuth2InboundRequest;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class UserInfoRequest extends OAuth2InboundRequest {
 
@@ -30,47 +33,78 @@ public class UserInfoRequest extends OAuth2InboundRequest {
     private String loginHint;
     private String prompt;
 
-    protected UserInfoRequest(InboundAuthenticationRequestBuilder builder) {
+    protected UserInfoRequest(UserInfoRequestBuilder builder) {
         super(builder);
+        this.nonce = builder.nonce;
+        this.display = builder.display;
+        this.idTokenHint = builder.idTokenHint;
+        this.loginHint = builder.loginHint;
+        this.prompt = builder.prompt;
     }
 
     public String getNonce() {
         return nonce;
     }
 
-    public void setNonce(String nonce) {
-        this.nonce = nonce;
-    }
-
     public String getDisplay() {
         return display;
-    }
-
-    public void setDisplay(String display) {
-        this.display = display;
     }
 
     public String getIdTokenHint() {
         return idTokenHint;
     }
 
-    public void setIdTokenHint(String idTokenHint) {
-        this.idTokenHint = idTokenHint;
-    }
-
     public String getLoginHint() {
         return loginHint;
-    }
-
-    public void setLoginHint(String loginHint) {
-        this.loginHint = loginHint;
     }
 
     public String getPrompt() {
         return prompt;
     }
 
-    public void setPrompt(String prompt) {
-        this.prompt = prompt;
+    public static class UserInfoRequestBuilder extends OAuth2InboundRequestBuilder {
+
+        public UserInfoRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
+            super(request, response);
+        }
+
+        public UserInfoRequestBuilder() {
+
+        }
+
+        private String nonce;
+        private String display;
+        private String idTokenHint;
+        private String loginHint;
+        private String prompt;
+
+        public UserInfoRequestBuilder setNonce(String nonce) {
+            this.nonce = nonce;
+            return this;
+        }
+
+        public UserInfoRequestBuilder setDisplay(String display) {
+            this.display = display;
+            return this;
+        }
+
+        public UserInfoRequestBuilder setIdTokenHint(String idTokenHint) {
+            this.idTokenHint = idTokenHint;
+            return this;
+        }
+
+        public UserInfoRequestBuilder setLoginHint(String loginHint) {
+            this.loginHint = loginHint;
+            return this;
+        }
+
+        public UserInfoRequestBuilder setPrompt(String prompt) {
+            this.prompt = prompt;
+            return this;
+        }
+
+        public UserInfoRequest build() {
+            return new UserInfoRequest(this);
+        }
     }
 }

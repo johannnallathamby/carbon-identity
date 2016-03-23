@@ -18,7 +18,7 @@
 
 package org.wso2.carbon.identity.oauth2new.introspect;
 
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequest;
+import org.wso2.carbon.identity.oauth2new.bean.message.OAuth2InboundRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,6 +51,9 @@ public class IntrospectionRequest extends OAuth2InboundRequest {
 
         public IntrospectionRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
             super(request, response);
+        }
+
+        public IntrospectionRequestBuilder() {
         }
 
         public IntrospectionRequestBuilder setToken(String token) {

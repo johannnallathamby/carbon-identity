@@ -21,10 +21,10 @@ package org.wso2.carbon.identity.oauth2new.revoke;
 import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContext;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.FrameworkRuntimeException;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundMessageContext;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundRequest;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundResponse;
 import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.common.ClientType;
 import org.wso2.carbon.identity.oauth2new.dao.OAuth2DAO;
@@ -44,7 +44,7 @@ public class RevokeRequestProcessor extends OAuth2InboundRequestProcessor {
     }
 
     @Override
-    public String getCallbackPath(InboundAuthenticationContext context) throws AuthenticationFrameworkRuntimeException {
+    public String getCallbackPath(InboundMessageContext context) throws FrameworkRuntimeException {
         return null;
     }
 
@@ -59,17 +59,17 @@ public class RevokeRequestProcessor extends OAuth2InboundRequestProcessor {
     }
 
     @Override
-    public boolean canHandle(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
-        if(StringUtils.isNotBlank(authenticationRequest.getParameterValue("token"))) {
+    public boolean canHandle(InboundRequest inboundRequest) {
+        if(StringUtils.isNotBlank(inboundRequest.getParameter("token"))) {
             return true;
         }
         return false;
     }
 
     @Override
-    public InboundAuthenticationResponse process(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
+    public InboundResponse process(InboundRequest inboundRequest) throws FrameworkException {
 
-        RevokeRequest revokeRequest = (RevokeRequest)authenticationRequest;
+        RevokeRequest revokeRequest = (RevokeRequest) inboundRequest;
         RevocationMessageContext messageContext = new RevocationMessageContext(revokeRequest,
                 new HashMap<String,String>());
 
@@ -108,17 +108,15 @@ public class RevokeRequestProcessor extends OAuth2InboundRequestProcessor {
                 }
             }
         }
-        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder builder = getRevokeResponseBuilder
-                (messageContext);
+        InboundResponse.InboundResponseBuilder builder = buildRevocationResponse(messageContext);
         return builder.build();
     }
 
-    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getRevokeResponseBuilder
-            (RevocationMessageContext messageContext) {
+    protected InboundResponse.InboundResponseBuilder buildRevocationResponse(RevocationMessageContext messageContext) {
 
         String callback = ((RevokeRequest)messageContext.getRequest()).getCallback();
-        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder responseBuilder = new
-                InboundAuthenticationResponse.InboundAuthenticationResponseBuilder();
+        InboundResponse.InboundResponseBuilder responseBuilder = new
+                InboundResponse.InboundResponseBuilder();
         responseBuilder.setStatusCode(HttpServletResponse.SC_OK);
         if (StringUtils.isNotEmpty(callback)) {
             responseBuilder.setBody(callback + "();");

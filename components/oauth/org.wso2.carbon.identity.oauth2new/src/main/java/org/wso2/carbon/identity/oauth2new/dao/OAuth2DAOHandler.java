@@ -30,7 +30,6 @@ import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 import org.wso2.carbon.identity.oauth2new.model.AuthzCode;
 
-import java.sql.Connection;
 import java.util.Properties;
 import java.util.Set;
 

@@ -19,8 +19,8 @@
 package org.wso2.carbon.identity.oauth2new.introspect;
 
 import org.apache.commons.lang.StringUtils;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.FrameworkRuntimeException;
+import org.wso2.carbon.identity.oauth2new.bean.message.OAuth2InboundRequestFactory;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +34,7 @@ public class IntrospectionRequestFactory extends OAuth2InboundRequestFactory {
     }
 
     @Override
-    public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
+    public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws FrameworkRuntimeException {
         if(StringUtils.isNotBlank(request.getParameter("token"))) {
             return true;
         }
@@ -43,7 +43,7 @@ public class IntrospectionRequestFactory extends OAuth2InboundRequestFactory {
 
     @Override
     public IntrospectionRequest create(HttpServletRequest request, HttpServletResponse response) throws
-            AuthenticationFrameworkRuntimeException {
+            FrameworkRuntimeException {
 
         IntrospectionRequest.IntrospectionRequestBuilder builder = new IntrospectionRequest.IntrospectionRequestBuilder
                 (request, response);

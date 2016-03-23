@@ -20,8 +20,8 @@ package org.wso2.carbon.identity.oauth2.assertion.saml2.grant;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.token.TokenRequestFactory;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.FrameworkRuntimeException;
+import org.wso2.carbon.identity.oauth2new.bean.message.token.TokenRequestFactory;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +35,7 @@ public class SAML2AssertionGrantFactory extends TokenRequestFactory {
     }
 
     @Override
-    public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
+    public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws FrameworkRuntimeException {
         if(StringUtils.equals(SAML2GrantConstants.SAML2_GRANT_TYPE, request.getParameter(OAuth.OAUTH_GRANT_TYPE))) {
             return true;
         }
@@ -44,7 +44,7 @@ public class SAML2AssertionGrantFactory extends TokenRequestFactory {
 
     @Override
     public SAML2AssertionGrantRequest create(HttpServletRequest request, HttpServletResponse response) throws
-            AuthenticationFrameworkRuntimeException {
+            FrameworkRuntimeException {
 
         SAML2AssertionGrantRequest.SAML2AssertionGrantBuilder builder = new SAML2AssertionGrantRequest.SAML2AssertionGrantBuilder
                 (request, response);

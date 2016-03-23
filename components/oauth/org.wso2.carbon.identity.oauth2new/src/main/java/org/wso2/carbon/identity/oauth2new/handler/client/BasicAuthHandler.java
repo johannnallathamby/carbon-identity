@@ -25,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
 import org.wso2.carbon.identity.oauth2new.common.ClientType;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 
@@ -48,7 +47,7 @@ public class BasicAuthHandler extends ClientAuthHandler {
 
     @Override
     public String authenticate(OAuth2MessageContext messageContext) {
-        String authzHeader = messageContext.getRequest().getHeaders().get(OAuth.HeaderType.AUTHORIZATION);
+        String authzHeader = messageContext.getRequest().getHeaderMap().get(OAuth.HeaderType.AUTHORIZATION);
         String clientId = null;
         if(StringUtils.isNotBlank(authzHeader)) {
             String[] splitValues = authzHeader.trim().split(" ");

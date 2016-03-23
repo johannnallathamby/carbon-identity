@@ -19,13 +19,13 @@
 package org.wso2.carbon.identity.oauth2new.processor;
 
 import org.apache.oltu.oauth2.common.message.types.GrantType;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestProcessor;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundProcessor;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2AuthzMessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 
-public abstract class OAuth2InboundRequestProcessor extends InboundAuthenticationRequestProcessor {
+public abstract class OAuth2InboundRequestProcessor extends InboundProcessor {
 
     /**
      * Tells if refresh token must be issued or not for this access token request.

@@ -31,10 +31,9 @@ import org.wso2.carbon.identity.application.authentication.framework.LocalApplic
 import org.wso2.carbon.identity.application.authentication.framework.RequestPathApplicationAuthenticator;
 import org.wso2.carbon.identity.application.authentication.framework.config.ConfigurationFacade;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.CommonInboundAuthenticationServlet;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestFactory;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestProcessor;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponseProcessor;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.IdentityServlet;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundProcessor;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundRequestFactory;
 import org.wso2.carbon.identity.application.authentication.framework.listener.AuthenticationEndpointTenantActivityListener;
 import org.wso2.carbon.identity.application.authentication.framework.servlet.CommonAuthenticationServlet;
 import org.wso2.carbon.identity.application.authentication.framework.store.SessionDataStore;
@@ -75,16 +74,12 @@ import java.util.List;
  * @scr.reference name="identityCoreInitializedEventService"
  * interface="org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent" cardinality="1..1"
  * policy="dynamic" bind="setIdentityCoreInitializedEventService" unbind="unsetIdentityCoreInitializedEventService"
- * @scr.reference name="application.requestprocessor"
- * interface="org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestProcessor"
- * cardinality="0..n" policy="dynamic" bind="addInboundRequestProcessor"
- * unbind="removeInboundRequestProcessor"
- * @scr.reference name="application.responseprocessor"
- * interface="org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponseProcessor"
- * cardinality="0..n" policy="dynamic" bind="addInboundResponseProcessor"
- * unbind="removeInboundResponseProcessor"
- * @scr.reference name="application.requestbuilder"
- * interface="org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestFactory"
+ * @scr.reference name="application.request.processor"
+ * interface="org.wso2.carbon.identity.application.authentication.framework.inbound.InboundProcessor"
+ * cardinality="0..n" policy="dynamic" bind="addInboundProcessor"
+ * unbind="removeInboundProcessor"
+ * @scr.reference name="application.request.factory"
+ * interface="org.wso2.carbon.identity.application.authentication.framework.inbound.InboundRequestFactory"
  * cardinality="0..n" policy="dynamic" bind="addInboundRequestFactory"
  * unbind="removeInboundRequestFactory"
  */
@@ -94,7 +89,7 @@ import java.util.List;
 public class FrameworkServiceComponent {
 
     public static final String COMMON_SERVLET_URL = "/commonauth";
-    private static final String COMMON_INBOUND_SERVLET_URL = "/authentication";
+    private static final String IDENTITY_SERVLET_URL = "/identity";
     private static final Log log = LogFactory.getLog(FrameworkServiceComponent.class);
 
     private HttpService httpService;
@@ -156,17 +151,13 @@ public class FrameworkServiceComponent {
         }
 
         // Register Common servlet
-        Servlet commonServlet = new ContextPathServletAdaptor(
-                new CommonAuthenticationServlet(),
-                COMMON_SERVLET_URL);
+        Servlet commonServlet = new ContextPathServletAdaptor(new CommonAuthenticationServlet(), COMMON_SERVLET_URL);
 
-        Servlet commonInboundServlet = new ContextPathServletAdaptor(
-                new CommonInboundAuthenticationServlet(),
-                COMMON_INBOUND_SERVLET_URL);
+        Servlet commonInboundServlet = new ContextPathServletAdaptor(new IdentityServlet(), IDENTITY_SERVLET_URL);
         try {
             httpService.registerServlet(COMMON_SERVLET_URL, commonServlet,
                                         null, null);
-            httpService.registerServlet(COMMON_INBOUND_SERVLET_URL, commonInboundServlet,
+            httpService.registerServlet(IDENTITY_SERVLET_URL, commonInboundServlet,
                     null, null);
         } catch (Exception e) {
             String errMsg = "Error when registering Common Servlet via the HttpService.";
@@ -284,63 +275,40 @@ public class FrameworkServiceComponent {
 
     }
 
-    protected void addInboundRequestProcessor(InboundAuthenticationRequestProcessor requestProcessor) {
+    protected void addInboundProcessor(InboundProcessor requestProcessor) {
 
-        FrameworkServiceDataHolder.getInstance().getInboundAuthenticationRequestProcessors().add(requestProcessor);
-        Collections.sort(FrameworkServiceDataHolder.getInstance().getInboundAuthenticationRequestProcessors(),
+        FrameworkServiceDataHolder.getInstance().getInboundProcessors().add(requestProcessor);
+        Collections.sort(FrameworkServiceDataHolder.getInstance().getInboundProcessors(),
                 inboundRequestProcessor);
 
         if (log.isDebugEnabled()) {
-            log.debug("Added application inbound request processor : " + requestProcessor.getName());
+            log.debug("Added application inbound processor : " + requestProcessor.getName());
         }
     }
 
-    protected void removeInboundRequestProcessor(InboundAuthenticationRequestProcessor requestProcessor) {
+    protected void removeInboundProcessor(InboundProcessor requestProcessor) {
 
-        FrameworkServiceDataHolder.getInstance().getInboundAuthenticationRequestProcessors().remove(requestProcessor);
+        FrameworkServiceDataHolder.getInstance().getInboundProcessors().remove(requestProcessor);
 
 
         if (log.isDebugEnabled()) {
-            log.debug("Removed application inbound request processor : " + requestProcessor.getName());
+            log.debug("Removed application inbound processor : " + requestProcessor.getName());
         }
     }
 
-    protected void addInboundResponseProcessor(InboundAuthenticationResponseProcessor responseProcessor) {
+    protected void addInboundRequestFactory(InboundRequestFactory factory) {
 
-        FrameworkServiceDataHolder.getInstance().getInboundAuthenticationResponseProcessors().add(responseProcessor);
-        Collections
-                .sort(FrameworkServiceDataHolder.getInstance().getInboundAuthenticationResponseProcessors(),
-                        inboundResponseBuilder);
-
-        if (log.isDebugEnabled()) {
-            log.debug("Added application inbound response builder : " + responseProcessor.getName());
-        }
-    }
-
-    protected void removeInboundResponseProcessor(InboundAuthenticationResponseProcessor responseProcessor) {
-
-        FrameworkServiceDataHolder.getInstance().getInboundAuthenticationResponseProcessors().remove(responseProcessor);
-
-        if (log.isDebugEnabled()) {
-            log.debug("Removed application inbound response builder : " + responseProcessor.getName());
-        }
-
-    }
-
-    protected void addInboundRequestFactory(InboundAuthenticationRequestFactory factory) {
-
-        FrameworkServiceDataHolder.getInstance().getInboundAuthenticationRequestFactories().add(factory);
-        Collections
-                .sort(FrameworkServiceDataHolder.getInstance().getInboundAuthenticationRequestFactories(), inboundRequestFactory);
+        FrameworkServiceDataHolder.getInstance().getInboundRequestFactories().add(factory);
+        Collections.sort(FrameworkServiceDataHolder.getInstance().getInboundRequestFactories(), inboundRequestFactory);
 
         if (log.isDebugEnabled()) {
             log.debug("Added application inbound request builder : " + factory.getName());
         }
     }
 
-    protected void removeInboundRequestFactory(InboundAuthenticationRequestFactory factory) {
+    protected void removeInboundRequestFactory(InboundRequestFactory factory) {
 
-        FrameworkServiceDataHolder.getInstance().getInboundAuthenticationRequestFactories().remove(factory);
+        FrameworkServiceDataHolder.getInstance().getInboundRequestFactories().remove(factory);
 
         if (log.isDebugEnabled()) {
             log.debug("Removed application inbound request builder : " + factory.getName());
@@ -360,12 +328,12 @@ public class FrameworkServiceComponent {
          is started */
     }
 
-    private static Comparator<InboundAuthenticationRequestProcessor> inboundRequestProcessor =
-            new Comparator<InboundAuthenticationRequestProcessor>() {
+    private static Comparator<InboundProcessor> inboundRequestProcessor =
+            new Comparator<InboundProcessor>() {
 
                 @Override
-                public int compare(InboundAuthenticationRequestProcessor inboundRequestProcessor1,
-                        InboundAuthenticationRequestProcessor inboundRequestProcessor2) {
+                public int compare(InboundProcessor inboundRequestProcessor1,
+                        InboundProcessor inboundRequestProcessor2) {
 
                     if (inboundRequestProcessor1.getPriority() > inboundRequestProcessor2.getPriority()) {
                         return 1;
@@ -376,29 +344,13 @@ public class FrameworkServiceComponent {
                     }
                 }
             };
-    private static Comparator<InboundAuthenticationResponseProcessor> inboundResponseBuilder =
-            new Comparator<InboundAuthenticationResponseProcessor>() {
+
+    private static Comparator<InboundRequestFactory> inboundRequestFactory =
+            new Comparator<InboundRequestFactory>() {
 
                 @Override
-                public int compare(InboundAuthenticationResponseProcessor inboundResponseBuilder1,
-                        InboundAuthenticationResponseProcessor inboundResponseBuilder2) {
-
-                    if (inboundResponseBuilder1.getPriority() > inboundResponseBuilder2.getPriority()) {
-                        return 1;
-                    } else if (inboundResponseBuilder1.getPriority() < inboundResponseBuilder2.getPriority()) {
-                        return -1;
-                    } else {
-                        return 0;
-                    }
-                }
-            };
-
-    private static Comparator<InboundAuthenticationRequestFactory> inboundRequestFactory =
-            new Comparator<InboundAuthenticationRequestFactory>() {
-
-                @Override
-                public int compare(InboundAuthenticationRequestFactory inboundRequestBuilder1,
-                        InboundAuthenticationRequestFactory inboundRequestBuilder2) {
+                public int compare(InboundRequestFactory inboundRequestBuilder1,
+                        InboundRequestFactory inboundRequestBuilder2) {
 
                     if (inboundRequestBuilder1.getPriority() > inboundRequestBuilder2.getPriority()) {
                         return 1;

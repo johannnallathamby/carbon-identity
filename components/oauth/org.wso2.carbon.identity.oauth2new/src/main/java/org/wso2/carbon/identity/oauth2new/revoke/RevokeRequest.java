@@ -18,8 +18,7 @@
 
 package org.wso2.carbon.identity.oauth2new.revoke;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequest;
+import org.wso2.carbon.identity.oauth2new.bean.message.OAuth2InboundRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,6 +58,10 @@ public class RevokeRequest extends OAuth2InboundRequest {
 
         public RevokeRequestBuilder(HttpServletRequest request, HttpServletResponse response) {
             super(request, response);
+        }
+
+        public RevokeRequestBuilder() {
+
         }
 
         public RevokeRequestBuilder setToken(String token) {

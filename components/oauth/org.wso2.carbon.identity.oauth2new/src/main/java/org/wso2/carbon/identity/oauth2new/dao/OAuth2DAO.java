@@ -27,7 +27,6 @@ import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 import org.wso2.carbon.identity.oauth2new.model.AuthzCode;
 import org.wso2.carbon.identity.oauth2new.revoke.RevocationMessageContext;
 
-import java.sql.Connection;
 import java.util.Set;
 
 /*

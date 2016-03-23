@@ -18,9 +18,8 @@
 
 package org.wso2.carbon.identity.oidc.bean.message.userinfo;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequestFactory;
-import org.wso2.carbon.identity.oidc.bean.message.userinfo.UserInfoRequest;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.FrameworkRuntimeException;
+import org.wso2.carbon.identity.oauth2new.bean.message.OAuth2InboundRequestFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,13 +37,13 @@ public class UserInfoRequestFactory extends OAuth2InboundRequestFactory {
     }
 
     @Override
-    public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
+    public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws FrameworkRuntimeException {
         return false;
     }
 
     @Override
     public UserInfoRequest create(HttpServletRequest request, HttpServletResponse response) throws
-            AuthenticationFrameworkRuntimeException {
+            FrameworkRuntimeException {
         return null;
     }
 }

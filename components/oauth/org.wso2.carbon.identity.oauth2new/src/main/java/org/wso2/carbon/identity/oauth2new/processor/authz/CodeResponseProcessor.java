@@ -26,13 +26,12 @@ import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.apache.oltu.oauth2.common.message.types.ResponseType;
-import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
-import org.wso2.carbon.identity.oauth2new.handler.HandlerManager;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundRequest;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundResponse;
 import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2AuthzMessageContext;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
+import org.wso2.carbon.identity.oauth2new.handler.HandlerManager;
 import org.wso2.carbon.identity.oauth2new.model.AuthzCode;
 import org.wso2.carbon.identity.oauth2new.model.OAuth2ServerConfig;
 
@@ -51,16 +50,15 @@ public class CodeResponseProcessor extends ResourceOwnerApprovedRequestProcessor
         return "CodeResponseProcessor";
     }
 
-    public boolean canHandle(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
+    public boolean canHandle(InboundRequest inboundRequest) {
         if(StringUtils.equals(ResponseType.CODE.toString(),
-                authenticationRequest.getParameterValue(OAuth.OAUTH_RESPONSE_TYPE))) {
+                inboundRequest.getParameter(OAuth.OAUTH_RESPONSE_TYPE))) {
             return true;
         }
         return false;
     }
 
-    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getAuthzResponseBuilder(
-            OAuth2AuthzMessageContext messageContext) {
+    protected InboundResponse.InboundResponseBuilder buildAuthzResponse(OAuth2AuthzMessageContext messageContext) {
 
         // Select the given redirect_uri; there an be multiple registered
         String redirectURI = null;
@@ -101,11 +99,10 @@ public class CodeResponseProcessor extends ResourceOwnerApprovedRequestProcessor
             throw OAuth2RuntimeException.error(e.getMessage(), e);
         }
 
-        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder builder = new InboundAuthenticationResponse
-                .InboundAuthenticationResponseBuilder();
+        InboundResponse.InboundResponseBuilder builder = new InboundResponse.InboundResponseBuilder();
         builder.setStatusCode(oltuResponse.getResponseStatus())
                 .setHeaders(oltuResponse.getHeaders())
                 .setRedirectURL(oltuResponse.getLocationUri());
-        return getAuthzResponseBuilder(messageContext);
+        return buildAuthzResponse(messageContext);
     }
 }

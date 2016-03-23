@@ -27,7 +27,7 @@ import org.wso2.carbon.identity.base.IdentityRuntimeException;
 import org.wso2.carbon.identity.core.bean.context.MessageContext;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.token.password.PasswordGrantRequest;
+import org.wso2.carbon.identity.oauth2new.bean.message.token.password.PasswordGrantRequest;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2AuthnException;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 import org.wso2.carbon.identity.oauth2new.internal.OAuth2ServiceComponentHolder;

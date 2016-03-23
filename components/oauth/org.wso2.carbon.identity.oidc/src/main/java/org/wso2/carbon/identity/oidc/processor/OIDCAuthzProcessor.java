@@ -20,10 +20,10 @@ package org.wso2.carbon.identity.oidc.processor;
 
 import org.apache.oltu.oauth2.common.OAuth;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationConstants;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContext;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundMessageContext;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundRequest;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundResponse;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
 import org.wso2.carbon.identity.oauth2new.processor.authz.AuthzProcessor;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
@@ -46,7 +46,7 @@ public class OIDCAuthzProcessor extends AuthzProcessor {
         return 0;
     }
 
-    public String getCallbackPath(InboundAuthenticationContext context) {
+    public String getCallbackPath(InboundMessageContext context) {
         return null;
     }
 
@@ -54,9 +54,9 @@ public class OIDCAuthzProcessor extends AuthzProcessor {
         return null;
     }
 
-    public boolean canHandle(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
-        if(super.canHandle(authenticationRequest)) {
-            Set<String> scopes = OAuth2Util.buildScopeSet(authenticationRequest.getParameterValue(OAuth.OAUTH_SCOPE));
+    public boolean canHandle(InboundRequest inboundRequest) throws FrameworkException {
+        if(super.canHandle(inboundRequest)) {
+            Set<String> scopes = OAuth2Util.buildScopeSet(inboundRequest.getParameter(OAuth.OAUTH_SCOPE));
             if (scopes.contains(OIDC.OPENID_SCOPE)) {
                 return true;
             }
@@ -71,14 +71,14 @@ public class OIDCAuthzProcessor extends AuthzProcessor {
      * @return OAuth2 authorization endpoint
      * @throws org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException Exception occurred while issuing authorization endpoint response
      */
-    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getBuilderForFrameworkLogin(
-            InboundAuthenticationContext messageContext) throws OAuth2RuntimeException {
+    protected InboundResponse.InboundResponseBuilder buildResponseForFrameworkLogin(
+            InboundMessageContext messageContext) throws OAuth2RuntimeException {
 
         boolean isLoginRequired = ((OIDCAuthzRequest)messageContext.getRequest()).isLoginRequired();
-        messageContext.addParameter(InboundAuthenticationConstants.ForceAuth, isLoginRequired);
+        messageContext.addParameter(InboundConstants.ForceAuth, isLoginRequired);
         boolean isPromptNone = ((OIDCAuthzRequest)messageContext.getRequest()).isPromptNone();
-        messageContext.addParameter(InboundAuthenticationConstants.PassiveAuth, isPromptNone);
-        return super.getBuilderForFrameworkLogin(messageContext);
+        messageContext.addParameter(InboundConstants.PassiveAuth, isPromptNone);
+        return super.buildResponseForFrameworkLogin(messageContext);
     }
 
 }

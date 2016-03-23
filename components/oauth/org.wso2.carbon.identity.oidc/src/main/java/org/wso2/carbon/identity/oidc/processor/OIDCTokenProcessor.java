@@ -22,11 +22,11 @@ package org.wso2.carbon.identity.oidc.processor;
 import org.apache.oltu.oauth2.as.response.OAuthASResponse;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContext;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundMessageContext;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundRequest;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundResponse;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2TokenMessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.token.OAuth2TokenRequest;
+import org.wso2.carbon.identity.oauth2new.bean.message.token.OAuth2TokenRequest;
 import org.wso2.carbon.identity.oauth2new.common.ClientType;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
@@ -57,7 +57,7 @@ public class OIDCTokenProcessor extends TokenProcessor {
     }
 
     @Override
-    public String getCallbackPath(InboundAuthenticationContext context) {
+    public String getCallbackPath(InboundMessageContext context) {
         return null;
     }
 
@@ -67,19 +67,19 @@ public class OIDCTokenProcessor extends TokenProcessor {
     }
 
     @Override
-    public boolean canHandle(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
-        if(authenticationRequest.getParameterValue(OAuth.OAUTH_GRANT_TYPE) != null) {
+    public boolean canHandle(InboundRequest inboundRequest) throws FrameworkException {
+        if(inboundRequest.getParameter(OAuth.OAUTH_GRANT_TYPE) != null) {
             return true;
         }
         return false;
     }
 
     @Override
-    public InboundAuthenticationResponse process(InboundAuthenticationRequest authenticationRequest)
+    public InboundResponse process(InboundRequest inboundRequest)
             throws FrameworkException {
 
         OAuth2TokenMessageContext messageContext = new OAuth2TokenMessageContext(
-                (OAuth2TokenRequest)authenticationRequest, new HashMap<String,String>());
+                (OAuth2TokenRequest) inboundRequest, new HashMap<String,String>());
 
         if(ClientType.CONFIDENTIAL == clientType(messageContext)) {
             String clientId = authenticateClient(messageContext);

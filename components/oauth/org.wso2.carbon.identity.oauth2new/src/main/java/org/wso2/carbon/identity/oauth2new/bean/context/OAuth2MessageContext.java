@@ -18,8 +18,8 @@
 
 package org.wso2.carbon.identity.oauth2new.bean.context;
 
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.OAuth2InboundRequest;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundMessageContext;
+import org.wso2.carbon.identity.oauth2new.bean.message.OAuth2InboundRequest;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -27,7 +27,7 @@ import java.util.Map;
 /*
  * Message context that holds information about the request to an endpoint
  */
-public class OAuth2MessageContext<T1 extends Serializable, T2 extends Serializable> extends InboundAuthenticationContext {
+public class OAuth2MessageContext<T1 extends Serializable, T2 extends Serializable> extends InboundMessageContext {
 
     private static final long serialVersionUID = -3793959181562481432L;
 

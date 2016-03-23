@@ -19,8 +19,8 @@
 package org.wso2.carbon.identity.oidc.bean.message.authz;
 
 import org.apache.oltu.oauth2.common.OAuth;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.authz.AuthzRequestFactory;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.FrameworkRuntimeException;
+import org.wso2.carbon.identity.oauth2new.bean.message.authz.AuthzRequestFactory;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2ClientException;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
 import org.wso2.carbon.identity.oidc.OIDC;
@@ -43,7 +43,7 @@ public class OIDCAuthzRequestFactory extends AuthzRequestFactory {
     }
 
     @Override
-    public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFrameworkRuntimeException {
+    public boolean canHandle(HttpServletRequest request, HttpServletResponse response) throws FrameworkRuntimeException {
         if(super.canHandle(request, response)) {
             Set<String> scopes = OAuth2Util.buildScopeSet(request.getParameter(OAuth.OAUTH_SCOPE));
             if (scopes.contains(OIDC.OPENID_SCOPE)) {
@@ -55,7 +55,7 @@ public class OIDCAuthzRequestFactory extends AuthzRequestFactory {
 
     @Override
     public OIDCAuthzRequest create(HttpServletRequest request, HttpServletResponse response) throws
-            AuthenticationFrameworkRuntimeException, OAuth2ClientException {
+            FrameworkRuntimeException, OAuth2ClientException {
 
         OIDCAuthzRequest.OIDCAuthzRequestBuilder builder = new OIDCAuthzRequest.OIDCAuthzRequestBuilder
                 (request, response);

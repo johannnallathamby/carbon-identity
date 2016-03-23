@@ -24,12 +24,11 @@ import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.apache.oltu.oauth2.common.message.types.ResponseType;
-import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
-import org.wso2.carbon.identity.oauth2new.handler.HandlerManager;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundRequest;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundResponse;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2AuthzMessageContext;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException;
+import org.wso2.carbon.identity.oauth2new.handler.HandlerManager;
 import org.wso2.carbon.identity.oauth2new.model.AccessToken;
 import org.wso2.carbon.identity.oauth2new.util.OAuth2Util;
 
@@ -41,9 +40,8 @@ public class TokenResponseProcessor extends ResourceOwnerApprovedRequestProcesso
         return "TokenResponseProcessor";
     }
 
-    public boolean canHandle(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
-        if(StringUtils.equals(ResponseType.CODE.toString(),
-                authenticationRequest.getParameterValue(OAuth.OAUTH_RESPONSE_TYPE))) {
+    public boolean canHandle(InboundRequest inboundRequest) {
+        if(StringUtils.equals(ResponseType.CODE.toString(), inboundRequest.getParameter(OAuth.OAUTH_RESPONSE_TYPE))) {
             return true;
         }
         return false;
@@ -56,8 +54,7 @@ public class TokenResponseProcessor extends ResourceOwnerApprovedRequestProcesso
      * @return OAuth2 authorization endpoint response
      * @throws org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException Exception occurred while issuing authorization endpoint response
      */
-    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getAuthzResponseBuilder(
-            OAuth2AuthzMessageContext messageContext) throws OAuth2RuntimeException {
+    protected InboundResponse.InboundResponseBuilder buildAuthzResponse(OAuth2AuthzMessageContext messageContext) {
 
         AccessToken accessToken = HandlerManager.getInstance().issueAccessToken(messageContext);
 
@@ -94,13 +91,12 @@ public class TokenResponseProcessor extends ResourceOwnerApprovedRequestProcesso
             throw OAuth2RuntimeException.error(e.getMessage(), e);
         }
 
-        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder builder = new InboundAuthenticationResponse
-                .InboundAuthenticationResponseBuilder();
+        InboundResponse.InboundResponseBuilder builder = new InboundResponse.InboundResponseBuilder();
         builder.setStatusCode(oltuResponse.getResponseStatus())
                 .setHeaders(oltuResponse.getHeaders())
                 .setBody(oltuResponse.getBody())
                 .setRedirectURL(oltuResponse.getLocationUri());
-        return getAuthzResponseBuilder(messageContext);
+        return buildAuthzResponse(messageContext);
     }
 
     protected boolean issueRefreshToken(OAuth2AuthzMessageContext messageContext) {

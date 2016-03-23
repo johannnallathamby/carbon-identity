@@ -21,14 +21,14 @@ package org.wso2.carbon.identity.oauth2new.processor.authz;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.AuthenticationFrameworkRuntimeException;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContext;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContextCache;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContextCacheEntry;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationContextCacheKey;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequest;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationRequestProcessor;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundAuthenticationResponse;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.FrameworkRuntimeException;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundContextCache;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundContextCacheEntry;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundContextCacheKey;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundMessageContext;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundProcessor;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundRequest;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundResponse;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticationResult;
 import org.wso2.carbon.identity.application.common.model.ServiceProvider;
@@ -36,7 +36,7 @@ import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.oauth2new.OAuth2;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2AuthzMessageContext;
 import org.wso2.carbon.identity.oauth2new.bean.context.OAuth2MessageContext;
-import org.wso2.carbon.identity.oauth2new.bean.message.request.authz.OAuth2AuthzRequest;
+import org.wso2.carbon.identity.oauth2new.bean.message.authz.OAuth2AuthzRequest;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2AuthnException;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2ConsentException;
 import org.wso2.carbon.identity.oauth2new.exception.OAuth2Exception;
@@ -51,7 +51,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.UUID;
 
-public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthenticationRequestProcessor {
+public abstract class ResourceOwnerApprovedRequestProcessor extends InboundProcessor {
 
     @Override
     public String getName() {
@@ -59,7 +59,7 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthe
     }
 
     @Override
-    public String getCallbackPath(InboundAuthenticationContext context) throws AuthenticationFrameworkRuntimeException {
+    public String getCallbackPath(InboundMessageContext context) throws FrameworkRuntimeException {
         return null;
     }
 
@@ -74,9 +74,9 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthe
     }
 
     @Override
-    public boolean canHandle(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
+    public boolean canHandle(InboundRequest inboundRequest) {
 
-        InboundAuthenticationContext context = getContextIfAvailable(authenticationRequest);
+        InboundMessageContext context = getContextIfAvailable(inboundRequest);
         if(context != null) {
             if(context.getRequest() instanceof OAuth2AuthzRequest){
                 return true;
@@ -86,13 +86,13 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthe
     }
 
     @Override
-    public InboundAuthenticationResponse process(InboundAuthenticationRequest authenticationRequest) throws FrameworkException {
+    public InboundResponse process(InboundRequest inboundRequest) throws FrameworkException {
 
-        OAuth2AuthzMessageContext messageContext = (OAuth2AuthzMessageContext)getContextIfAvailable(authenticationRequest);
+        OAuth2AuthzMessageContext messageContext = (OAuth2AuthzMessageContext)getContextIfAvailable(inboundRequest);
 
         if(messageContext.getAuthzUser() == null) { // authentication response
 
-            messageContext.addParameter(OAuth2.OAUTH2_RESOURCE_OWNER_AUTHN_REQUEST, authenticationRequest);
+            messageContext.addParameter(OAuth2.OAUTH2_RESOURCE_OWNER_AUTHN_REQUEST, inboundRequest);
             AuthenticationResult authnResult = processResponseFromFrameworkLogin(messageContext);
 
             AuthenticatedUser authenticatedUser = null;
@@ -109,7 +109,7 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthe
                 String spName = ((ServiceProvider) messageContext.getParameter(OAuth2.OAUTH2_SERVICE_PROVIDER)).getApplicationName();
 
                 if (!OAuth2ConsentStore.getInstance().hasUserApprovedAppAlways(authenticatedUser, spName)) {
-                    return getConsentBuilder(messageContext).build();
+                    return initiateResourceOwnerConsent(messageContext).build();
                 } else {
                     messageContext.addParameter(OAuth2.CONSENT, "ApproveAlways");
                 }
@@ -125,10 +125,10 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthe
         // authenticated request and authorized request are the same
         if(!StringUtils.equals("ApproveAlways", (String)messageContext.getParameter(OAuth2.CONSENT)) &&
                 !StringUtils.equals("SkipOAuth2Consent", (String)messageContext.getParameter(OAuth2.CONSENT))) {
-            messageContext.addParameter(OAuth2.OAUTH2_RESOURCE_OWNER_AUTHZ_REQUEST, authenticationRequest);
+            messageContext.addParameter(OAuth2.OAUTH2_RESOURCE_OWNER_AUTHZ_REQUEST, inboundRequest);
             processConsent(messageContext);
         }
-        return getAuthzResponseBuilder(messageContext).build();
+        return buildAuthzResponse(messageContext).build();
     }
 
     /**
@@ -138,7 +138,7 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthe
      * @return OAuth2 authorization endpoint
      * @throws OAuth2RuntimeException Exception occurred while issuing authorization endpoint response
      */
-    protected InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getConsentBuilder(
+    protected InboundResponse.InboundResponseBuilder initiateResourceOwnerConsent(
             OAuth2AuthzMessageContext messageContext) throws OAuth2RuntimeException {
 
         String sessionDataKeyConsent = UUID.randomUUID().toString();
@@ -146,7 +146,7 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthe
         String consentPage = OAuth2ServerConfig.getInstance().getOauth2ConsentPageUrl();
         String queryString = null;
         try {
-            queryString = IdentityUtil.buildQueryString(messageContext.getRequest().getParameters());
+            queryString = IdentityUtil.buildQueryString(messageContext.getRequest().getParameterMap());
         } catch (UnsupportedEncodingException e) {
             throw OAuth2RuntimeException.error(e.getMessage(), e);
         }
@@ -160,17 +160,17 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthe
         } catch (UnsupportedEncodingException e) {
             throw OAuth2RuntimeException.error(e.getMessage(), e);
         }
-        InboundAuthenticationResponse.InboundAuthenticationResponseBuilder builder = new
-                InboundAuthenticationResponse.InboundAuthenticationResponseBuilder();
+        InboundResponse.InboundResponseBuilder builder = new
+                InboundResponse.InboundResponseBuilder();
         builder.setStatusCode(HttpServletResponse.SC_FOUND);
         builder.setRedirectURL(consentPage);
         return builder;
     }
 
     private void addAuthenticationContextToCache(String key, OAuth2MessageContext messageContext) {
-        InboundAuthenticationContextCache cache = InboundAuthenticationContextCache.getInstance();
-        cache.addToCache(new InboundAuthenticationContextCacheKey(key),
-                new InboundAuthenticationContextCacheEntry(messageContext));
+        InboundContextCache cache = InboundContextCache.getInstance();
+        cache.addToCache(new InboundContextCacheKey(key),
+                new InboundContextCacheEntry(messageContext));
     }
 
     /**
@@ -181,7 +181,7 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthe
      */
     protected void processConsent(OAuth2AuthzMessageContext messageContext) throws OAuth2Exception {
 
-        String consent = messageContext.getRequest().getParameterValue(OAuth2.CONSENT);
+        String consent = messageContext.getRequest().getParameter(OAuth2.CONSENT);
         String spName = ((ServiceProvider)messageContext.getParameter(OAuth2.OAUTH2_SERVICE_PROVIDER)).getApplicationName();
         if (StringUtils.isNotBlank(consent)) {
             if(StringUtils.equals("ApproveAlways", consent)) {
@@ -204,6 +204,6 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundAuthe
      * @return OAuth2 authorization endpoint response
      * @throws org.wso2.carbon.identity.oauth2new.exception.OAuth2RuntimeException Exception occurred while issuing authorization endpoint response
      */
-    protected abstract InboundAuthenticationResponse.InboundAuthenticationResponseBuilder getAuthzResponseBuilder(
+    protected abstract InboundResponse.InboundResponseBuilder buildAuthzResponse(
             OAuth2AuthzMessageContext messageContext) throws OAuth2RuntimeException;
 }
