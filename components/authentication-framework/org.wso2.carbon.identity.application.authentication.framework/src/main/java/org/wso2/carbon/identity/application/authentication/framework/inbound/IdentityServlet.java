@@ -21,6 +21,7 @@ package org.wso2.carbon.identity.application.authentication.framework.inbound;
 import org.apache.commons.lang3.StringUtils;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
 import org.wso2.carbon.identity.application.authentication.framework.internal.FrameworkServiceDataHolder;
+import org.wso2.carbon.identity.core.util.IdentityUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -35,6 +36,19 @@ import java.util.Map;
 public class IdentityServlet extends HttpServlet {
 
     private InboundRequestManager manager = new InboundRequestManager();
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+
+        doProcess(request, response);
+    }
 
     /**
      * Get the InboundRequestFactory
@@ -55,19 +69,6 @@ public class IdentityServlet extends HttpServlet {
             }
         }
         return null;
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
-
-        doProcess(request, response);
     }
 
     /**
@@ -124,22 +125,7 @@ public class IdentityServlet extends HttpServlet {
 
     private void sendRedirect(HttpServletResponse response, InboundResponse inboundResponse) throws IOException {
 
-        StringBuilder queryParams = new StringBuilder("?");
-        boolean isFirst = true;
-        for (Map.Entry<String, String[]> entry : inboundResponse.getParameters().entrySet()) {
-
-            if (isFirst) {
-                queryParams.append(entry.getKey());
-                queryParams.append("=");
-                queryParams.append(entry.getValue());
-                isFirst = false;
-            }
-            queryParams.append("&");
-            queryParams.append(entry.getKey());
-            queryParams.append("=");
-            queryParams.append(entry.getValue());
-        }
-
+        String queryParams = IdentityUtil.buildQueryString(inboundResponse.getParameters());
         response.sendRedirect(inboundResponse.getRedirectURL() + queryParams);
     }
 
@@ -151,7 +137,7 @@ public class IdentityServlet extends HttpServlet {
      * @param inboundRequest InboundRequest
      * @return InboundResponse
      */
-    protected InboundResponse doProcessRequest(HttpServletRequest request, HttpServletResponse response,
+    private InboundResponse doProcessRequest(HttpServletRequest request, HttpServletResponse response,
             InboundRequest inboundRequest) {
 
         try {
