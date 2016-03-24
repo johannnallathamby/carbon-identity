@@ -19,8 +19,7 @@
 package org.wso2.carbon.identity.core.handler;
 
 /*
- * Return value from extension handlers.
- * Used to control the invocation of handler chain.
+ * Return value from extension handlers. Used to control the invocation of handler chain.
  */
 public enum ExtHandlerReturnStatus {
 

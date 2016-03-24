@@ -68,7 +68,6 @@ public abstract class InboundProcessor {
      *
      * @param context InboundMessageContext
      * @return Callback path
-     * @throws FrameworkException
      */
     public abstract String getCallbackPath(InboundMessageContext context);
 
@@ -123,7 +122,8 @@ public abstract class InboundProcessor {
         try {
             authenticationRequest.setCommonAuthCallerPath(URLEncoder.encode(getCallbackPath(context), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            throw FrameworkRuntimeException.error(e.getMessage(), e);
+            throw FrameworkRuntimeException.error("Error occurred while URL encoding callback path " +
+                    getCallbackPath(context), e);
         }
 
         AuthenticationRequestCacheEntry authRequest = new AuthenticationRequestCacheEntry(authenticationRequest);
@@ -179,7 +179,8 @@ public abstract class InboundProcessor {
         try {
             authenticationRequest.setCommonAuthCallerPath(URLEncoder.encode(getCallbackPath(context), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            throw FrameworkRuntimeException.error(e.getMessage(), e);
+            throw FrameworkRuntimeException.error("Error occurred while URL encoding callback path " +
+                    getCallbackPath(context), e);
         }
         authenticationRequest.addRequestQueryParam(FrameworkConstants.RequestParams.LOGOUT,
                 new String[]{"true"});
@@ -246,8 +247,7 @@ public abstract class InboundProcessor {
      */
     protected AuthenticationResult processResponseFromFrameworkLogin(InboundMessageContext context) {
 
-        String sessionDataKey = context.getRequest().getParameter(
-                InboundConstants.RequestProcessor.SESSION_DATA_KEY);
+        String sessionDataKey = context.getRequest().getParameter(InboundConstants.RequestProcessor.SESSION_DATA_KEY);
         AuthenticationResultCacheEntry entry = FrameworkUtils.getAuthenticationResultFromCache(sessionDataKey);
         AuthenticationResult authnResult = null;
         if(entry != null) {

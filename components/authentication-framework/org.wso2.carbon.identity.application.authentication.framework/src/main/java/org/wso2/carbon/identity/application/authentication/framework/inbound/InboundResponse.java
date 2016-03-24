@@ -120,15 +120,6 @@ public class InboundResponse implements Serializable {
             return this;
         }
 
-        public InboundResponseBuilder setHeader(String name, String value) {
-            if(this.headers.containsKey(name)) {
-                throw FrameworkRuntimeException.error("Headers map trying to override existing " +
-                        "header " + name);
-            }
-            this.headers.put(name, value);
-            return this;
-        }
-
         public InboundResponseBuilder addHeaders(Map<String, String> headers) {
             for(Map.Entry<String,String> header:headers.entrySet()) {
                 if(this.headers.containsKey(header.getKey())) {
