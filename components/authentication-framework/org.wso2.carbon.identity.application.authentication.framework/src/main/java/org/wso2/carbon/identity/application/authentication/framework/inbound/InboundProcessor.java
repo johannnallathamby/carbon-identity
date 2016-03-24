@@ -54,9 +54,8 @@ public abstract class InboundProcessor {
      *
      * @param inboundRequest InboundRequest
      * @return InboundResponse
-     * @throws FrameworkException
      */
-    public abstract InboundResponse process(InboundRequest inboundRequest) throws FrameworkException;
+    public abstract InboundResponse process(InboundRequest inboundRequest);
 
     /**
      * Returns the unique name of the request InboundRequestProcessor
@@ -71,7 +70,7 @@ public abstract class InboundProcessor {
      * @return Callback path
      * @throws FrameworkException
      */
-    public abstract String getCallbackPath(InboundMessageContext context) throws FrameworkRuntimeException;
+    public abstract String getCallbackPath(InboundMessageContext context);
 
     /**
      * Get relying party unique ID
@@ -98,8 +97,7 @@ public abstract class InboundProcessor {
      * @param context InboundMessageContext
      * @return InboundResponseBuilder
      */
-    protected InboundResponse.InboundResponseBuilder buildResponseForFrameworkLogin(InboundMessageContext context)
-            throws FrameworkRuntimeException {
+    protected InboundResponse.InboundResponseBuilder buildResponseForFrameworkLogin(InboundMessageContext context) {
 
         String sessionDataKey = UUIDGenerator.generateUUID();
 
@@ -131,8 +129,7 @@ public abstract class InboundProcessor {
         AuthenticationRequestCacheEntry authRequest = new AuthenticationRequestCacheEntry(authenticationRequest);
         FrameworkUtils.addAuthenticationRequestToCache(sessionDataKey, authRequest);
 
-        InboundContextCacheEntry contextCacheEntry = new InboundContextCacheEntry(context);
-        InboundUtil.addContextToCache(sessionDataKey, contextCacheEntry);
+        InboundUtil.addContextToCache(sessionDataKey, context);
 
         InboundResponse.InboundResponseBuilder responseBuilder =
                 new InboundResponse.InboundResponseBuilder();
@@ -158,8 +155,7 @@ public abstract class InboundProcessor {
      * @param context InboundContext
      * @return InboundResponseBuilder
      */
-    protected InboundResponse.InboundResponseBuilder buildResponseForFrameworkLogout(InboundMessageContext context)
-            throws FrameworkRuntimeException {
+    protected InboundResponse.InboundResponseBuilder buildResponseForFrameworkLogout(InboundMessageContext context) {
 
         String sessionDataKey = UUIDGenerator.generateUUID();
 
@@ -191,8 +187,7 @@ public abstract class InboundProcessor {
         AuthenticationRequestCacheEntry authRequest = new AuthenticationRequestCacheEntry(authenticationRequest);
         FrameworkUtils.addAuthenticationRequestToCache(sessionDataKey, authRequest);
 
-        InboundContextCacheEntry contextCacheEntry = new InboundContextCacheEntry(context);
-        InboundUtil.addContextToCache(sessionDataKey, contextCacheEntry);
+        InboundUtil.addContextToCache(sessionDataKey, context);
 
         InboundResponse.InboundResponseBuilder responseBuilder =
                 new InboundResponse.InboundResponseBuilder();
@@ -218,8 +213,8 @@ public abstract class InboundProcessor {
     protected boolean isContextAvailable(InboundRequest request) {
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.SESSION_DATA_KEY);
         if(StringUtils.isNotBlank(sessionDataKey)){
-            InboundContextCacheEntry entry = InboundContextCache.getInstance().getValueFromCache(new InboundContextCacheKey(sessionDataKey));
-            if(entry != null){
+            InboundMessageContext context = InboundContextCache.getInstance().getValueFromCache(sessionDataKey);
+            if(context != null){
                 return true;
             }
         }
@@ -235,13 +230,11 @@ public abstract class InboundProcessor {
      */
     protected InboundMessageContext getContextIfAvailable(InboundRequest request) {
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.SESSION_DATA_KEY);
+        InboundMessageContext context = null;
         if(StringUtils.isNotBlank(sessionDataKey)){
-            InboundContextCacheEntry entry = InboundContextCache.getInstance().getValueFromCache(new InboundContextCacheKey(sessionDataKey));
-            if(entry != null){
-                return entry.getInboundMessageContext();
-            }
+            context = InboundContextCache.getInstance().getValueFromCache(sessionDataKey);
         }
-        return null;
+        return context;
     }
 
     /**

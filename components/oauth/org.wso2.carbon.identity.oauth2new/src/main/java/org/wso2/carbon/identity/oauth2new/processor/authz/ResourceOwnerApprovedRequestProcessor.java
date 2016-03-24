@@ -23,8 +23,6 @@ import org.apache.oltu.oauth2.common.OAuth;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.FrameworkRuntimeException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundContextCache;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundContextCacheEntry;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundContextCacheKey;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundMessageContext;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundProcessor;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundRequest;
@@ -169,8 +167,7 @@ public abstract class ResourceOwnerApprovedRequestProcessor extends InboundProce
 
     private void addAuthenticationContextToCache(String key, OAuth2MessageContext messageContext) {
         InboundContextCache cache = InboundContextCache.getInstance();
-        cache.addToCache(new InboundContextCacheKey(key),
-                new InboundContextCacheEntry(messageContext));
+        cache.addToCache(key, messageContext);
     }
 
     /**

@@ -22,24 +22,24 @@ public class InboundUtil {
 
     /**
      * Add to InboundContextCache
+     *
      * @param key Key
-     * @param entry Cache entry
+     * @param context InboundMessageContext
      */
-    public static void addContextToCache(String key, InboundContextCacheEntry entry) {
+    public static void addContextToCache(String key, InboundMessageContext context) {
 
-        InboundContextCacheKey cacheKey = new InboundContextCacheKey(key);
-        InboundContextCache.getInstance().addToCache(cacheKey, entry);
+        InboundContextCache.getInstance().addToCache(key, context);
     }
 
     /**
      * Get from InboundContextCache
+     *
      * @param key cache key
-     * @return Cache entry
+     * @return InboundMessageContext
      */
-    public static InboundContextCacheEntry getContextFromCache(String key) {
+    public static InboundMessageContext getContextFromCache(String key) {
 
-        InboundContextCacheKey cacheKey = new InboundContextCacheKey(key);
-        InboundContextCacheEntry authRequest = InboundContextCache.getInstance().getValueFromCache(cacheKey);
-        return authRequest;
+        InboundMessageContext context = InboundContextCache.getInstance().getValueFromCache(key);
+        return context;
     }
 }

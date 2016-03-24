@@ -24,7 +24,7 @@ import org.wso2.carbon.identity.application.common.cache.BaseCache;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 
-public class InboundContextCache extends BaseCache<InboundContextCacheKey, InboundContextCacheEntry> {
+public class InboundContextCache extends BaseCache<String, InboundMessageContext> {
 
     private static final String INBOUND_CONTEXT_CACHE_NAME = "InboundContextCache";
     private static volatile InboundContextCache instance;
@@ -49,32 +49,31 @@ public class InboundContextCache extends BaseCache<InboundContextCacheKey, Inbou
         return instance;
     }
 
-    public void addToCache(InboundContextCacheKey key, InboundContextCacheEntry entry) {
-        super.addToCache(key, entry);
+    public void addToCache(String key, InboundMessageContext context) {
+        super.addToCache(key, context);
         if (enableRequestScopeCache) {
             int tenantId = MultitenantConstants.INVALID_TENANT_ID;
-            String tenantDomain = entry.getInboundMessageContext().getRequest().getTenantDomain();
+            String tenantDomain = context.getRequest().getTenantDomain();
             if (tenantDomain != null) {
                 tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
             }
-            SessionDataStore.getInstance().storeSessionData(key.getResultId(), INBOUND_CONTEXT_CACHE_NAME, entry,
-                    tenantId);
+            SessionDataStore.getInstance().storeSessionData(key, INBOUND_CONTEXT_CACHE_NAME, context, tenantId);
         }
     }
 
-    public InboundContextCacheEntry getValueFromCache(InboundContextCacheKey key) {
-        InboundContextCacheEntry entry = super.getValueFromCache(key);
-        if (entry == null && enableRequestScopeCache) {
-            entry = (InboundContextCacheEntry) SessionDataStore.getInstance().getSessionData(key.getResultId(),
+    public InboundMessageContext getValueFromCache(String key) {
+        InboundMessageContext context = super.getValueFromCache(key);
+        if (context == null && enableRequestScopeCache) {
+            context = (InboundMessageContext) SessionDataStore.getInstance().getSessionData(key,
                     INBOUND_CONTEXT_CACHE_NAME);
         }
-        return entry;
+        return context;
     }
 
-    public void clearCacheEntry(InboundContextCacheKey key) {
+    public void clearCacheEntry(String key) {
         super.clearCacheEntry(key);
         if (enableRequestScopeCache) {
-            SessionDataStore.getInstance().clearSessionData(key.getResultId(), INBOUND_CONTEXT_CACHE_NAME);
+            SessionDataStore.getInstance().clearSessionData(key, INBOUND_CONTEXT_CACHE_NAME);
         }
     }
 }

@@ -47,28 +47,7 @@ public class IdentityServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
 
-        doProcess(request, response);
-    }
-
-    /**
-     * Get the InboundRequestFactory
-     *
-     * @param request   Http request
-     * @param response  Http response
-     * @return Inbound authentication request builder
-     * @throws FrameworkRuntimeException
-     */
-    private InboundRequestFactory getInboundRequestFactory(HttpServletRequest request,
-                                                           HttpServletResponse response) throws FrameworkRuntimeException {
-
-        List<InboundRequestFactory> factories = FrameworkServiceDataHolder.getInstance().getInboundRequestFactories();
-
-        for (InboundRequestFactory requestBuilder : factories) {
-            if (requestBuilder.canHandle(request, response)) {
-                return requestBuilder;
-            }
-        }
-        return null;
+        process(request, response);
     }
 
     /**
@@ -76,25 +55,18 @@ public class IdentityServlet extends HttpServlet {
      *
      * @param request   HttpServletRequest
      * @param response  HttpServletResponse
-     * @throws FrameworkRuntimeException
      */
-    private void doProcess(HttpServletRequest request, HttpServletResponse response) {
+    private void process(HttpServletRequest request, HttpServletResponse response) {
 
         InboundRequestFactory factory = getInboundRequestFactory(request, response);
         if (factory == null) {
-            throw new FrameworkRuntimeException(
-                    "No authentication request builder found to create the request");
+            throw new FrameworkRuntimeException("No inbound request factory found to create the request");
         }
 
-        InboundRequest inboundRequest = null;
-        try {
-            inboundRequest = factory.create(request, response);
-        } catch (FrameworkException e) {
-            throw new FrameworkRuntimeException("Error while creating the inbound request using factory "+
-                    factory.getName(), e);
-        }
+        InboundRequest inboundRequest = factory.create(request, response);
 
-        InboundResponse inboundResponse = doProcessRequest(request, response, inboundRequest);
+        InboundResponse inboundResponse = manager.process(inboundRequest);
+
         for(Map.Entry<String,String> entry:inboundResponse.getHeaders().entrySet()) {
             response.addHeader(entry.getKey(), entry.getValue());
         }
@@ -123,29 +95,29 @@ public class IdentityServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Get the InboundRequestFactory
+     *
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @return InboundRequestFactory
+     */
+    private InboundRequestFactory getInboundRequestFactory(HttpServletRequest request, HttpServletResponse response) {
+
+        List<InboundRequestFactory> factories = FrameworkServiceDataHolder.getInstance().getInboundRequestFactories();
+
+        for (InboundRequestFactory requestBuilder : factories) {
+            if (requestBuilder.canHandle(request, response)) {
+                return requestBuilder;
+            }
+        }
+        return null;
+    }
+
     private void sendRedirect(HttpServletResponse response, InboundResponse inboundResponse) throws IOException {
 
         String queryParams = IdentityUtil.buildQueryString(inboundResponse.getParameters());
         response.sendRedirect(inboundResponse.getRedirectURL() + queryParams);
-    }
-
-    /**
-     * Process InboundRequest
-     *
-     * @param request   HttpServletRequest
-     * @param response  HttpServletResponse
-     * @param inboundRequest InboundRequest
-     * @return InboundResponse
-     */
-    private InboundResponse doProcessRequest(HttpServletRequest request, HttpServletResponse response,
-            InboundRequest inboundRequest) {
-
-        try {
-            InboundResponse result = manager.processRequest(inboundRequest);
-            return result;
-        } catch (FrameworkException ex) {
-            throw new FrameworkRuntimeException("Error occurred while processing inbound request", ex);
-        }
     }
 
 }

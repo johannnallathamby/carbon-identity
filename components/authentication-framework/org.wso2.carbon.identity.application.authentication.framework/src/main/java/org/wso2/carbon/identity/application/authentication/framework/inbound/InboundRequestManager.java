@@ -30,6 +30,25 @@ public class InboundRequestManager {
     private static final Log log = LogFactory.getLog(InboundRequestManager.class);
 
     /**
+     * Process the InboundRequest
+     *
+     * @param inboundRequest InboundRequest
+     * @return InboundResponse
+     */
+    public InboundResponse process(InboundRequest inboundRequest) {
+
+        InboundProcessor processor = getInboundProcessor(inboundRequest);
+        if (processor != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("Starting to process inbound request : " + processor.getName());
+            }
+            return processor.process(inboundRequest);
+        } else {
+            throw FrameworkRuntimeException.error("No inbound processor found to process the request");
+        }
+    }
+
+    /**
      * Gets the InboundProcessor that can process this request
      *
      * @param inboundRequest InboundRequest
@@ -44,26 +63,6 @@ public class InboundRequestManager {
             }
         }
         return null;
-    }
-
-    /**
-     * Process the InboundRequest
-     *
-     * @param inboundRequest InboundRequest
-     * @return InboundResponse
-     * @throws FrameworkException
-     */
-    public InboundResponse processRequest(InboundRequest inboundRequest) throws FrameworkException {
-
-        InboundProcessor processor = getInboundProcessor(inboundRequest);
-        if (processor != null) {
-            if (log.isDebugEnabled()) {
-                log.debug("Starting to process inbound request : " + processor.getName());
-            }
-            return processor.process(inboundRequest);
-        } else {
-            throw FrameworkException.error("No inbound processor found to process the request");
-        }
     }
 
 }

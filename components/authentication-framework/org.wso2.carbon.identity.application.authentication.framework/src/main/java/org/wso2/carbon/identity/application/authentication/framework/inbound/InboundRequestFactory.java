@@ -47,8 +47,7 @@ public class InboundRequestFactory {
         return true;
     }
 
-    public InboundRequest create(HttpServletRequest request, HttpServletResponse response)
-            throws FrameworkRuntimeException, FrameworkException {
+    public InboundRequest create(HttpServletRequest request, HttpServletResponse response) {
 
         InboundRequest.InboundRequestBuilder builder = new InboundRequest.InboundRequestBuilder(request, response);
         Enumeration<String> headerNames = request.getHeaderNames();
