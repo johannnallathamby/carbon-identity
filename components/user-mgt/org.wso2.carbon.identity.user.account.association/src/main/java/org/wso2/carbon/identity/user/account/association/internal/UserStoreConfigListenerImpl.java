@@ -18,7 +18,7 @@
 
 package org.wso2.carbon.identity.user.account.association.internal;
 
-import org.wso2.carbon.identity.core.AbstractUserStoreConfigListener;
+import org.wso2.carbon.identity.user.store.configuration.listener.AbstractUserStoreConfigListener;
 import org.wso2.carbon.identity.user.account.association.dao.UserAccountAssociationDAO;
 import org.wso2.carbon.identity.user.account.association.exception.UserAccountAssociationException;
 import org.wso2.carbon.identity.user.account.association.util.UserAccountAssociationConstants;

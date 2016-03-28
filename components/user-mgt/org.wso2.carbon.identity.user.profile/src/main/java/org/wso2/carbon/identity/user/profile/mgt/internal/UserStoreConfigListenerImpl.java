@@ -18,7 +18,7 @@
 
 package org.wso2.carbon.identity.user.profile.mgt.internal;
 
-import org.wso2.carbon.identity.core.AbstractUserStoreConfigListener;
+import org.wso2.carbon.identity.user.store.configuration.listener.AbstractUserStoreConfigListener;
 import org.wso2.carbon.identity.user.profile.mgt.UserProfileException;
 import org.wso2.carbon.identity.user.profile.mgt.dao.UserProfileMgtDAO;
 import org.wso2.carbon.user.api.UserStoreException;

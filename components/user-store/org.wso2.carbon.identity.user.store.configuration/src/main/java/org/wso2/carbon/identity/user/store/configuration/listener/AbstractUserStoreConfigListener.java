@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.core;
+package org.wso2.carbon.identity.user.store.configuration.listener;
 
 import org.apache.commons.lang.StringUtils;
 import org.wso2.carbon.identity.core.model.IdentityEventListenerConfig;
